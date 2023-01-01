@@ -1,19 +1,107 @@
-import { Image } from "primereact/image";
-import { Input } from "components";
+import { useState, useCallback } from "react";
+import { Button, Input, Seo } from "components";
+import { Link } from "react-router-dom";
+import { loginHelper, setCookie, setLocalStorage } from "utils";
+import { SetTokenFunctionProps } from "types";
 
 export default function Login() {
-  return (
-    <div className="flex items-center gap-[172px]">
-      <div>
-        <div>
-          <h1>PLTS Dashboard</h1>
-          <p>Please fill your detail to access your account</p>
-        </div>
-        <Input label="Email" />
-        <Input label="Password" />
-      </div>
+  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
-      <Image src="/solarpanel.png" alt="login-welcome" />
-    </div>
+  const handleSetTokenCookies = useCallback(
+    ({ accessToken, refreshToken, email }: SetTokenFunctionProps) => {
+      setCookie({
+        cookieKey: "accessToken",
+        cookieValue: accessToken,
+        cookieOptions: {
+          path: "/",
+        },
+      });
+
+      setCookie({
+        cookieKey: "refreshToken",
+        cookieValue: refreshToken,
+        cookieOptions: {
+          path: "/",
+        },
+      });
+
+      setLocalStorage("email", email);
+    },
+    []
+  );
+
+  const sendLoginData = useCallback(async () => {
+    const response = await loginHelper("/api/login/", {
+      data: {
+        email,
+        password,
+      },
+      method: "POST",
+    });
+
+    handleSetTokenCookies({
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
+      email: response.data.email,
+    });
+
+    return response;
+  }, [email, password, handleSetTokenCookies]);
+
+  return (
+    <>
+      <Seo title="Login Page" description="Login page for PLTS Dashboard" />
+
+      <div className="flex items-center gap-[172px] overflow-hidden min-h-screen  p-6">
+        <div className="flex justify-end basis-1/2">
+          <div className="w-9/12">
+            <div className="flex items-center">
+              <img
+                src="/elektro-logo.png"
+                alt="elektro-logo"
+                className="w-[50px] h-[50px] my-0"
+              />
+              <h1 className="mb-0 ml-4">PLTS Dashboard</h1>
+            </div>
+            <p>Please fill your detail to access your account</p>
+
+            <div className="flex flex-col gap-y-8">
+              <Input
+                label="Email"
+                inputClassName="w-full"
+                onChange={(value) => setEmail(value)}
+              />
+              <Input
+                label="Password"
+                inputClassName="w-full"
+                onChange={(value) => setPassword(value)}
+              />
+              <Button
+                className="text-white bg-blue-500"
+                onClick={sendLoginData}
+              >
+                Sign in
+              </Button>
+            </div>
+
+            <p className="text-center">
+              Didn't have an account? Sign up{" "}
+              <Link className="text-blue-500" to="/signup">
+                here
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-xl basis-1/2">
+          <img
+            src="/solarpanel-700.jpg"
+            alt="login-welcome"
+            className="my-0 w-[650px] h-[615px]"
+          />
+        </div>
+      </div>
+    </>
   );
 }
