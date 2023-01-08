@@ -1,4 +1,5 @@
-import { Login, Dashboard, SignUp } from "pages";
+
+import { Login, Dashboard, SignUp, Map } from "pages";
 import { RouteListProps } from "types";
 
 export const ROUTES_LIST: RouteListProps[] = [
@@ -16,5 +17,10 @@ export const ROUTES_LIST: RouteListProps[] = [
     name: "signup",
     path: "/signup",
     component: SignUp,
+  },
+  {
+    name: "map",
+    path: "/map",
+    component: Map,
   },
 ];
