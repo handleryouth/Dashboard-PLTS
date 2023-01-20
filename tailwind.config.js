@@ -11,6 +11,12 @@ module.exports = {
           },
         },
       },
+      transitionProperty: {
+        width: "width",
+        visibility: "visibility",
+        display: "display",
+        widthPaddingMargin: "width, padding, margin",
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

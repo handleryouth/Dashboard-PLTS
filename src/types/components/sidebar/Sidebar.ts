@@ -9,7 +9,6 @@ export interface LinkPathProps {
 export interface SidebarChildrenProps {
   headerTitle?: string;
   groupLinks?: MenuItem[];
-  individualLinks?: LinkPathProps;
 }
 
 export interface SidebarContextProps {

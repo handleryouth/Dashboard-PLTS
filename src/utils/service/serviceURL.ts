@@ -1,14 +1,14 @@
 import {
   LoginRequestBody,
   LoginResponse,
-  PLTSDetailResponse,
+  GeneratorDataProps,
   PLTSMap,
 } from "types";
 import { ServiceStructure } from "./service";
 
 export interface ServiceURL {
   plts_get_plts_detail: ServiceStructure<{
-    response: PLTSDetailResponse;
+    response: GeneratorDataProps;
   }>;
   plts_auth_login: ServiceStructure<{
     body: LoginRequestBody;

@@ -23,6 +23,7 @@ export default function SmallDashboard({
   positionDescription,
 }: SmallDashboardProps) {
   const options = {
+    animation: false,
     plugins: {
       legend: {
         display: false,

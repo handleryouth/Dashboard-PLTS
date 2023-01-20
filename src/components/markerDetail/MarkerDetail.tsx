@@ -1,13 +1,11 @@
 import { memo } from "react";
 import { Tooltip } from "react-leaflet";
-import { PLTSDetailResponse } from "types";
 
 export interface MarkerDetailProps {
   title: string;
   description: string;
   lat: number;
   lng: number;
-  data?: PLTSDetailResponse;
 }
 
 export default function MarkerDetail({
@@ -15,22 +13,11 @@ export default function MarkerDetail({
   title,
   lat,
   lng,
-  data,
 }: MarkerDetailProps) {
   return (
     <Tooltip>
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <p>Latitude: {lat}</p>
-      <p>Longitude: {lng}</p>
-
-      <ul>
-        <li>Apparent Power: {data?.apparentPower}</li>
-        <li>Daily Yield: {data?.dailyYield}</li>
-        <li>Grid Current: {data?.gridCurrent}</li>
-        <li>Power: {data?.power}</li>
-        <li>Temperature: {data?.temperature}</li>
-      </ul>
+      <h3 className="text-xl  ">{title}</h3>
+      <p className="text-sm">{description}</p>
     </Tooltip>
   );
 }
