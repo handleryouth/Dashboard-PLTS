@@ -1,26 +1,26 @@
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMapEvent,
-} from "react-leaflet";
+import { useCallback, useEffect, useState } from "react";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { MAP_COORDINATES } from "const";
-import { MarkerDetail } from "components";
-
-const AnimatedSlideMap = () => {
-  const map = useMapEvent("click", (e) => {
-    map.setView(e.latlng, map.getZoom(), {
-      animate: true,
-    });
-  });
-  return null;
-};
+import { MemoizedMarkerDetail } from "components";
+import { AnimatedSlideMap, requestHelper } from "utils";
+import { PLTSMap } from "types";
 
 export default function Map() {
+  const [mapData, setMapData] = useState<PLTSMap>();
+
+  const getData = useCallback(async () => {
+    const response = await requestHelper("plts_get_map_overview");
+
+    setMapData(response);
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
   return (
     <div>
-      <h1>Plants Location</h1>
+      <h1 className="text-center">Plants Location</h1>
 
       <div>
         <MapContainer
@@ -39,13 +39,13 @@ export default function Map() {
 
           {MAP_COORDINATES.map((item, key) => (
             <Marker position={[item.lat, item.lng]} key={key}>
-              <MarkerDetail
+              <MemoizedMarkerDetail
                 lat={item.lat}
                 lng={item.lng}
                 description={item.address}
                 title={item.name}
+                data={mapData && mapData[item.dataKey]}
               />
-              <Popup>{item.name}</Popup>
             </Marker>
           ))}
 

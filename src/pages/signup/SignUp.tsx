@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button, Input, Password, Seo } from "components";
-import { loginHelper } from "utils";
+import { loginInstance } from "utils";
 
 export default function SignUp() {
   const [password, setPassword] = useState("");
@@ -9,7 +9,7 @@ export default function SignUp() {
   const [fullName, setFullName] = useState("");
 
   const sendSignupData = useCallback(async () => {
-    const response = await loginHelper("/api/login/create", {
+    const response = await loginInstance("/api/login/create", {
       data: {
         email,
         password,

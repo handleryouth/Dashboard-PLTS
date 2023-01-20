@@ -1,25 +1,26 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { PanelMenu } from "primereact/panelmenu";
 import { SidebarChildrenProps } from "types";
 
 export default function SidebarChildren({
   headerTitle,
-  linkPath,
+  groupLinks,
+  individualLinks,
 }: SidebarChildrenProps) {
-  const navigate = useNavigate();
   return (
     <div className="my-8">
-      <h3 className="text-gray-500 font-bold mb-4">{headerTitle}</h3>
-      <ul>
-        {linkPath.map((item, index) => (
-          <li
-            key={index}
-            onClick={() => navigate(item.path)}
-            className="text-xl font-semibold my-4"
-          >
-            {item.name}
-          </li>
-        ))}
-      </ul>
+      {groupLinks && (
+        <PanelMenu className="prose prose-a:no-underline " model={groupLinks} />
+      )}
+
+      {individualLinks && (
+        <Link
+          className=" w-full block hover:bg-slate-200 p-4 rounded-md font-semibold no-underline text-base"
+          to={individualLinks.path}
+        >
+          {individualLinks.name}
+        </Link>
+      )}
     </div>
   );
 }

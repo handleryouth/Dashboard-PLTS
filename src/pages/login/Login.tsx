@@ -1,12 +1,12 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Seo } from "components";
-import { loginHelper, setCookie, setLocalStorage } from "utils";
+import { requestHelper, setCookie, setLocalStorage } from "utils";
 import { SetTokenFunctionProps } from "types";
 
 export default function Login() {
-  const [password, setPassword] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   const navigate = useNavigate();
 
@@ -34,25 +34,23 @@ export default function Login() {
   );
 
   const sendLoginData = useCallback(async () => {
-    const response = await loginHelper("/api/login/", {
-      data: {
+    const response = await requestHelper("plts_auth_login", {
+      body: {
         email,
         password,
       },
-      method: "POST",
+      withCredentials: false,
     });
 
-    if (response.status === 200) {
+    if (response) {
       handleSetTokenCookies({
-        accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken,
-        email: response.data.email,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        email: response.email,
       });
       navigate("/");
     }
-
-    return response;
-  }, [email, password, handleSetTokenCookies, navigate]);
+  }, [email, handleSetTokenCookies, navigate, password]);
 
   return (
     <>

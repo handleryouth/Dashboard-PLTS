@@ -1,23 +1,24 @@
-import { LinkPathProps } from "types";
+import { MenuItem } from "primereact/menuitem";
 
-export const SIDEBAR_OVERVIEW_LINKS: LinkPathProps[] = [
+export const PLTS_SIDEBAR_OVERVIEW_LINKS: MenuItem[] = [
   {
-    name: "Dashboard",
-    path: "/",
+    label: "PLTS",
+    items: [
+      {
+        label: "PLTS A",
+        command: (e) => {
+          console.log(e.item);
+        },
+      },
+      {
+        label: "PLTS B",
+        url: "/plts-b",
+      },
+      {
+        label: "PLTS C",
+        url: "/plts-c",
+      },
+    ],
   },
 ];
 
-export const SIDEBAR_PLTS_LINKS: LinkPathProps[] = [
-  {
-    name: "PLTS A",
-    path: "/plts-a",
-  },
-  {
-    name: "PLTS B",
-    path: "/plts-b",
-  },
-  {
-    name: "PLTS C",
-    path: "/plts-c",
-  },
-];

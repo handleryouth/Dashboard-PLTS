@@ -12,7 +12,7 @@ function Button({ children, className, ...props }: ButtonProps) {
   return (
     <PrimereactButton
       {...props}
-      className={`prose  flex justify-center ${className}`}
+      className={`prose flex justify-center ${className}`}
     >
       {children}
     </PrimereactButton>

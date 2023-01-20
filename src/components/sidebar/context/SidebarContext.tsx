@@ -10,7 +10,8 @@ function SidebarContextProvider({ children }: SidebarContextProviderProps) {
 
   const value: SidebarContextProps = {
     showDashboard: showDashboard,
-    toggleDashboard: () => setShowDashboard((prevState) => !prevState),
+    toggleDashboardActive: () => setShowDashboard(true),
+    toggleDashboardInactive: () => setShowDashboard(false),
   };
 
   return (

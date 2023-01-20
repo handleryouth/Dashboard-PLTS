@@ -1,3 +1,4 @@
+import { MenuItem } from "primereact/menuitem";
 import { ReactNode } from "react";
 
 export interface LinkPathProps {
@@ -6,13 +7,15 @@ export interface LinkPathProps {
 }
 
 export interface SidebarChildrenProps {
-  headerTitle: string;
-  linkPath: LinkPathProps[];
+  headerTitle?: string;
+  groupLinks?: MenuItem[];
+  individualLinks?: LinkPathProps;
 }
 
 export interface SidebarContextProps {
   showDashboard: boolean;
-  toggleDashboard: () => void;
+  toggleDashboardActive: () => void;
+  toggleDashboardInactive: () => void;
 }
 
 export interface SidebarContextProviderProps {

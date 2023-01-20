@@ -4,22 +4,17 @@ import { Button } from "../button";
 import { useSidebar } from "../sidebar/context";
 
 export default function Navbar() {
-  const { toggleDashboard, showDashboard } = useSidebar();
+  const { toggleDashboardActive, showDashboard } = useSidebar();
 
   const handleButtonClicked = useCallback(() => {
-    toggleDashboard();
-  }, [toggleDashboard]);
+    toggleDashboardActive();
+  }, [toggleDashboardActive]);
 
   return (
-    <nav className="py-3  bg-red-500 ">
+    <nav className="prose !max-w-none py-3  bg-[#7286D3] ">
       <div className="max-w-[69rem] flex justify-between items-center mx-auto">
         <div className="flex items-center">
-          <h3 className="my-0 mr-4">Elektro ITS</h3>
-          <img
-            src="/elektro-its-logo.jpg"
-            alt="logo"
-            className="w-[47px] h-[47px] rounded-full mb-0"
-          />
+          <h3 className="my-0 mr-4">PLTS Dashboard</h3>
         </div>
 
         <Button

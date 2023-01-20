@@ -1,37 +1,35 @@
 import { Sidebar as PrimereactSidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
-import { SIDEBAR_OVERVIEW_LINKS, SIDEBAR_PLTS_LINKS } from "const";
+import { sidebarItems } from "utils";
 import { SidebarChildren } from "./components";
 import { useSidebar } from "./context";
 
 export default function Sidebar() {
-  const { showDashboard, toggleDashboard } = useSidebar();
+  const { showDashboard, toggleDashboardInactive } = useSidebar();
+
+  const { dashboardLinks, mapLinks, pltsLinks } = sidebarItems();
+
   return (
     <PrimereactSidebar
       visible={showDashboard}
       position="left"
-      onHide={() => toggleDashboard()}
+      onHide={() => toggleDashboardInactive()}
+      modal={false}
+      showCloseIcon={false}
+      dismissable
     >
-      <div className="flex justify-between flex-col h-full">
+      <div className="flex justify-between flex-col h-full prose">
         <div>
-          <div className="flex items-center mb-9">
-            <img
-              src="/elektro-its-logo.jpg"
-              alt="logo"
-              className="w-[47px] h-[47px] rounded-full"
-            />
-            <h1 className="text-3xl font-bold ml-4 text-black">Elektro ITS</h1>
+          <div>
+            <h3 className="mt-0">Tony</h3>
+            <p>rafaeltonydavid@yahoo.com</p>
           </div>
 
-          <SidebarChildren
-            headerTitle="Overview"
-            linkPath={SIDEBAR_OVERVIEW_LINKS}
-          />
+          <SidebarChildren groupLinks={dashboardLinks} />
 
-          <SidebarChildren
-            headerTitle="Overview"
-            linkPath={SIDEBAR_PLTS_LINKS}
-          />
+          <SidebarChildren groupLinks={pltsLinks} />
+
+          <SidebarChildren groupLinks={mapLinks} />
         </div>
 
         <Button
