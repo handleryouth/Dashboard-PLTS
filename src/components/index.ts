@@ -8,3 +8,6 @@ export * from "./seo";
 export * from "./markerDetail";
 export * from "./sideButton";
 export * from "./section";
+export * from "./table";
+export * from "./container";
+export * from "./header";

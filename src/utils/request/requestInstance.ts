@@ -3,12 +3,12 @@ import { getCookie, setCookie } from "../cookie";
 import { getLocalStorage } from "../localStorage";
 
 export const requestInstance = axios.create({
-  baseURL: "http://10.3.132.252:8080/",
+  baseURL: "http://localhost:8000/",
   withCredentials: true,
 });
 
 export const loginInstance = axios.create({
-  baseURL: "http://10.3.132.252:8080/",
+  baseURL: "http://localhost:8000/",
 });
 
 requestInstance.interceptors.response.use(

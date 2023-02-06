@@ -1,9 +1,8 @@
 import { useCallback, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { BreadCrumb } from "primereact/breadcrumb";
 import { MAP_COORDINATES } from "const";
 import { MemoizedMarkerDetail } from "components";
-import { InvalidateSizeMap, requestHelper } from "utils";
+import { InvalidateSizeMap } from "utils";
 import { PLTSMapKey } from "types";
 import { SideDetail } from "./component";
 
@@ -33,28 +32,11 @@ export default function Map() {
     [selectedData]
   );
 
-  const items = [
-    { label: "Categories" },
-    { label: "Sports" },
-    { label: "Football" },
-    { label: "Countries" },
-    { label: "Spain" },
-    { label: "F.C. Barcelona" },
-    { label: "Squad" },
-    {
-      label: "Lionel Messi",
-      url: "https://en.wikipedia.org/wiki/Lionel_Messi",
-    },
-  ];
 
-  const home = {
-    icon: "pi pi-home",
-    url: "https://www.primefaces.org/primereact",
-  };
 
   return (
     <>
-      <BreadCrumb model={items} home={home} />
+
       <div>
         <h1 className="mt-4">Plants Location</h1>
 

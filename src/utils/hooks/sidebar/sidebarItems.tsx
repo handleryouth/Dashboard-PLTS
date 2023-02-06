@@ -51,5 +51,15 @@ export function sidebarItems() {
     },
   ];
 
-  return { pltsLinks, dashboardLinks, mapLinks };
+  const aclLinks: MenuItem[] = [
+    {
+      label: "Staff Management",
+      url: "/staff-management",
+      template: (item, options) => (
+        <GenerateSidebarChildrenTemplate item={item} options={options} />
+      ),
+    },
+  ];
+
+  return { pltsLinks, dashboardLinks, mapLinks, aclLinks };
 }

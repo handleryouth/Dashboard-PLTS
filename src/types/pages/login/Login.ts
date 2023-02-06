@@ -14,3 +14,10 @@ export interface LoginRequestBody {
   email: string;
   password: string;
 }
+
+export interface AuthResponse {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+}

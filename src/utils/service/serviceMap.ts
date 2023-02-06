@@ -16,4 +16,20 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/map-overview",
   },
+  get_staff_list: {
+    method: "GET",
+    url: "/api/staff",
+  },
+  activate_staff: {
+    method: "POST",
+    url: "/api/staff/activate",
+  },
+  deactivate_staff: {
+    method: "POST",
+    url: "/api/staff/deactivate",
+  },
+  edit_staff: {
+    method: "POST",
+    url: "/api/staff/detail",
+  },
 };

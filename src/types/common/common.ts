@@ -20,3 +20,7 @@ export interface GeneratorDataProps {
   gridVoltagePhaseL2: number;
   gridVoltagePhaseL3: number;
 }
+
+export interface ServiceMessageResponse {
+  message: string;
+}

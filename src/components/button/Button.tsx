@@ -1,21 +1,20 @@
 import { ReactNode } from "react";
-import {
-  ButtonProps as PrimereactButtonProps,
-  Button as PrimereactButton,
-} from "primereact/button";
+import {} from "primereact/button";
 
-export interface ButtonProps extends PrimereactButtonProps {
+export interface ButtonProps {
   children?: ReactNode;
+  className?: string;
+  onClick?: () => void;
 }
 
-function Button({ children, className, ...props }: ButtonProps) {
+function Button({ children, className, onClick }: ButtonProps) {
   return (
-    <PrimereactButton
-      {...props}
-      className={`prose flex justify-center ${className}`}
+    <button
+      className={`prose rounded-md text-white py-3 ${className}`}
+      onClick={onClick}
     >
       {children}
-    </PrimereactButton>
+    </button>
   );
 }
 

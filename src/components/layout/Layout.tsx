@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Sidebar, SidebarContextProvider } from "../sidebar";
 import { SideButton } from "../sideButton";
+import { Header } from "../header";
 
 export interface LayoutProps {
   children: ReactNode;
@@ -8,14 +9,15 @@ export interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <>
-      <SidebarContextProvider>
+    <SidebarContextProvider>
+      <div className="bg-slate-100 min-h-screen">
         <SideButton />
-        <div className=" flex prose !min-w-[320px] !max-w-none relative max-h-screen">
+        <Header />
+        <div className=" prose !min-w-[320px] !max-w-none relative">
           <Sidebar />
-          <div className="basis-full">{children}</div>
+          {children}
         </div>
-      </SidebarContextProvider>
-    </>
+      </div>
+    </SidebarContextProvider>
   );
 }

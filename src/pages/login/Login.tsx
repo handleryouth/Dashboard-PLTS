@@ -42,11 +42,11 @@ export default function Login() {
       withCredentials: false,
     });
 
-    if (response) {
+    if (response && response.status === 200) {
       handleSetTokenCookies({
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-        email: response.email,
+        accessToken: response.data!.accessToken,
+        refreshToken: response.data!.refreshToken,
+        email: response.data!.email,
       });
       navigate("/");
     }

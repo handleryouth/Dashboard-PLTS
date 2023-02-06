@@ -23,7 +23,9 @@ export default function Input({
       <InputText
         onChange={(e) => onChange(e.target.value)}
         id={id}
-        className={`${errorMessage && "p-invalid"} block ${inputClassName}`}
+        className={`${
+          errorMessage && "p-invalid"
+        } block ${inputClassName} w-full`}
       />
       <small id={id} className="p-error block">
         {errorMessage}
