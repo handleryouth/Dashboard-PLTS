@@ -3,12 +3,12 @@ import { getCookie, setCookie } from "../cookie";
 import { getLocalStorage } from "../localStorage";
 
 export const requestInstance = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: process.env.REACT_APP_SERVER_URL,
   withCredentials: true,
 });
 
 export const loginInstance = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: process.env.REACT_APP_SERVER_URL,
 });
 
 requestInstance.interceptors.response.use(
@@ -20,7 +20,8 @@ requestInstance.interceptors.response.use(
 
     if (
       error.response.status === 401 &&
-      originalRequest.url === "http://localhost:8080/api/login/refresh"
+      originalRequest.url ===
+        `${process.env.REACT_APP_SERVER_URL}api/login/refresh`
     ) {
       return Promise.reject(error);
     } else if (error.response.status === 401) {
@@ -28,7 +29,7 @@ requestInstance.interceptors.response.use(
       const email = getLocalStorage("email");
 
       return axios
-        .post("http://localhost:8080/api/login/refresh", {
+        .post(`${process.env.REACT_APP_SERVER_URL}api/login/refresh`, {
           refreshToken,
           email,
         })

@@ -101,3 +101,18 @@ export const GENERATOR_DATA_DROPDOWN_ITEMS: GeneratorDataDropdownProps[] = [
     value: "gridVoltagePhaseL3",
   },
 ];
+
+export const DROPDOWN_LOCATIONS_ITEMS: SelectItem[] = [
+  {
+    label: "AJ301",
+    value: "aj301",
+  },
+  {
+    label: "Research Center",
+    value: "researchCenter",
+  },
+  {
+    label: "Rektorat ITS",
+    value: "rektoratIts",
+  },
+];

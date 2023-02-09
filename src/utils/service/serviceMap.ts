@@ -32,4 +32,8 @@ export const serviceMap: ServiceMapProps = {
     method: "POST",
     url: "/api/staff/detail",
   },
+  get_average: {
+    method: "GET",
+    url: "/api/plts/average-plts",
+  },
 };

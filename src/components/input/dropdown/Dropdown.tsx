@@ -6,12 +6,17 @@ import { useId } from "react";
 
 export interface DropdownProps extends BaseDropdownProps {
   label?: string;
+  containerClassName?: string;
 }
 
-export default function Dropdown({ label, ...props }: DropdownProps) {
+export default function Dropdown({
+  label,
+  containerClassName,
+  ...props
+}: DropdownProps) {
   const id = useId();
   return (
-    <span>
+    <span className={`w-full ${containerClassName}`}>
       {label && (
         <label htmlFor={id} className="block">
           {label}
@@ -20,7 +25,7 @@ export default function Dropdown({ label, ...props }: DropdownProps) {
       <BaseDropdown
         {...props}
         id={id}
-        className={`${props.className} w-full`}
+        className={`w-full  ${props.className} `}
       />
     </span>
   );

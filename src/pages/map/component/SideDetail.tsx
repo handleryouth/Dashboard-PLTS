@@ -1,20 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Section } from "components";
-import { PLTSMapKey, SideDetailProps } from "types";
+import { GeneratorDataProps, PLTSMapKey, SideDetailProps } from "types";
 import { SideDetailImageLookup } from "const";
+import { requestHelper } from "utils";
 
 export default function SideDetail({ dataKey }: SideDetailProps) {
   const [dateCacheKey, setDateCacheKey] = useState<PLTSMapKey>();
 
+  const [mapDetailData, setMapDetailData] = useState<GeneratorDataProps>();
+
+  const getData = useCallback(async () => {
+    const response = await requestHelper("plts_get_map_overview");
+
+    if (response && response.status === 200) {
+      setMapDetailData(response.data?.data);
+    }
+  }, []);
+
   useEffect(() => {
     if (dataKey) {
+      getData();
       setDateCacheKey(dataKey);
     } else {
       setTimeout(() => {
+        setMapDetailData(undefined);
         setDateCacheKey(undefined);
       }, 500);
     }
-  }, [dataKey]);
+  }, [dataKey, getData]);
 
   return (
     <div
@@ -39,12 +52,36 @@ export default function SideDetail({ dataKey }: SideDetailProps) {
           dataKey ? "opacity-100 delay-500" : "opacity-0 delay-100"
         }`}
       >
-        <Section title="Apparent Power" titleClassName="text-sm" value="0" />
-        <Section title="Daily Yield" value="0" titleClassName="text-sm" />
-        <Section title="Grid Current" value="0" titleClassName="text-sm" />
-        <Section title="Grid Frequency" value="0" titleClassName="text-sm" />
-        <Section title="Residual Current" value="0" titleClassName="text-sm" />
-        <Section title="Reactive Power" value="0" titleClassName="text-sm" />
+        <Section
+          title="Apparent Power"
+          titleClassName="text-sm"
+          value={mapDetailData?.apparentPower}
+        />
+        <Section
+          title="Daily Yield"
+          titleClassName="text-sm"
+          value={mapDetailData?.dailyYield}
+        />
+        <Section
+          title="Grid Current"
+          titleClassName="text-sm"
+          value={mapDetailData?.gridCurrent}
+        />
+        <Section
+          title="Grid Frequency"
+          titleClassName="text-sm"
+          value={mapDetailData?.gridFrequency}
+        />
+        <Section
+          title="Residual Current"
+          titleClassName="text-sm"
+          value={mapDetailData?.residualCurrent}
+        />
+        <Section
+          title="Reactive Power"
+          titleClassName="text-sm"
+          value={mapDetailData?.reactivePower}
+        />
       </div>
     </div>
   );

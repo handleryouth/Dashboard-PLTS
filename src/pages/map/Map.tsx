@@ -9,34 +9,21 @@ import { SideDetail } from "./component";
 export default function Map() {
   const [forceUpdate, setForceUpdate] = useState(false);
 
-  const [selectedData, setSelectedData] = useState<PLTSMapKey>();
-
-  // const getData = useCallback(async () => {
-  //   const response = await requestHelper("plts_get_map_overview");
-
-  //   setMapData(response);
-  // }, []);
-
-  // useEffect(() => {
-  //   getData();
-  // }, [getData]);
+  const [selectedMapData, setSelectedMapData] = useState<PLTSMapKey>();
 
   const handleClickEvent = useCallback(
     (value: PLTSMapKey) => {
-      if (value === selectedData) {
-        setSelectedData(undefined);
+      if (value === selectedMapData) {
+        setSelectedMapData(undefined);
       } else {
-        setSelectedData(value);
+        setSelectedMapData(value);
       }
     },
-    [selectedData]
+    [selectedMapData]
   );
-
-
 
   return (
     <>
-
       <div>
         <h1 className="mt-4">Plants Location</h1>
 
@@ -81,7 +68,7 @@ export default function Map() {
             </MapContainer>
           </div>
 
-          <SideDetail dataKey={selectedData} />
+          <SideDetail dataKey={selectedMapData} />
         </div>
       </div>
     </>

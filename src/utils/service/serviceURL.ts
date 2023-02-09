@@ -2,13 +2,13 @@ import {
   LoginRequestBody,
   LoginResponse,
   GeneratorDataProps,
-  PLTSMap,
   StaffRequestParams,
   StaffDataResponse,
   ActivateStaffBodyProps,
   ServiceMessageResponse,
   DeactivateStaffBodyProps,
   EditStaffBodyProps,
+  GeneratorDataPropsExcludeDeviceType,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -21,11 +21,11 @@ export interface ServiceURL {
     response: LoginResponse;
   }>;
   plts_get_map_overview: ServiceStructure<{
-    response: PLTSMap;
+    response: ServiceMessageResponse<GeneratorDataProps>;
   }>;
   get_staff_list: ServiceStructure<{
-    response: StaffDataResponse;
     params: StaffRequestParams;
+    response: StaffDataResponse;
   }>;
   activate_staff: ServiceStructure<{
     body: ActivateStaffBodyProps;
@@ -38,5 +38,8 @@ export interface ServiceURL {
   edit_staff: ServiceStructure<{
     body: EditStaffBodyProps;
     response: ServiceMessageResponse;
+  }>;
+  get_average: ServiceStructure<{
+    response: ServiceMessageResponse<GeneratorDataPropsExcludeDeviceType[]>;
   }>;
 }

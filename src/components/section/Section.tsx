@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 export interface SectionProps {
   title?: string;
   titleClassName?: string;
-  value?: string;
+  value?: string | number;
   valueClassName?: string;
   children?: ReactNode;
   customTitle?: ReactNode;

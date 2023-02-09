@@ -21,6 +21,12 @@ export interface GeneratorDataProps {
   gridVoltagePhaseL3: number;
 }
 
-export interface ServiceMessageResponse {
+export type GeneratorDataPropsExcludeDeviceType = Omit<
+  GeneratorDataProps,
+  "deviceType"
+>;
+
+export interface ServiceMessageResponse<T = undefined> {
   message: string;
+  data: T;
 }
