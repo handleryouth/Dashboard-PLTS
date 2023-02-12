@@ -6,7 +6,8 @@ export type RouteName =
   | "signup"
   | "map"
   | "staffManagement"
-  | "staffManagementEdit";
+  | "staffManagementEdit"
+  | "pltsDetail";
 
 export interface RouteListProps extends Omit<RouteObject, "name"> {
   name: RouteName;

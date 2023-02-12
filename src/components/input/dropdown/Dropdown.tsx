@@ -2,11 +2,13 @@ import {
   DropdownProps as BaseDropdownProps,
   Dropdown as BaseDropdown,
 } from "primereact/dropdown";
+import { SelectItem } from "primereact/selectitem";
 import { useId } from "react";
 
 export interface DropdownProps extends BaseDropdownProps {
   label?: string;
   containerClassName?: string;
+  value?: keyof SelectItem["value"];
 }
 
 export default function Dropdown({

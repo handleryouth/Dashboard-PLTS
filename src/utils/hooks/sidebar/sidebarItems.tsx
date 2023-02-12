@@ -7,22 +7,22 @@ export function sidebarItems() {
       label: "PLTS",
       items: [
         {
-          label: "PLTS A",
-          url: "/plts-a",
+          label: "AJ301",
+          url: "/plts-detail/aj301",
           template: (item, options) => (
             <GenerateSidebarChildrenTemplate item={item} options={options} />
           ),
         },
         {
-          label: "PLTS B",
-          url: "/plts-b",
+          label: "Research Center",
+          url: "/plts-detail/researchCenter",
           template: (item, options) => (
             <GenerateSidebarChildrenTemplate item={item} options={options} />
           ),
         },
         {
-          label: "PLTS C",
-          url: "/plts-c",
+          label: "Rektorat ITS",
+          url: "/plts-detail/rektoratITS",
           template: (item, options) => (
             <GenerateSidebarChildrenTemplate item={item} options={options} />
           ),

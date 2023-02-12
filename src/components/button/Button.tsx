@@ -10,7 +10,7 @@ export interface ButtonProps {
 function Button({ children, className, onClick }: ButtonProps) {
   return (
     <button
-      className={`prose rounded-md text-white py-3 ${className}`}
+      className={`prose rounded-md bg-black text-white px-4 py-3 ${className}`}
       onClick={onClick}
     >
       {children}

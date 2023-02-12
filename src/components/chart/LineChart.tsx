@@ -1,10 +1,4 @@
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { Dropdown } from "primereact/dropdown";
-import { GeneratorDataPropsExcludeDeviceType } from "types";
-import {
-  GENERATOR_DATA_DROPDOWN_ITEMS,
-  GENERATOR_DATA_TRANSLATIONS,
-} from "const";
 import {
   LineSegment,
   VictoryAxis,
@@ -14,41 +8,29 @@ import {
 import { VictoryChart } from "victory-chart";
 import { VictoryLabel } from "victory-core";
 
-export interface ChartData<T, K> {
-  x: T;
-  y: K;
-}
+export type RenderedChartItem<T> = Record<keyof T, string | number>;
 
-export interface SmallDashboardProps {
+export interface LineChartProps<T extends Object> {
   title?: string;
-  chartData: GeneratorDataPropsExcludeDeviceType[];
+  chartData: T[];
   containerClassName?: string;
+  renderItem: (item: T) => RenderedChartItem<T>;
   customDropdownComponent?: ReactNode;
+  coordinate: {
+    x: keyof T;
+    y: keyof T;
+  };
 }
 
-export default function SmallDashboard({
+export default function LineChart<T extends Object>({
   chartData,
   containerClassName,
   title,
   customDropdownComponent,
-}: SmallDashboardProps) {
-  const [selectedData, setSelectedData] =
-    useState<keyof Omit<GeneratorDataPropsExcludeDeviceType, "time">>(
-      "dailyYield"
-    );
-
+  coordinate,
+  renderItem,
+}: LineChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
-
-  const generatedData = useMemo(() => {
-    return (
-      chartData?.map((item) => {
-        return {
-          x: new Date(item.time).toLocaleTimeString(),
-          y: item[selectedData].toFixed(2),
-        };
-      }) ?? []
-    );
-  }, [chartData, selectedData]);
 
   const graphRef = useCallback((node: HTMLDivElement) => {
     if (node !== null) {
@@ -56,11 +38,16 @@ export default function SmallDashboard({
     }
   }, []);
 
+  const generatedData = useMemo(() => {
+    return chartData.map((item) => ({
+      x: renderItem(item)[coordinate.x],
+      y: renderItem(item)[coordinate.y],
+    }));
+  }, [chartData, coordinate?.x, coordinate?.y, renderItem]);
+
   return (
     <div
-      className={`w-full shadow-xl py-3 px-4 rounded ${
-        containerClassName ?? ""
-      }`}
+      className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
       ref={graphRef}
     >
       <div className="flex items-end justify-between">
@@ -68,23 +55,12 @@ export default function SmallDashboard({
           <h3 className="mt-0 font-bold">{title}</h3>
         </div>
 
-        {customDropdownComponent ?? (
-          <Dropdown
-            value={selectedData}
-            options={GENERATOR_DATA_DROPDOWN_ITEMS}
-            filter
-            onChange={(e) => {
-              console.log(e.target);
-              setSelectedData(e.target.value);
-            }}
-            className="w-full"
-          />
-        )}
+        {customDropdownComponent}
       </div>
-
       <VictoryChart
         containerComponent={<VictoryContainer />}
         width={boundingRect.width}
+        height={boundingRect.height}
       >
         <VictoryLine
           data={generatedData}
@@ -109,7 +85,7 @@ export default function SmallDashboard({
           }}
           standalone={false}
           gridComponent={<LineSegment />}
-          tickLabelComponent={<VictoryLabel verticalAnchor="start" y={270} />}
+          tickLabelComponent={<VictoryLabel verticalAnchor="start" />}
         />
         <VictoryAxis
           dependentAxis
@@ -123,16 +99,6 @@ export default function SmallDashboard({
           }}
         />
       </VictoryChart>
-
-      <div className="flex items-center justify-between">
-        <p className="font-bold">{GENERATOR_DATA_TRANSLATIONS[selectedData]}</p>
-
-        <p>
-          {chartData.length > 0
-            ? chartData[chartData.length - 1][selectedData]
-            : "-"}
-        </p>
-      </div>
     </div>
   );
 }

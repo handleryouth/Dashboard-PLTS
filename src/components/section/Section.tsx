@@ -21,8 +21,10 @@ export default function Section({
 }: SectionProps) {
   return (
     <div
-      className={`flex items-center  w-full ${
-        direction === "row" ? "flex-row justify-between" : "flex-col"
+      className={`flex  w-full ${
+        direction === "row"
+          ? " items-center flex-row justify-between"
+          : "flex-col"
       }`}
     >
       {title ? (
@@ -30,7 +32,11 @@ export default function Section({
       ) : (
         customTitle
       )}
-      {value ? <p className={`my-0 ${valueClassName}`}>{value}</p> : children}
+      {value !== undefined ? (
+        <p className={`my-0 ${valueClassName}`}>{value}</p>
+      ) : (
+        children
+      )}
     </div>
   );
 }

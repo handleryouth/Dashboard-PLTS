@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Sidebar as PrimereactSidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { sidebarItems } from "utils";
@@ -7,7 +8,10 @@ import { useSidebar } from "./context";
 export default function Sidebar() {
   const { showDashboard, toggleDashboardInactive } = useSidebar();
 
-  const { dashboardLinks, mapLinks, pltsLinks, aclLinks } = sidebarItems();
+  const { dashboardLinks, mapLinks, pltsLinks, aclLinks } = useMemo(
+    () => sidebarItems(),
+    []
+  );
 
   return (
     <PrimereactSidebar

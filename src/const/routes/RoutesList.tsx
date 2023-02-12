@@ -5,6 +5,7 @@ import {
   Map,
   StaffManagement,
   StaffManagementEdit,
+  PltsDetail,
 } from "pages";
 import { RouteListProps } from "types";
 
@@ -38,5 +39,10 @@ export const ROUTES_LIST: RouteListProps[] = [
     name: "staffManagement",
     path: "/staff-management",
     element: <StaffManagement />,
+  },
+  {
+    name: "pltsDetail",
+    path: "/plts-detail/:pltsName",
+    element: <PltsDetail />,
   },
 ];
