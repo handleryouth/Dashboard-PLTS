@@ -1,18 +1,19 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { MAP_COORDINATES } from "const";
 import { MemoizedMarkerDetail } from "components";
-import { InvalidateSizeMap } from "utils";
-import { PLTSMapKey } from "types";
+import { InvalidateSizeMap, requestHelper } from "utils";
+import { PLTSMapListResponse } from "types";
 import { SideDetail } from "./component";
 
 export default function Map() {
   const [forceUpdate, setForceUpdate] = useState(false);
 
-  const [selectedMapData, setSelectedMapData] = useState<PLTSMapKey>();
+  const [selectedMapData, setSelectedMapData] = useState<PLTSMapListResponse>();
+
+  const [mapList, setMapList] = useState<PLTSMapListResponse[]>([]);
 
   const handleClickEvent = useCallback(
-    (value: PLTSMapKey) => {
+    (value: PLTSMapListResponse) => {
       if (value === selectedMapData) {
         setSelectedMapData(undefined);
       } else {
@@ -21,6 +22,18 @@ export default function Map() {
     },
     [selectedMapData]
   );
+
+  const getPltsPositonList = useCallback(async () => {
+    const response = await requestHelper("get_plts_map");
+
+    if (response && response.status === 200) {
+      setMapList(response.data.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    getPltsPositonList();
+  }, [getPltsPositonList]);
 
   return (
     <>
@@ -38,17 +51,14 @@ export default function Map() {
                 width: "100%",
               }}
             >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-              {MAP_COORDINATES.map((item, key) => (
+              {mapList.map((item) => (
                 <Marker
-                  key={key}
+                  key={item._id}
                   position={[item.lat, item.lng]}
                   eventHandlers={{
-                    click: () => handleClickEvent(item.dataKey),
+                    click: () => handleClickEvent(item),
                   }}
                 >
                   <MemoizedMarkerDetail
@@ -68,7 +78,7 @@ export default function Map() {
             </MapContainer>
           </div>
 
-          <SideDetail dataKey={selectedMapData} />
+          <SideDetail data={selectedMapData} />
         </div>
       </div>
     </>

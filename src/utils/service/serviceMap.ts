@@ -36,4 +36,28 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/average-plts",
   },
+  create_plts_profile: {
+    method: "POST",
+    url: "/api/plts/add-plts",
+  },
+  create_plts_position: {
+    method: "POST",
+    url: "/api/plts/plts-position",
+  },
+  get_plts_location: {
+    method: "GET",
+    url: "/api/plts/plts-position",
+  },
+  get_plts_list: {
+    method: "GET",
+    url: "/api/plts/plts-list",
+  },
+  get_plts_map: {
+    method: "GET",
+    url: "/api/plts/plts-map",
+  },
+  patch_plts_profile: {
+    method: "PATCH",
+    url: "/api/plts/add-plts",
+  },
 };

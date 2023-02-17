@@ -1,58 +1,58 @@
-import { useState, useEffect, useCallback } from "react";
 import { Section } from "components";
-import { GeneratorDataProps, PLTSMapKey, SideDetailProps } from "types";
-import { SideDetailImageLookup } from "const";
-import { requestHelper } from "utils";
+import { SideDetailProps } from "types";
 
-export default function SideDetail({ dataKey }: SideDetailProps) {
-  const [dateCacheKey, setDateCacheKey] = useState<PLTSMapKey>();
-
-  const [mapDetailData, setMapDetailData] = useState<GeneratorDataProps>();
-
-  const getData = useCallback(async () => {
-    const response = await requestHelper("plts_get_map_overview");
-
-    if (response && response.status === 200) {
-      setMapDetailData(response.data?.data);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (dataKey) {
-      getData();
-      setDateCacheKey(dataKey);
-    } else {
-      setTimeout(() => {
-        setMapDetailData(undefined);
-        setDateCacheKey(undefined);
-      }, 500);
-    }
-  }, [dataKey, getData]);
-
+export default function SideDetail({ data }: SideDetailProps) {
   return (
     <div
-      className={`prose !max-w-none transition-widthPaddingMargin  duration-300  bg-gradient-to-br from-[#F8EDE3] to-[#F1F6F5] rounded-md  ${
-        dataKey ? "w-[31rem] px-8 mx-4" : "w-0 p-0 mx-0 delay-[300ms]"
+      className={`prose !max-w-none transition-widthPaddingMargin  duration-300  bg-gradient-to-br from-[#F8EDE3] to-[#F1F6F5] rounded-md max-h-screen overflow-scroll  ${
+        data ? "w-[31rem] px-8 mx-4" : "w-0 p-0 mx-0 delay-[300ms]"
       }`}
     >
-      <div className={`flex justify-center`}>
-        <img
-          className={`w-3/4 rounded-md  transition-width h-full ${
-            dataKey ? " delay-500" : "opacity-0"
-          }`}
-          src={SideDetailImageLookup[dateCacheKey!]}
-          alt="place"
-          key={dataKey}
-          loading="lazy"
-        />
-      </div>
-
       <div
         className={`transition-opacity mb-8 flex flex-col gap-y-2 ${
-          dataKey ? "opacity-100 delay-500" : "opacity-0 delay-100"
+          data ? "opacity-100 delay-500" : "opacity-0 delay-100"
         }`}
       >
-        <Section
+        <h3>{data?.name}</h3>
+        <p>{data?.address}</p>
+
+        <h3>All Plants Profile</h3>
+        {data?.plantProfile.map((item) => (
+          <div
+            key={item._id}
+            className="flex gap-y-4 flex-col bg-white rounded-md p-4"
+          >
+            <Section
+              title="PLTS Name"
+              titleClassName="text-sm"
+              value={item.pltsName}
+              direction="column"
+            />
+
+            <Section
+              title="SMA Device Name"
+              titleClassName="text-sm"
+              value={item.smaDeviceName}
+              direction="column"
+            />
+
+            <Section
+              title="Ip Address"
+              titleClassName="text-sm"
+              value={item.ipAddress}
+              direction="column"
+            />
+
+            <Section
+              title="Port"
+              titleClassName="text-sm"
+              value={item.port}
+              direction="column"
+            />
+          </div>
+        ))}
+
+        {/* <Section
           title="Apparent Power"
           titleClassName="text-sm"
           value={mapDetailData?.apparentPower}
@@ -81,7 +81,7 @@ export default function SideDetail({ dataKey }: SideDetailProps) {
           title="Reactive Power"
           titleClassName="text-sm"
           value={mapDetailData?.reactivePower}
-        />
+        /> */}
       </div>
     </div>
   );

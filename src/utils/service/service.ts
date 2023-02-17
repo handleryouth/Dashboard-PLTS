@@ -5,7 +5,7 @@ export interface ServiceStructure<
 > {
   params?: T["params"];
   body?: T["body"];
-  response?: T["response"];
+  response: T["response"];
 }
 
 export type RequestMethod = "GET" | "DELETE" | "POST" | "PUT" | "PATCH";

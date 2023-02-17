@@ -8,10 +8,8 @@ import { useSidebar } from "./context";
 export default function Sidebar() {
   const { showDashboard, toggleDashboardInactive } = useSidebar();
 
-  const { dashboardLinks, mapLinks, pltsLinks, aclLinks } = useMemo(
-    () => sidebarItems(),
-    []
-  );
+  const { dashboardLinks, mapLinks, pltsLinks, aclLinks, positionLinks } =
+    useMemo(() => sidebarItems(), []);
 
   return (
     <PrimereactSidebar
@@ -36,6 +34,8 @@ export default function Sidebar() {
           <SidebarChildren groupLinks={mapLinks} />
 
           <SidebarChildren groupLinks={aclLinks} />
+
+          <SidebarChildren groupLinks={positionLinks} />
         </div>
 
         <Button

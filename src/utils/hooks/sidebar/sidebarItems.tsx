@@ -5,29 +5,10 @@ export function sidebarItems() {
   const pltsLinks: MenuItem[] = [
     {
       label: "PLTS",
-      items: [
-        {
-          label: "AJ301",
-          url: "/plts-detail/aj301",
-          template: (item, options) => (
-            <GenerateSidebarChildrenTemplate item={item} options={options} />
-          ),
-        },
-        {
-          label: "Research Center",
-          url: "/plts-detail/researchCenter",
-          template: (item, options) => (
-            <GenerateSidebarChildrenTemplate item={item} options={options} />
-          ),
-        },
-        {
-          label: "Rektorat ITS",
-          url: "/plts-detail/rektoratITS",
-          template: (item, options) => (
-            <GenerateSidebarChildrenTemplate item={item} options={options} />
-          ),
-        },
-      ],
+      url: "/plts",
+      template: (item, options) => (
+        <GenerateSidebarChildrenTemplate item={item} options={options} />
+      ),
     },
   ];
 
@@ -61,5 +42,15 @@ export function sidebarItems() {
     },
   ];
 
-  return { pltsLinks, dashboardLinks, mapLinks, aclLinks };
+  const positionLinks: MenuItem[] = [
+    {
+      label: "Position",
+      url: "/position",
+      template: (item, options) => (
+        <GenerateSidebarChildrenTemplate item={item} options={options} />
+      ),
+    },
+  ];
+
+  return { pltsLinks, dashboardLinks, mapLinks, aclLinks, positionLinks };
 }

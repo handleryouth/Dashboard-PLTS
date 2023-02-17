@@ -43,8 +43,9 @@ export default function LineChart<T extends Object>({
       x: renderItem(item)[coordinate.x],
       y: renderItem(item)[coordinate.y],
     }));
-  }, [chartData, coordinate?.x, coordinate?.y, renderItem]);
+  }, [chartData, coordinate, renderItem]);
 
+  console.log("generated data", generatedData);
   return (
     <div
       className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
@@ -60,7 +61,7 @@ export default function LineChart<T extends Object>({
       <VictoryChart
         containerComponent={<VictoryContainer />}
         width={boundingRect.width}
-        height={boundingRect.height}
+        height={Math.max(340, boundingRect.height)}
       >
         <VictoryLine
           data={generatedData}
@@ -68,17 +69,15 @@ export default function LineChart<T extends Object>({
             data: {
               stroke: "#42A5F5",
             },
-            parent: { border: "1px solid #ccc" },
+            parent: { border: "1px solid #ccc", height: "100%" },
           }}
+          standalone={false}
         />
         <VictoryAxis
-          axisLabelComponent={
-            <VictoryLabel
-              style={{
-                width: 300,
-              }}
-            />
-          }
+          axisLabelComponent={<VictoryLabel
+            
+            
+            />}
           style={{
             tickLabels: { angle: -20 },
             grid: { stroke: "#000000", strokeWidth: 0.5 },

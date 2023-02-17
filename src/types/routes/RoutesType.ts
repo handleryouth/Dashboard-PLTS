@@ -7,7 +7,11 @@ export type RouteName =
   | "map"
   | "staffManagement"
   | "staffManagementEdit"
-  | "pltsDetail";
+  | "pltsDetail"
+  | "pltsList"
+  | "pltsCreate"
+  | "pltsEdit"
+  | "position";
 
 export interface RouteListProps extends Omit<RouteObject, "name"> {
   name: RouteName;

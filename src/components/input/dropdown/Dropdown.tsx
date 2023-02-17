@@ -9,11 +9,13 @@ export interface DropdownProps extends BaseDropdownProps {
   label?: string;
   containerClassName?: string;
   value?: keyof SelectItem["value"];
+  errorMessage?: string;
 }
 
 export default function Dropdown({
   label,
   containerClassName,
+  errorMessage,
   ...props
 }: DropdownProps) {
   const id = useId();
@@ -27,8 +29,11 @@ export default function Dropdown({
       <BaseDropdown
         {...props}
         id={id}
-        className={`w-full  ${props.className} `}
+        className={`w-full  ${props.className} ${errorMessage && "p-invalid"}`}
       />
+      <small id={id} className="p-error block">
+        {errorMessage}
+      </small>
     </span>
   );
 }

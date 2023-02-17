@@ -29,4 +29,5 @@ export type GeneratorDataPropsExcludeDeviceType = Omit<
 export interface ServiceMessageResponse<T = undefined> {
   message: string;
   data: T;
+  total?: number;
 }

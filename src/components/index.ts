@@ -11,3 +11,5 @@ export * from "./section";
 export * from "./table";
 export * from "./container";
 export * from "./header";
+export * from "./tableAction";
+export * from "./pagination";

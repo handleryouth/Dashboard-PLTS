@@ -9,6 +9,13 @@ import {
   DeactivateStaffBodyProps,
   EditStaffBodyProps,
   GeneratorDataPropsExcludeDeviceType,
+  PLTSProfileBody,
+  PLTSPositionBody,
+  PLTSPositionDataResponse,
+  PLTSListResponse,
+  PLTSListParams,
+  PLTSMapListResponse,
+  PLTSProfileEditBody,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -41,5 +48,24 @@ export interface ServiceURL {
   }>;
   get_average: ServiceStructure<{
     response: ServiceMessageResponse<GeneratorDataPropsExcludeDeviceType[]>;
+  }>;
+  create_plts_profile: ServiceStructure<{
+    body: PLTSProfileBody;
+  }>;
+  create_plts_position: ServiceStructure<{
+    body: PLTSPositionBody;
+  }>;
+  get_plts_location: ServiceStructure<{
+    response: ServiceMessageResponse<PLTSPositionDataResponse[]>;
+  }>;
+  get_plts_list: ServiceStructure<{
+    params: PLTSListParams;
+    response: ServiceMessageResponse<PLTSListResponse[]>;
+  }>;
+  get_plts_map: ServiceStructure<{
+    response: ServiceMessageResponse<PLTSMapListResponse[]>;
+  }>;
+  patch_plts_profile: ServiceStructure<{
+    body: PLTSProfileEditBody;
   }>;
 }

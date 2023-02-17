@@ -15,7 +15,7 @@ export default function Table<T extends Object>({
       <thead className="bg-gray-200 align-middle ">
         <tr className="text-lg ">
           {entries.map(([key, value]) => (
-            <th className="p-2" key={key}>
+            <th className="p-2 " key={key}>
               {value}
             </th>
           ))}
@@ -29,9 +29,9 @@ export default function Table<T extends Object>({
     () =>
       !data?.length ? (
         <tbody>
-          <tr>
-            <td className="text-center" colSpan={12}>
-              no data
+          <tr className="">
+            <td className="text-center align-middle" colSpan={12}>
+              <h3>No data</h3>
             </td>
           </tr>
         </tbody>
@@ -42,7 +42,7 @@ export default function Table<T extends Object>({
               <tr className="text-base">
                 {entries.map(([key]) => (
                   <td
-                    className="py-3"
+                    className="py-3 align-middle"
                     key={key}
                     onClick={() => onClickRowItem && onClickRowItem(item)}
                   >
