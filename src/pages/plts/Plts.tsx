@@ -59,8 +59,8 @@ export default function Plts() {
     }: PLTSListResponse): Partial<Record<PLTSTableHeader, TableContent>> => ({
       devicePosition: (
         <div>
-          <p>{devicePosition.name}</p>
-          <p>{devicePosition.address}</p>
+          <p>{devicePosition?.name ?? "-"}</p>
+          <p>{devicePosition?.address ?? "-"} </p>
         </div>
       ),
       ipAddress: ipAddress,
@@ -141,6 +141,7 @@ export default function Plts() {
         data={pltsList?.data ?? []}
         keyItem={getKeyItem}
         renderItem={renderItem}
+        onClickRowItem={({ _id }) => navigate(`/plts/detail?id=${_id}`)}
       />
     </Container>
   );

@@ -16,6 +16,8 @@ import {
   PLTSListParams,
   PLTSMapListResponse,
   PLTSProfileEditBody,
+  PLTSPositionEditDataBody,
+  PLTSProfileDeleteParams,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -67,5 +69,11 @@ export interface ServiceURL {
   }>;
   patch_plts_profile: ServiceStructure<{
     body: PLTSProfileEditBody;
+  }>;
+  patch_plts_position: ServiceStructure<{
+    body: PLTSPositionEditDataBody;
+  }>;
+  delete_plts_position: ServiceStructure<{
+    params: PLTSProfileDeleteParams;
   }>;
 }

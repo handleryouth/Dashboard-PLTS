@@ -1,23 +1,16 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { Dialog } from "primereact/dialog";
 import { Button, Input } from "components";
-import { PLTSPositionBody } from "types";
 import { requestHelper } from "utils";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { EarthPosition, PositionModalFormType } from "types";
 
 export interface PositionModalProps {
   toggleModalClosed: () => void;
   visible: boolean;
   onRequestCompleted: () => void;
 }
-
-export interface EarthPosition {
-  lat: number;
-  lng: number;
-}
-
-export type PositionModalFormType = Omit<PLTSPositionBody, "lat" | "lng">;
 
 export default function PositionModal({
   toggleModalClosed,

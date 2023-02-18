@@ -45,7 +45,6 @@ export default function LineChart<T extends Object>({
     }));
   }, [chartData, coordinate, renderItem]);
 
-  console.log("generated data", generatedData);
   return (
     <div
       className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
@@ -74,10 +73,7 @@ export default function LineChart<T extends Object>({
           standalone={false}
         />
         <VictoryAxis
-          axisLabelComponent={<VictoryLabel
-            
-            
-            />}
+          axisLabelComponent={<VictoryLabel />}
           style={{
             tickLabels: { angle: -20 },
             grid: { stroke: "#000000", strokeWidth: 0.5 },

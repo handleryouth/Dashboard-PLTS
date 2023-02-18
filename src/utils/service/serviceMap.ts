@@ -60,4 +60,12 @@ export const serviceMap: ServiceMapProps = {
     method: "PATCH",
     url: "/api/plts/add-plts",
   },
+  patch_plts_position: {
+    method: "PATCH",
+    url: "/api/plts/plts-position",
+  },
+  delete_plts_position: {
+    method: "DELETE",
+    url: "/api/plts/plts-position",
+  },
 };

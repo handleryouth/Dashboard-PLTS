@@ -11,7 +11,9 @@ export type RouteName =
   | "pltsList"
   | "pltsCreate"
   | "pltsEdit"
-  | "position";
+  | "position"
+  | "positionCreate"
+  | "positionEdit";
 
 export interface RouteListProps extends Omit<RouteObject, "name"> {
   name: RouteName;

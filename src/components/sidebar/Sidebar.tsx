@@ -33,9 +33,9 @@ export default function Sidebar() {
 
           <SidebarChildren groupLinks={mapLinks} />
 
-          <SidebarChildren groupLinks={aclLinks} />
-
           <SidebarChildren groupLinks={positionLinks} />
+
+          <SidebarChildren groupLinks={aclLinks} />
         </div>
 
         <Button

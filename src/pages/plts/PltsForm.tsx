@@ -36,7 +36,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
   const { control, handleSubmit } = useForm<PLTSProfileBody>({
     defaultValues: edit
       ? {
-          devicePosition: state.devicePosition._id,
+          devicePosition: state.devicePosition?._id ?? "-",
           ipAddress: state.ipAddress,
           modbusAddress: state.modbusAddress,
           port: state.port,

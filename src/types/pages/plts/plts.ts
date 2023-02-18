@@ -23,6 +23,18 @@ export interface PLTSPositionDataResponse {
   _id: string;
   name: string;
   address: string;
+  lat: number;
+  lng: number;
+  plantProfile: string[];
+}
+
+export interface PLTSPositionEditDataBody {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  plantProfile: string[];
 }
 
 export interface PLTSListParams {
@@ -42,5 +54,9 @@ export interface PLTSListResponse {
 }
 
 export interface PLTSProfileEditBody extends PLTSProfileBody {
+  id: string;
+}
+
+export interface PLTSProfileDeleteParams {
   id: string;
 }

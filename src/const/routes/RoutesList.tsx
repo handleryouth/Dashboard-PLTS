@@ -9,6 +9,7 @@ import {
   PltsForm,
   Plts,
   Position,
+  PositionForm,
 } from "pages";
 import { RouteListProps } from "types";
 
@@ -45,7 +46,7 @@ export const ROUTES_LIST: RouteListProps[] = [
   },
   {
     name: "pltsDetail",
-    path: "/plts-detail/:pltsName",
+    path: "/plts/detail",
     element: <PltsDetail />,
   },
   {
@@ -67,5 +68,15 @@ export const ROUTES_LIST: RouteListProps[] = [
     name: "position",
     path: "/position",
     element: <Position />,
+  },
+  {
+    name: "positionCreate",
+    path: "/position/create",
+    element: <PositionForm />,
+  },
+  {
+    name: "positionEdit",
+    path: "/position/edit",
+    element: <PositionForm edit />,
   },
 ];
