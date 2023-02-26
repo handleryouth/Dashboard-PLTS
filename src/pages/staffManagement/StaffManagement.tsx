@@ -1,4 +1,4 @@
-import { Container, Table } from "components";
+import { Container, Table, TableAction } from "components";
 import { useCallback, useState, useEffect, useMemo } from "react";
 import { StaffDataProps, StaffDataResponse, TableContent } from "types";
 import { requestHelper } from "utils";
@@ -59,7 +59,6 @@ export default function StaffManagement() {
 
   const actionButtonMenuItem = useCallback(
     ({ _id, status, email }: StaffDataProps): MenuItem[] => {
-      console.log("id and email", email, _id);
       return [
         {
           label: "Deactivate",
@@ -105,7 +104,7 @@ export default function StaffManagement() {
     (
       item: StaffDataProps
     ): Partial<Record<StaffManagementTableHeaderProps, TableContent>> => ({
-      createdAt: item.createdAt,
+      createdAt: new Date(item.createdAt).toLocaleString(),
       email: item.email,
       name: item.name,
       role: item.role,
@@ -130,6 +129,7 @@ export default function StaffManagement() {
 
   return (
     <Container>
+      <TableAction onSubmit={() => null} enableButton={false} />
       {staffData && (
         <Table
           columns={getHeaderTable}

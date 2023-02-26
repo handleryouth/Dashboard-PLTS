@@ -1,13 +1,17 @@
+import { StaffDataProps } from "../staff";
+
 export interface SetTokenFunctionProps {
   accessToken: string;
   refreshToken: string;
   email: string;
+  staffData: StaffDataProps;
 }
 
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   email: string;
+  staffData: StaffDataProps;
 }
 
 export interface LoginRequestBody {

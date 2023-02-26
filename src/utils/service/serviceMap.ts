@@ -32,6 +32,10 @@ export const serviceMap: ServiceMapProps = {
     method: "POST",
     url: "/api/staff/detail",
   },
+  get_staff_detail: {
+    method: "GET",
+    url: "/api/staff/detail",
+  },
   get_average: {
     method: "GET",
     url: "/api/plts/average-plts",
@@ -67,5 +71,25 @@ export const serviceMap: ServiceMapProps = {
   delete_plts_position: {
     method: "DELETE",
     url: "/api/plts/plts-position",
+  },
+  get_plts_profile_list: {
+    method: "GET",
+    url: "/api/plts/plts-name-list",
+  },
+  get_plts_profile_detail: {
+    method: "GET",
+    url: "/api/plts/plts-detail",
+  },
+  get_plts_profile_detail_average_value: {
+    method: "GET",
+    url: "/api/plts/average-plts",
+  },
+  get_plts_average_file: {
+    method: "GET",
+    url: "/api/plts/download-average-plts",
+  },
+  get_plts_analytic_value: {
+    method: "GET",
+    url: "/api/plts/analytic-value",
   },
 };

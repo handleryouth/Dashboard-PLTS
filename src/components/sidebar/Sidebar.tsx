@@ -1,4 +1,6 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 import { Sidebar as PrimereactSidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { sidebarItems } from "utils";
@@ -8,8 +10,24 @@ import { useSidebar } from "./context";
 export default function Sidebar() {
   const { showDashboard, toggleDashboardInactive } = useSidebar();
 
+  const navigate = useNavigate();
+
+  const [cookies, , removeCookie] = useCookies([
+    "staffData",
+    "accessToken",
+    "refreshToken",
+  ]);
+
   const { dashboardLinks, mapLinks, pltsLinks, aclLinks, positionLinks } =
     useMemo(() => sidebarItems(), []);
+
+  const signOut = useCallback(() => {
+    removeCookie("staffData");
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+    navigate("/");
+    toggleDashboardInactive();
+  }, [navigate, removeCookie, toggleDashboardInactive]);
 
   return (
     <PrimereactSidebar
@@ -23,8 +41,8 @@ export default function Sidebar() {
       <div className="flex justify-between flex-col h-full prose">
         <div>
           <div>
-            <h3 className="mt-0">Tony</h3>
-            <p>rafaeltonydavid@yahoo.com</p>
+            <h3 className="mt-0">{cookies?.staffData?.name ?? "-"}</h3>
+            <p>{cookies?.staffData?.email ?? "-"}</p>
           </div>
 
           <SidebarChildren groupLinks={dashboardLinks} />
@@ -39,6 +57,7 @@ export default function Sidebar() {
         </div>
 
         <Button
+          onClick={signOut}
           label="Logout"
           className="w-full bg-red-500/40 text-red-500 hover:!bg-red-500 hover:!text-white"
         />

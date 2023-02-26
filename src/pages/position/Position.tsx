@@ -135,8 +135,8 @@ export default function Position() {
         <>
           <SplitButton
             label="Action"
-            buttonClassName="bg-black border-none hover:!bg-black focus:border-none focus:shadow-none"
-            menuButtonClassName="bg-black border-none hover:!bg-black focus:border-none focus:shadow-none rounded-l-none"
+            buttonClassName="bg-green-500 border-none hover:!bg-green-500 focus:border-none focus:shadow-none"
+            menuButtonClassName="bg-green-500 border-none hover:!bg-green-500 focus:border-none focus:shadow-none rounded-l-none"
             icon="pi pi-plus"
             model={splitButtonItems}
             menuButtonProps={{

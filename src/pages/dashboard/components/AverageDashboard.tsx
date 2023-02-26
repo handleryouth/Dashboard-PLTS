@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { Dropdown, LineChart, RenderedChartItem } from "components";
-import { GeneratorDataPropsExcludeDeviceType, PLTSMapKey } from "types";
-import { requestHelper } from "utils";
-import { DROPDOWN_LOCATIONS_ITEMS, GENERATOR_DATA_DROPDOWN_ITEMS } from "const";
+import {
+  GeneratorDataPropsExcludeDeviceType,
+  PLTSMapKey,
+  PLTSProfileDetailAverageResponse,
+  PLTSProfileList,
+} from "types";
+import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 
 export interface AverageDashboardStateProps {
   location: PLTSMapKey;
@@ -14,31 +18,18 @@ export const AVERAGE_DASHBOARD_INITIAL_STATE: AverageDashboardStateProps = {
   location: "aj301",
 };
 
-export interface AverageDashboardProps {
-  customClassname?: string;
-}
-
-export default function AverageDashboard({
-  customClassname,
-}: AverageDashboardProps) {
-  const [averageData, setAverageData] = useState<
-    GeneratorDataPropsExcludeDeviceType[]
-  >([]);
-
+export default function AverageDashboard() {
   const [dropdownValue, setDropdownValue] =
-    useState<AverageDashboardStateProps>(AVERAGE_DASHBOARD_INITIAL_STATE);
+    useState<keyof GeneratorDataPropsExcludeDeviceType>();
 
-  const getAveragePLTSData = useCallback(async () => {
-    const responseData = await requestHelper("get_average");
+  const [positionDropdown, setPositionDropdown] = useState<string>();
 
-    if (responseData && responseData.status === 200) {
-      setAverageData(responseData.data!.data);
-    }
-  }, []);
+  const [positionListData, setPositionListData] = useState<PLTSProfileList[]>(
+    []
+  );
 
-  useEffect(() => {
-    getAveragePLTSData();
-  }, [getAveragePLTSData]);
+  const [generatorData, setGeneratorData] =
+    useState<PLTSProfileDetailAverageResponse>();
 
   const handleRenderItem = useCallback(
     (
@@ -50,40 +41,86 @@ export default function AverageDashboard({
     []
   );
 
+  const getAverageValue = useCallback(async () => {
+    const response = await requestHelper(
+      "get_plts_profile_detail_average_value",
+      {
+        params: {
+          pltsName: positionDropdown,
+        },
+      }
+    );
+
+    if (response && response.status === 200) {
+      setGeneratorData(response.data.data);
+    }
+  }, [positionDropdown]);
+
+  const getPltsLocation = useCallback(async () => {
+    const response = await requestHelper("get_plts_profile_list");
+
+    if (response && response.status === 200) {
+      setPositionListData(response.data.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (positionDropdown) {
+      getAverageValue();
+    }
+  }, [getAverageValue, positionDropdown]);
+
+  useEffect(() => {
+    getPltsLocation();
+  }, [getPltsLocation]);
+
+  const getPositionDropdownItem = useMemo(() => {
+    return positionListData.map((item) => {
+      return {
+        label: item.pltsName,
+        value: item.pltsName,
+      };
+    });
+  }, [positionListData]);
+
+  const getDataDropdownItem = useMemo(() => {
+    return generatorData?.dataKeyArray.map((item) => {
+      return {
+        label: convertCamelCaseToPascalCase(item),
+        value: item,
+      };
+    });
+  }, [generatorData?.dataKeyArray]);
+
   return (
     <LineChart
-      chartData={averageData.slice(0, 5)}
-      containerClassName={customClassname}
+      chartData={generatorData?.data ?? []}
       coordinate={{
         x: "time",
-        y: dropdownValue.generatorData,
+        y: dropdownValue,
       }}
       title="Average Value"
       renderItem={handleRenderItem}
       customDropdownComponent={
         <div className="flex items-center gap-x-4 w-full">
           <Dropdown
-            value={dropdownValue.generatorData}
-            options={GENERATOR_DATA_DROPDOWN_ITEMS}
             filter
+            value={positionDropdown}
+            placeholder="Select Plts Position"
             onChange={(e) => {
-              setDropdownValue((prevState) => ({
-                ...prevState,
-                generatorData: e.target.value,
-              }));
+              setPositionDropdown(e.target.value);
             }}
+            options={getPositionDropdownItem}
             className="w-full"
           />
 
           <Dropdown
-            value={dropdownValue.location}
-            options={DROPDOWN_LOCATIONS_ITEMS}
             filter
+            value={dropdownValue}
+            placeholder="Select Data"
+            options={getDataDropdownItem ?? []}
             onChange={(e) => {
-              setDropdownValue((prevState) => ({
-                ...prevState,
-                location: e.target.value,
-              }));
+              setDropdownValue(e.target.value);
             }}
             className="w-full"
           />

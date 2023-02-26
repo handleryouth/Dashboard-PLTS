@@ -8,4 +8,5 @@ export interface TableComponentProps<T> {
   renderItem: (item: T) => Partial<Record<keyof T, TableContent>>;
   onClickRowItem?: (item: T) => void;
   keyItem: (item: T) => string;
+  excludeOnClickRowItem?: Partial<Record<keyof T, boolean>>;
 }

@@ -13,7 +13,7 @@ export default function Container({
 }: ContainerProps) {
   return (
     <Card
-      className={`bg-white rounded-md shadow-md  m-8 ${className}`}
+      className={`bg-white rounded-md shadow-md  mx-8 bigDisplay:mx-0 ${className}`}
       {...props}
     >
       {children}

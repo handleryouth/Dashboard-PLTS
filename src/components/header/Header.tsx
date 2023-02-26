@@ -37,10 +37,12 @@ export default function Header() {
   );
 
   return (
-    <BreadCrumb
-      className=" prose prose-a:my-0 prose-li:my-0 !max-w-none "
-      model={breadcrumbMenu}
-      home={home}
-    />
+    <div className="bg-white">
+      <BreadCrumb
+        className=" mx-auto prose prose-a:my-0 prose-li:my-0  max-w-screen-bigDisplay min-w-[490px] border-none"
+        model={breadcrumbMenu}
+        home={home}
+      />
+    </div>
   );
 }

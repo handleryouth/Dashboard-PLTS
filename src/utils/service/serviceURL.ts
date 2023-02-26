@@ -18,6 +18,15 @@ import {
   PLTSProfileEditBody,
   PLTSPositionEditDataBody,
   PLTSProfileDeleteParams,
+  PLTSProfileList,
+  PltsProfileDetail,
+  PLTSProfileDetailResponse,
+  PLTSProfileDetailAverageParams,
+  PLTSProfileDetailAverageResponse,
+  StaffDetailRequestParams,
+  StaffDataProps,
+  PLTSAnalyticValueParams,
+  PLTSAnalyticValueResponse,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -27,7 +36,7 @@ export interface ServiceURL {
   }>;
   plts_auth_login: ServiceStructure<{
     body: LoginRequestBody;
-    response: LoginResponse;
+    response: ServiceMessageResponse<LoginResponse>;
   }>;
   plts_get_map_overview: ServiceStructure<{
     response: ServiceMessageResponse<GeneratorDataProps>;
@@ -75,5 +84,28 @@ export interface ServiceURL {
   }>;
   delete_plts_position: ServiceStructure<{
     params: PLTSProfileDeleteParams;
+  }>;
+  get_plts_profile_list: ServiceStructure<{
+    response: ServiceMessageResponse<PLTSProfileList[]>;
+  }>;
+  get_plts_profile_detail: ServiceStructure<{
+    params: PltsProfileDetail;
+    response: ServiceMessageResponse<PLTSProfileDetailResponse>;
+  }>;
+  get_plts_profile_detail_average_value: ServiceStructure<{
+    params: PLTSProfileDetailAverageParams;
+    response: ServiceMessageResponse<PLTSProfileDetailAverageResponse>;
+  }>;
+  get_staff_detail: ServiceStructure<{
+    params: StaffDetailRequestParams;
+    response: ServiceMessageResponse<StaffDataProps>;
+  }>;
+  get_plts_average_file: ServiceStructure<{
+    params: PLTSProfileDetailAverageParams;
+    response: ServiceMessageResponse<string>;
+  }>;
+  get_plts_analytic_value: ServiceStructure<{
+    params: PLTSAnalyticValueParams;
+    response: ServiceMessageResponse<PLTSAnalyticValueResponse>;
   }>;
 }

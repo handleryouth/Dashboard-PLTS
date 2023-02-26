@@ -1,10 +1,13 @@
 import { Section } from "components";
+import { useNavigate } from "react-router-dom";
 import { SideDetailProps } from "types";
 
 export default function SideDetail({ data }: SideDetailProps) {
+  const navigate = useNavigate();
+
   return (
     <div
-      className={`prose !max-w-none transition-widthPaddingMargin  duration-300  bg-gradient-to-br from-[#F8EDE3] to-[#F1F6F5] rounded-md max-h-screen overflow-scroll  ${
+      className={`hidden mediumToBigDisplay:block prose !max-w-none transition-widthPaddingMargin  duration-300  bg-gradient-to-br from-[#F8EDE3] to-[#F1F6F5] rounded-md max-h-screen overflow-scroll  ${
         data ? "w-[31rem] px-8 mx-4" : "w-0 p-0 mx-0 delay-[300ms]"
       }`}
     >
@@ -19,8 +22,9 @@ export default function SideDetail({ data }: SideDetailProps) {
         <h3>All Plants Profile</h3>
         {data?.plantProfile.map((item) => (
           <div
+            onClick={() => navigate(`/plts/${item._id}`)}
             key={item._id}
-            className="flex gap-y-4 flex-col bg-white rounded-md p-4"
+            className="flex gap-y-4 flex-col bg-white rounded-md p-4 cursor-pointer"
           >
             <Section
               title="PLTS Name"

@@ -6,7 +6,7 @@ export interface SetCookieProps {
   cookieOptions?: CookieSetOptions;
 }
 
-export type CookieType = "accessToken" | "refreshToken";
+export type CookieType = "accessToken" | "refreshToken" | "staffData";
 
 export function setCookie({
   cookieKey,
@@ -20,5 +20,6 @@ export function setCookie({
 
 export function getCookie(cookie: CookieType) {
   const cookies = new Cookies();
+
   return cookies.get(cookie);
 }

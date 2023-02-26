@@ -2,8 +2,8 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import {
   LineSegment,
   VictoryAxis,
-  VictoryContainer,
   VictoryLine,
+  VictoryZoomContainer,
 } from "victory";
 import { VictoryChart } from "victory-chart";
 import { VictoryLabel } from "victory-core";
@@ -18,8 +18,9 @@ export interface LineChartProps<T extends Object> {
   customDropdownComponent?: ReactNode;
   coordinate: {
     x: keyof T;
-    y: keyof T;
+    y?: keyof T;
   };
+  allowZoom?: boolean;
 }
 
 export default function LineChart<T extends Object>({
@@ -29,6 +30,7 @@ export default function LineChart<T extends Object>({
   customDropdownComponent,
   coordinate,
   renderItem,
+  allowZoom = false,
 }: LineChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -41,7 +43,7 @@ export default function LineChart<T extends Object>({
   const generatedData = useMemo(() => {
     return chartData.map((item) => ({
       x: renderItem(item)[coordinate.x],
-      y: renderItem(item)[coordinate.y],
+      y: coordinate.y ? renderItem(item)[coordinate.y] : "",
     }));
   }, [chartData, coordinate, renderItem]);
 
@@ -50,17 +52,17 @@ export default function LineChart<T extends Object>({
       className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
       ref={graphRef}
     >
-      <div className="flex items-end justify-between">
-        <div className="basis-full">
+      <div className="flex items-start justify-between flex-col monitoringChartBreakpoint:flex-row monitoringChartBreakpoint:items-end">
+        <div className="basis-1/4">
           <h3 className="mt-0 font-bold">{title}</h3>
         </div>
 
         {customDropdownComponent}
       </div>
       <VictoryChart
-        containerComponent={<VictoryContainer />}
+        containerComponent={<VictoryZoomContainer allowZoom={allowZoom} />}
         width={boundingRect.width}
-        height={Math.max(340, boundingRect.height)}
+        height={340}
       >
         <VictoryLine
           data={generatedData}
@@ -74,6 +76,7 @@ export default function LineChart<T extends Object>({
         />
         <VictoryAxis
           axisLabelComponent={<VictoryLabel />}
+          fixLabelOverlap
           style={{
             tickLabels: { angle: -20 },
             grid: { stroke: "#000000", strokeWidth: 0.5 },

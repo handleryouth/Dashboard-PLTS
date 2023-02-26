@@ -13,7 +13,8 @@ export type RouteName =
   | "pltsEdit"
   | "position"
   | "positionCreate"
-  | "positionEdit";
+  | "positionEdit"
+  | "allPage";
 
 export interface RouteListProps extends Omit<RouteObject, "name"> {
   name: RouteName;

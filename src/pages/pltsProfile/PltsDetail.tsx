@@ -1,26 +1,46 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import {
-  Container,
-  Dropdown,
-  LineChart,
-  RenderedChartItem,
-  Section,
-} from "components";
-import { GeneratorDataPropsExcludeDeviceType } from "types";
-import { GENERATOR_DATA_DROPDOWN_ITEMS, DROPDOWN_LOCATIONS_ITEMS } from "const";
-import { PLTSAnalyticValue } from "./components";
+import { useParams } from "react-router-dom";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { Container, Section } from "components";
+import { PLTSProfileDetailResponse } from "types";
+import { requestHelper } from "utils";
+import { AverageDashbord, PLTSAnalyticValue } from "./components";
+import { MonitoringChart } from "../dashboard";
+import { LatLngExpression } from "leaflet";
 
 export interface ContainerWidth {
   width: number;
   height: number;
 }
 
+const MAP_DEFAULT_POSITION: LatLngExpression = [-7.284, 112.796];
+
 export default function PltsDetail() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [pltsDetailData, setPltsDetailData] =
+    useState<PLTSProfileDetailResponse>();
+
+  const { id } = useParams<"id">();
+
   const [containerWidth, setContainerWidth] = useState<ContainerWidth>({
     height: 0,
     width: 0,
   });
+
+  const getDetailData = useCallback(async () => {
+    const response = await requestHelper("get_plts_profile_detail", {
+      params: {
+        id,
+      },
+    });
+
+    if (response && response.status === 200) {
+      setPltsDetailData(response.data.data);
+      setIsLoading(false);
+    }
+  }, [id]);
 
   const containerRef = useCallback((node: HTMLDivElement) => {
     if (node !== null) {
@@ -28,20 +48,21 @@ export default function PltsDetail() {
     }
   }, []);
 
-  const handleRenderItem = useCallback(
-    (
-      item: GeneratorDataPropsExcludeDeviceType
-    ): RenderedChartItem<GeneratorDataPropsExcludeDeviceType> => ({
-      ...item,
-      time: new Date(item.time).toLocaleTimeString(),
-    }),
-    []
-  );
+  useEffect(() => {
+    getDetailData();
+  }, [getDetailData]);
 
   const memoizedMapComponent = useMemo(() => {
     return (
       <MapContainer
-        center={[-7.284, 112.796]}
+        center={
+          pltsDetailData
+            ? [
+                pltsDetailData.devicePosition.lat,
+                pltsDetailData.devicePosition.lng,
+              ]
+            : MAP_DEFAULT_POSITION
+        }
         zoom={17}
         scrollWheelZoom={false}
         style={{
@@ -50,85 +71,66 @@ export default function PltsDetail() {
         }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={[-7.284, 112.796]} />
+        <Marker
+          position={
+            pltsDetailData
+              ? [
+                  pltsDetailData.devicePosition.lat,
+                  pltsDetailData.devicePosition.lng,
+                ]
+              : MAP_DEFAULT_POSITION
+          }
+        />
       </MapContainer>
     );
-  }, [containerWidth?.height]);
+  }, [containerWidth.height, pltsDetailData]);
 
   return (
     <Container>
-      <div className="grid grid-cols-2 items-center" ref={containerRef}>
-        {memoizedMapComponent}
-        <LineChart
-          chartData={[]}
-          coordinate={{
-            x: "time",
-            y: "dailyYield",
-          }}
-          title="Average Value"
-          renderItem={handleRenderItem}
-          customDropdownComponent={
-            <div className="flex items-center gap-x-4 w-full">
-              <Dropdown
-                options={GENERATOR_DATA_DROPDOWN_ITEMS}
-                filter
-                onChange={(e) => null}
-                className="w-full"
+      <h1>PLTS Detail {pltsDetailData?.pltsName ?? "-"}</h1>
+      {isLoading ? (
+        <ProgressSpinner className="text-center" />
+      ) : pltsDetailData ? (
+        <>
+          <div
+            className="grid  grid-cols-1 mediumDisplay:grid-cols-2 items-center gap-x-4"
+            ref={containerRef}
+          >
+            {memoizedMapComponent}
+            <MonitoringChart title={pltsDetailData.pltsName} />
+          </div>
+
+          <AverageDashbord pltsName={pltsDetailData.pltsName} />
+
+          <PLTSAnalyticValue pltsName={pltsDetailData.pltsName} id={id!} />
+
+          <div>
+            <h3>About</h3>
+            <div className="grid grid-cols-2">
+              <Section title="PLTS Name" value="PLTS 1" direction="column" />
+              <Section
+                title="SMA Device Name"
+                value={pltsDetailData?.smaDeviceName ?? "-"}
+                direction="column"
               />
-
-              <Dropdown
-                options={DROPDOWN_LOCATIONS_ITEMS}
-                filter
-                onChange={(e) => null}
-                className="w-full"
+              <Section
+                title="IP Address"
+                value={pltsDetailData.ipAddress ?? "-"}
+                direction="column"
               />
-            </div>
-          }
-        />
-
-        <PLTSAnalyticValue />
-
-        <LineChart
-          chartData={[]}
-          coordinate={{
-            x: "time",
-            y: "dailyYield",
-          }}
-          title="Average Value"
-          renderItem={handleRenderItem}
-          customDropdownComponent={
-            <div className="flex items-center gap-x-4 w-full">
-              <Dropdown
-                options={GENERATOR_DATA_DROPDOWN_ITEMS}
-                filter
-                onChange={(e) => null}
-                className="w-full"
-              />
-
-              <Dropdown
-                options={DROPDOWN_LOCATIONS_ITEMS}
-                filter
-                onChange={(e) => null}
-                className="w-full"
+              <Section
+                title="Port"
+                value={pltsDetailData?.port ?? "-"}
+                direction="column"
               />
             </div>
-          }
-        />
-      </div>
-
-      <div>
-        <h3>About</h3>
-        <div className="grid grid-cols-2">
-          <Section title="PLTS Name" value="PLTS 1" direction="column" />
-          <Section
-            title="SMA Device Name"
-            value="Sunny Tri Power"
-            direction="column"
-          />
-          <Section title="IP Address" value="1.1.1.1" direction="column" />
-          <Section title="Port" value="502" direction="column" />
+          </div>
+        </>
+      ) : (
+        <div>
+          <h3>No data found.</h3>
         </div>
-      </div>
+      )}
     </Container>
   );
 }

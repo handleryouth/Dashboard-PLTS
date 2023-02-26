@@ -6,7 +6,7 @@ export default function SideButton() {
   return (
     <div
       className={` flex items-center fixed  top-1/2 ${
-        showDashboard ? "" : "z-[9999]"
+        showDashboard ? "" : "z-[3]"
       }`}
     >
       <Button

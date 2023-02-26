@@ -21,7 +21,7 @@ export default function Input({
 }: InputProps) {
   const customId = useId();
   return (
-    <div className={`field w-full ${containerClassName}`}>
+    <div className={`field w-full ${containerClassName} relative`}>
       <label htmlFor={props.id ?? customId} className="block">
         {label}
       </label>
@@ -34,7 +34,7 @@ export default function Input({
           errorMessage && "p-invalid"
         } block ${inputClassName} w-full`}
       />
-      <small id={props.id ?? customId} className="p-error block">
+      <small id={props.id ?? customId} className="p-error block absolute">
         {errorMessage}
       </small>
     </div>

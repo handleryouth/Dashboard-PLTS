@@ -1,7 +1,5 @@
 import {
-  Login,
   Dashboard,
-  SignUp,
   Map,
   StaffManagement,
   StaffManagementEdit,
@@ -15,19 +13,9 @@ import { RouteListProps } from "types";
 
 export const ROUTES_LIST: RouteListProps[] = [
   {
-    path: "/",
+    path: "/dashboard",
     name: "dashboard",
     element: <Dashboard />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-    name: "login",
-  },
-  {
-    name: "signup",
-    path: "/signup",
-    element: <SignUp />,
   },
   {
     name: "map",
@@ -46,7 +34,7 @@ export const ROUTES_LIST: RouteListProps[] = [
   },
   {
     name: "pltsDetail",
-    path: "/plts/detail",
+    path: "/plts/:id",
     element: <PltsDetail />,
   },
   {
@@ -78,5 +66,10 @@ export const ROUTES_LIST: RouteListProps[] = [
     name: "positionEdit",
     path: "/position/edit",
     element: <PositionForm edit />,
+  },
+  {
+    name: "allPage",
+    path: "*",
+    element: <Dashboard />,
   },
 ];

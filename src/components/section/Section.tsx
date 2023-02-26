@@ -1,13 +1,17 @@
 import { ReactNode } from "react";
+import { Tooltip } from "primereact/tooltip";
 
 export interface SectionProps {
   title?: string;
   titleClassName?: string;
   value?: string | number;
   valueClassName?: string;
+  valueContainerClassName?: string;
   children?: ReactNode;
   customTitle?: ReactNode;
   direction?: "row" | "column";
+  valueTooltip?: string;
+  tooltipId?: string;
 }
 
 export default function Section({
@@ -18,6 +22,9 @@ export default function Section({
   titleClassName,
   valueClassName,
   direction = "row",
+  valueTooltip,
+  tooltipId,
+  valueContainerClassName,
 }: SectionProps) {
   return (
     <div
@@ -28,12 +35,24 @@ export default function Section({
       }`}
     >
       {title ? (
-        <h3 className={`my-0 ${titleClassName}`}>{title}</h3>
+        <h3 className={`my-0 ${titleClassName ?? ""}`}>{title}</h3>
       ) : (
         customTitle
       )}
       {value !== undefined ? (
-        <p className={`my-0 ${valueClassName}`}>{value}</p>
+        <div className={`${valueContainerClassName ?? ""} `}>
+          {valueTooltip && (
+            <Tooltip
+              target={`.${tooltipId ?? ""}`}
+              content={valueTooltip}
+              position="bottom"
+              className="w-96"
+            />
+          )}
+          <p className={`${tooltipId ?? ""} my-0 ${valueClassName ?? ""}`}>
+            {value}
+          </p>
+        </div>
       ) : (
         children
       )}

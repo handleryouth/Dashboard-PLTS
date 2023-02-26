@@ -1,36 +1,52 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Seo } from "components";
-import { requestHelper, setCookie, setLocalStorage } from "utils";
+import { requestHelper } from "utils";
+import { useCookies } from "react-cookie";
 import { SetTokenFunctionProps } from "types";
 
 export default function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
+  const [cookies, setCookies, removeCookies] = useCookies([
+    "accessToken",
+    "refreshToken",
+    "staffData",
+  ]);
+
   const navigate = useNavigate();
 
   const handleSetTokenCookies = useCallback(
-    ({ accessToken, refreshToken, email }: SetTokenFunctionProps) => {
-      setCookie({
-        cookieKey: "accessToken",
-        cookieValue: accessToken,
-        cookieOptions: {
-          path: "/",
-        },
+    ({
+      accessToken,
+      refreshToken,
+      email,
+      staffData,
+    }: SetTokenFunctionProps) => {
+      // setCookie({
+      //   cookieKey: "accessToken",
+      //   cookieValue: accessToken,
+      //   cookieOptions: {
+      //     path: "/",
+      //   },
+      // });
+
+      setCookies("accessToken", accessToken, {
+        path: "/",
       });
 
-      setCookie({
-        cookieKey: "refreshToken",
-        cookieValue: refreshToken,
-        cookieOptions: {
-          path: "/",
-        },
+      setCookies("refreshToken", refreshToken, {
+        path: "/",
       });
 
-      setLocalStorage("email", email);
+      setCookies("staffData", JSON.stringify(staffData), {
+        path: "/",
+      });
+
+      navigate("/dashboard");
     },
-    []
+    [navigate, setCookies]
   );
 
   const sendLoginData = useCallback(async () => {
@@ -44,21 +60,21 @@ export default function Login() {
 
     if (response && response.status === 200) {
       handleSetTokenCookies({
-        accessToken: response.data!.accessToken,
-        refreshToken: response.data!.refreshToken,
-        email: response.data!.email,
+        accessToken: response.data.data.accessToken,
+        refreshToken: response.data.data.refreshToken,
+        email: response.data.data.email,
+        staffData: response.data.data.staffData,
       });
-      navigate("/");
     }
-  }, [email, handleSetTokenCookies, navigate, password]);
+  }, [email, handleSetTokenCookies, password]);
 
   return (
     <>
       <Seo title="Login Page" description="Login page for PLTS Dashboard" />
 
       <div className="flex items-center gap-[172px] overflow-hidden min-h-screen  p-6">
-        <div className="flex justify-end basis-1/2">
-          <div className="w-9/12">
+        <div className="flex w-full mediumDisplay:w-auto mediumDisplay:justify-end mediumDisplay:basis-1/2">
+          <div className="w-full mediumDisplay:w-9/12">
             <div className="flex items-center">
               <img
                 src="/elektro-logo.png"
@@ -81,7 +97,7 @@ export default function Login() {
                 onChange={(value) => setPassword(value)}
               />
               <Button
-                className="text-white bg-blue-500"
+                className="w-full text-white bg-blue-500"
                 onClick={sendLoginData}
               >
                 Sign in
@@ -97,7 +113,7 @@ export default function Login() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl basis-1/2">
+        <div className="hidden mediumDisplay:block overflow-hidden rounded-xl mediumDisplay:basis-1/2">
           <img
             src="/solarpanel-700.jpg"
             alt="login-welcome"

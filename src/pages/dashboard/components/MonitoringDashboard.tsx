@@ -1,54 +1,56 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { GeneratorDataProps } from "types";
+import { useState, useCallback } from "react";
 import MonitoringChart from "./MonitoringChart";
+import { Button } from "components";
+import { AddGraphModal, AddGraphModalFormProps } from "./modals";
 
 export default function MonitoringDashboard() {
-  const [generatorData, setGeneratorData] = useState<GeneratorDataProps[]>([]);
+  const [graphList, setGraphList] = useState<string[]>([]);
 
-  const previousValueRef = useRef<GeneratorDataProps[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
-  const logDataOnMessage = useCallback((event: any) => {
-    const newData = JSON.parse(event.data);
-
-    if (previousValueRef.current.length > 5) {
-      const previousDataSliced = previousValueRef.current.slice(1);
-
-      setGeneratorData([...previousDataSliced, newData]);
-      previousValueRef.current = [...previousDataSliced, newData];
-    } else {
-      setGeneratorData((prevState) => [...prevState, newData]);
-      previousValueRef.current = [...previousValueRef.current, newData];
-    }
-  }, []);
-
-  const handleSSEEvent = useCallback(async () => {
-    const sseSource = new EventSource(
-      `http://${window.location.hostname}:8000/api/plts/`,
-      {
-        withCredentials: true,
+  const handleAddGraphEvent = useCallback(
+    (data: AddGraphModalFormProps) => {
+      if (graphList.length < 4) {
+        setGraphList((prevState) => [...prevState, data.graphName]);
+      } else {
+        setGraphList((prevState) => [...prevState.slice(1), data.graphName]);
       }
-    );
-
-    sseSource.onopen = () => {
-      console.log("sse open");
-    };
-
-    sseSource.onmessage = logDataOnMessage;
-
-    sseSource.onerror = () => {
-      sseSource.close();
-    };
-  }, [logDataOnMessage]);
-
-  useEffect(() => {
-    handleSSEEvent();
-  }, [handleSSEEvent]);
+    },
+    [graphList.length]
+  );
 
   return (
-    <div className="flex items-center justify-between mb-8 gap-8">
-      <MonitoringChart chartData={generatorData} title="AJ301" />
-      <MonitoringChart chartData={generatorData} title="Research Center" />
-      <MonitoringChart chartData={generatorData} title="Rektorat ITS" />
-    </div>
+    <>
+      <AddGraphModal
+        toggleCloseModal={() => setShowModal(false)}
+        visible={showModal}
+        onSubmitModal={handleAddGraphEvent}
+      />
+      <div>
+        <div className="flex items-center justify-between">
+          <h3 className="my-0">Monitoring Dashboard</h3>
+          <Button className="bg-blue-500" onClick={() => setShowModal(true)}>
+            Show new graph
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 mediumToBigDisplay:grid-cols-2 mb-8 gap-8 items-center justify-center ">
+          {graphList.map((item, index) => {
+            return (
+              <MonitoringChart
+                key={index}
+                title={item}
+                onButtonClicked={() =>
+                  setGraphList((prevState) =>
+                    prevState.filter((currentItem) => currentItem !== item)
+                  )
+                }
+                buttonTitle="Remove graph"
+              />
+            );
+          })}
+        </div>
+      </div>
+    </>
   );
 }

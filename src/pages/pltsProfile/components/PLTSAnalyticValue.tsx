@@ -1,24 +1,91 @@
-import { Button, Section } from "components";
-import { PLTSMapKey } from "types";
+import { useCallback, useEffect, useState } from "react";
+import { Section } from "components";
+import { requestHelper } from "utils";
+import { PLTSAnalyticValueResponse } from "types";
 
-export default function PLTSAnalyticValue() {
+export interface PLTSAnalyticValueProps {
+  id: string;
+  pltsName: string;
+}
+
+export const ANALYTIC_DATA_INITIAL_STATE: PLTSAnalyticValueResponse = {
+  capacityFactor: 0,
+  compensatedPerformanceRatio: 0,
+  installedPowerLoadFactor: 0,
+  performanceRatio: 0,
+};
+
+export default function PLTSAnalyticValue({
+  id,
+  pltsName,
+}: PLTSAnalyticValueProps) {
+  const [analyticData, setAnalyticData] = useState<PLTSAnalyticValueResponse>(
+    ANALYTIC_DATA_INITIAL_STATE
+  );
+
+  const handleLoadData = useCallback(async () => {
+    const response = await requestHelper("get_plts_analytic_value", {
+      params: {
+        id,
+        pltsName,
+      },
+    });
+
+    if (response && response.status) {
+      setAnalyticData(response.data.data);
+    }
+  }, [id, pltsName]);
+
+  useEffect(() => {
+    handleLoadData();
+  }, [handleLoadData]);
+
   return (
-    <div className="prose !max-w-none bg-white px-4 rounded-sm ">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="my-0">Detail</h3>
-        <Button>Download CSV</Button>
-      </div>
-      <div className="flex gap-4 items-center">
-        <div className="grid grid-cols-2 basis-3/4 gap-4">
-          <Section title="Performance Ratio" value={0} direction="column" />
-          <Section title="Performance Ratio" value={0} direction="column" />
-          <Section title="Performance Ratio" value={0} direction="column" />
-          <Section title="Performance Ratio" value={0} direction="column" />
-          <Section title="Performance Ratio" value={0} direction="column" />
-          <Section title="Performance Ratio" value={0} direction="column" />
-          <Section title="Performance Ratio" value={0} direction="column" />
+    <>
+      <div className="prose !max-w-none bg-white px-4 rounded-sm my-4">
+        <h3 className="my-0">Performance Detail</h3>
+
+        <div className="grid grid-cols-1 smallToMediumDisplay:grid-cols-2  w-full gap-4">
+          <Section
+            title="Performance Ratio"
+            value={analyticData.performanceRatio ?? "-"}
+            direction="column"
+            tooltipId="performanceRatio"
+            valueClassName="w-min"
+            valueTooltip="The ratio of the actual and theoretically possible energy outputs. to calculate this value, provide power, Global Horizontal Irradiance (GHI) (kWh/m^2), and PV Surface Area (m^2) in the profile"
+          />
+          <Section
+            title="Installed Power Load Factor"
+            value={analyticData.installedPowerLoadFactor ?? "-"}
+            direction="column"
+            tooltipId="installedPowerLoadFactor"
+            valueClassName="w-min"
+            valueTooltip="Installed power load factor is the ratio of average power to installed power. To calculate this value, provide average power data in modbus address (kWh) and installed power (kW) in the profile"
+          />
+          <Section
+            title="Maximum Power Load Duration"
+            value="-"
+            direction="column"
+            tooltipId="maximumPowerLoadDuration"
+          />
+          <Section
+            title="Compensated Performance Ratio"
+            value={analyticData.compensatedPerformanceRatio ?? "-"}
+            direction="column"
+            valueTooltip="Performance Ratio with  corrected for cell temperature (CPR) over an assessment period. To calculate this value, provide temperature data in modbus address (C) in the profile"
+            tooltipId="compensatedPerformanceRatio"
+            valueClassName="w-min"
+          />
+          <Section
+            title="Capacity Factor"
+            value={analyticData.capacityFactor ?? "-"}
+            direction="column"
+            valueTooltip="the ratio of its actual output over a period of time, to its potential output. To calculate this value, provide power per year (kWh) and installed power (kW) in the profile"
+            tooltipId="capacityFactor"
+            valueClassName="w-min"
+          />
         </div>
       </div>
-    </div>
+    </>
   );
 }

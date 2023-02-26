@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Password, Seo } from "components";
 import { loginInstance } from "utils";
 
@@ -7,6 +7,8 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
+
+  const navigate = useNavigate();
 
   const sendSignupData = useCallback(async () => {
     const response = await loginInstance("/api/login/create", {
@@ -17,18 +19,20 @@ export default function SignUp() {
       },
       method: "POST",
     });
-    return response;
-  }, [email, fullName, password]);
+
+    if (response && response.status === 201) {
+      navigate("/login");
+    }
+  }, [navigate, email, fullName, password]);
 
   return (
     <>
       <Seo title="Signup Page" description="Sign up for PLTS Dashboard" />
       <div className="flex items-center gap-[172px] overflow-hidden min-h-screen  p-6">
-        <div className="flex justify-end basis-1/2">
-          <div className="w-9/12">
-            <div>
-              <h1>Create Account</h1>
-            </div>
+        <div className="flex w-full mediumDisplay:w-auto mediumDisplay:justify-end mediumDisplay:basis-1/2">
+          <div className="w-full mediumDisplay:w-9/12">
+            <h1>Create Account</h1>
+
             <div className="flex flex-col gap-y-5">
               <Input
                 label="Full name"
@@ -60,7 +64,7 @@ export default function SignUp() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl basis-1/2">
+        <div className="hidden mediumDisplay:block overflow-hidden rounded-xl basis-1/2">
           <img
             src="/solarpanel-700.jpg"
             alt="login-welcome"

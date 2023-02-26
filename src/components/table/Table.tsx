@@ -7,6 +7,7 @@ export default function Table<T extends Object>({
   renderItem,
   onClickRowItem,
   keyItem,
+  excludeOnClickRowItem,
 }: TableComponentProps<T>) {
   const entries = useMemo(() => Object.entries(columns), [columns]);
 
@@ -39,28 +40,40 @@ export default function Table<T extends Object>({
         <tbody>
           {data?.map((item, index) => (
             <Fragment key={keyItem ? keyItem(item) : index}>
-              <tr className="text-base">
-                {entries.map(([key]) => (
-                  <td
-                    className="py-3 align-middle"
-                    key={key}
-                    onClick={() => onClickRowItem && onClickRowItem(item)}
-                  >
-                    {renderItem(item)[key as keyof T] ?? "-"}
-                  </td>
-                ))}
+              <tr className="text-base  hover:bg-slate-200">
+                {entries.map(([key]) => {
+                  const checkExclude =
+                    excludeOnClickRowItem &&
+                    (excludeOnClickRowItem[key as unknown as keyof T] ?? true);
+
+                  return (
+                    <td
+                      className={`py-3 align-middle  ${
+                        checkExclude ? "cursor-pointer" : "cursor-default"
+                      }`}
+                      key={key}
+                      onClick={() =>
+                        checkExclude && onClickRowItem && onClickRowItem(item)
+                      }
+                    >
+                      {renderItem(item)[key as keyof T] ?? "-"}
+                    </td>
+                  );
+                })}
               </tr>
             </Fragment>
           ))}
         </tbody>
       ),
-    [data, entries, keyItem, onClickRowItem, renderItem]
+    [data, entries, excludeOnClickRowItem, keyItem, onClickRowItem, renderItem]
   );
 
   return (
-    <table>
-      {handleRenderHeader}
-      {handleRenderItem}
-    </table>
+    <div className="overflow-x-scroll w-full">
+      <table className="min-w-[960px]">
+        {handleRenderHeader}
+        {handleRenderItem}
+      </table>
+    </div>
   );
 }

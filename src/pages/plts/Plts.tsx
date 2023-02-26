@@ -56,6 +56,10 @@ export default function Plts() {
       smaDeviceName,
       _id,
       modbusAddress,
+      globalHorizontalIrradiance,
+      installedPower,
+      powerPerYear,
+      pvSurfaceArea,
     }: PLTSListResponse): Partial<Record<PLTSTableHeader, TableContent>> => ({
       devicePosition: (
         <div>
@@ -69,6 +73,7 @@ export default function Plts() {
       smaDeviceName,
       actionbutton: (
         <Button
+          className="bg-green-500"
           onClick={() =>
             handleToEditPage({
               _id,
@@ -78,6 +83,10 @@ export default function Plts() {
               port,
               modbusAddress,
               smaDeviceName,
+              globalHorizontalIrradiance,
+              installedPower,
+              powerPerYear,
+              pvSurfaceArea,
             })
           }
         >
@@ -131,7 +140,11 @@ export default function Plts() {
       />
 
       <Pagination
-        handlePageChange={() => console.log("page change")}
+        handlePageChange={(event) =>
+          handleConstructParams({
+            page: event.first,
+          })
+        }
         page={1}
         resultsLength={pltsList?.total ?? 0}
       />
@@ -141,7 +154,12 @@ export default function Plts() {
         data={pltsList?.data ?? []}
         keyItem={getKeyItem}
         renderItem={renderItem}
-        onClickRowItem={({ _id }) => navigate(`/plts/detail?id=${_id}`)}
+        onClickRowItem={({ _id }) => navigate(`/plts/${_id}`)}
+        excludeOnClickRowItem={
+          {
+            actionbutton: false,
+          } as Partial<Record<PLTSTableHeader, boolean>>
+        }
       />
     </Container>
   );

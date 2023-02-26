@@ -28,9 +28,15 @@ export interface DeactivateStaffBodyProps {
   id: string;
 }
 
+export interface StaffDetailRequestParams {
+  id: string;
+}
+
+export type UserStaffType = "admin" | "user";
+
 export interface EditStaffBodyProps {
   id: string;
   email: string;
   name: string;
-  role: "admin" | "user";
+  role: UserStaffType;
 }

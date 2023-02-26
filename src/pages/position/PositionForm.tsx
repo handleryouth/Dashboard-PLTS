@@ -150,10 +150,10 @@ export default function PositionForm({ edit }: PositionFormProps) {
         {memoizedMapContainer}
 
         <div className="flex items-center gap-x-4 mt-4 justify-center">
-          <Button className="w-full" type="submit">
+          <Button className="w-full bg-blue-500" type="submit">
             Add
           </Button>
-          <Button className="w-full" onClick={() => navigate(-1)}>
+          <Button className="w-full bg-red-500" onClick={() => navigate(-1)}>
             Cancel
           </Button>
         </div>

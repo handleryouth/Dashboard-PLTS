@@ -3,7 +3,7 @@ import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { Container, MemoizedMarkerDetail } from "components";
 import { InvalidateSizeMap, requestHelper } from "utils";
 import { PLTSMapListResponse } from "types";
-import { SideDetail } from "./component";
+import { SideDetail, SmallSideDetail } from "./component";
 
 export default function Map() {
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -78,6 +78,10 @@ export default function Map() {
         </div>
 
         <SideDetail data={selectedMapData} />
+        <SmallSideDetail
+          visible={Boolean(selectedMapData)}
+          data={selectedMapData}
+        />
       </div>
     </Container>
   );

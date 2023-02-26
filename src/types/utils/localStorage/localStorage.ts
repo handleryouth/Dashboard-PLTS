@@ -1,1 +1,1 @@
-export type LocalStorageKey = "email";
+export type LocalStorageKey = "email" | "staffData";
