@@ -8,7 +8,7 @@ import {
 import { VictoryChart } from "victory-chart";
 import { VictoryLabel } from "victory-core";
 
-export type RenderedChartItem<T> = Record<keyof T, string | number>;
+export type RenderedChartItem<T> = Record<keyof T, string | number | undefined>;
 
 export interface LineChartProps<T extends Object> {
   title?: string;
@@ -53,7 +53,7 @@ export default function LineChart<T extends Object>({
       ref={graphRef}
     >
       <div className="flex items-start justify-between flex-col monitoringChartBreakpoint:flex-row monitoringChartBreakpoint:items-end">
-        <div className="basis-1/4">
+        <div className="basis-1/2">
           <h3 className="mt-0 font-bold">{title}</h3>
         </div>
 
@@ -73,10 +73,12 @@ export default function LineChart<T extends Object>({
             parent: { border: "1px solid #ccc", height: "100%" },
           }}
           standalone={false}
+          labels={({ datum }) => datum.y}
+          labelComponent={<VictoryLabel renderInPortal dy={-20} />}
         />
         <VictoryAxis
           axisLabelComponent={<VictoryLabel />}
-          fixLabelOverlap
+          // fixLabelOverlap
           style={{
             tickLabels: { angle: -20 },
             grid: { stroke: "#000000", strokeWidth: 0.5 },

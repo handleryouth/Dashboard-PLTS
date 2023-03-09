@@ -11,7 +11,7 @@ import {
 } from "pages";
 import { RouteListProps } from "types";
 
-export const ROUTES_LIST: RouteListProps[] = [
+export const ADMIN_ROUTES: RouteListProps[] = [
   {
     path: "/dashboard",
     name: "dashboard",

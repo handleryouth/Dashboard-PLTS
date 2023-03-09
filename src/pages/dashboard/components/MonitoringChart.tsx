@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Button, LineChart, RenderedChartItem } from "components";
 import { GeneratorDataProps, GeneratorDataPropsExcludeDeviceType } from "types";
-import { convertCamelCaseToPascalCase } from "utils";
+import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 export interface MonitoringChartProps {
@@ -24,9 +24,8 @@ export default function MonitoringChart({
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [dropdownValue, setDropdownValue] = useState<
-    keyof GeneratorDataPropsExcludeDeviceType
-  >(dataKey[0] as keyof GeneratorDataPropsExcludeDeviceType);
+  const [dropdownValue, setDropdownValue] =
+    useState<keyof GeneratorDataPropsExcludeDeviceType>();
 
   const previousValueRef = useRef<GeneratorDataProps[]>([]);
 
@@ -43,13 +42,22 @@ export default function MonitoringChart({
       setGeneratorData((prevState) => [...prevState, newData]);
       previousValueRef.current = [...previousValueRef.current, newData];
     }
-
-    setDataKey(newData.dataKey);
   }, []);
+
+  const getDataKey = useCallback(async () => {
+    const response = await requestHelper("get_plts_data_key", {
+      params: {
+        pltsName: title,
+      },
+    });
+    if (response && response.status === 200) {
+      setDataKey(response.data.data);
+    }
+  }, [title]);
 
   const handleSSEEvent = useCallback(async () => {
     const sseSource = new EventSource(
-      `http://${window.location.hostname}:8000/api/plts?pltsName=${title}`,
+      `http://${process.env.REACT_APP_SERVER_URL}:8000/api/plts?pltsName=${title}`,
 
       {
         withCredentials: true,
@@ -71,12 +79,18 @@ export default function MonitoringChart({
     handleSSEEvent();
   }, [handleSSEEvent]);
 
+  useEffect(() => {
+    getDataKey();
+  }, [getDataKey]);
+
   const handleRenderItem = useCallback(
     (
       item: GeneratorDataPropsExcludeDeviceType
     ): RenderedChartItem<GeneratorDataPropsExcludeDeviceType> => ({
       ...item,
-      time: new Date(item.time).toLocaleTimeString(),
+      time: item.time
+        ? new Date(item.time).toLocaleString("id-ID")
+        : new Date().toLocaleString("id-ID"),
     }),
     []
   );
@@ -105,7 +119,7 @@ export default function MonitoringChart({
           }}
           renderItem={handleRenderItem}
           customDropdownComponent={
-            <div className="flex items-center gap-x-4 ">
+            <div className="flex items-center gap-x-4 w-full">
               {buttonTitle && (
                 <Button
                   className="w-full"
@@ -120,7 +134,7 @@ export default function MonitoringChart({
                 placeholder="Select Data"
                 filter
                 onChange={(e) => {
-                  setDropdownValue(() => e.target.value);
+                  setDropdownValue(e.target.value);
                 }}
                 className="w-full"
               />

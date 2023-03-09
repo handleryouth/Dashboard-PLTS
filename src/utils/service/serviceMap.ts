@@ -92,4 +92,20 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/analytic-value",
   },
+  delete_plts_profile: {
+    method: "DELETE",
+    url: "/api/plts/delete-plts",
+  },
+  get_plts_data_key: {
+    method: "GET",
+    url: "/api/plts/plts-data-key",
+  },
+  get_plts_comparing_data_key: {
+    method: "GET",
+    url: "/api/plts/comparing-value-dataKey",
+  },
+  get_plts_comparing_value: {
+    method: "GET",
+    url: "/api/plts/comparing-value",
+  },
 };

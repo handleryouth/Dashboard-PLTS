@@ -123,6 +123,23 @@ export default function PltsDetail() {
                 value={pltsDetailData?.port ?? "-"}
                 direction="column"
               />
+              <Section
+                title="Global Horizontal Irradiance (kWh/m^2)"
+                value={pltsDetailData?.globalHorizontalIrradiance ?? "-"}
+                direction="column"
+              />
+
+              <Section
+                title="Power per Year (kWh)"
+                value={pltsDetailData?.powerPerYear ?? "-"}
+                direction="column"
+              />
+
+              <Section
+                title="PV Surface Area (m^2)"
+                value={pltsDetailData?.pvSurfaceArea ?? "-"}
+                direction="column"
+              />
             </div>
           </div>
         </>

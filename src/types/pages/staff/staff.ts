@@ -12,12 +12,13 @@ export interface StaffDataProps {
 
 export interface StaffDataResponse {
   data: StaffDataProps[];
-  total: number;
+  total: number;  
 }
 
 export interface StaffRequestParams {
   limit: number;
   page: number;
+  search: string;
 }
 
 export interface ActivateStaffBodyProps {

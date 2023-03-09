@@ -8,6 +8,7 @@ import {
 } from "types";
 import { requestHelper } from "utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 export type PLTSTableHeader = keyof PLTSListResponse | "actionbutton";
 
@@ -19,6 +20,8 @@ export interface PLTSListSearchParams {
 export default function Plts() {
   const [pltsList, setPltsList] =
     useState<ServiceMessageResponse<PLTSListResponse[]>>();
+
+  const [cookies, setCookie] = useCookies(["staffData"]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -71,30 +74,31 @@ export default function Plts() {
       pltsName: pltsName,
       port,
       smaDeviceName,
-      actionbutton: (
-        <Button
-          className="bg-green-500"
-          onClick={() =>
-            handleToEditPage({
-              _id,
-              devicePosition,
-              ipAddress,
-              pltsName,
-              port,
-              modbusAddress,
-              smaDeviceName,
-              globalHorizontalIrradiance,
-              installedPower,
-              powerPerYear,
-              pvSurfaceArea,
-            })
-          }
-        >
-          Edit
-        </Button>
-      ),
+      actionbutton:
+        cookies.staffData?.role === "admin" ? (
+          <Button
+            className="bg-green-500"
+            onClick={() =>
+              handleToEditPage({
+                _id,
+                devicePosition,
+                ipAddress,
+                pltsName,
+                port,
+                modbusAddress,
+                smaDeviceName,
+                globalHorizontalIrradiance,
+                installedPower,
+                powerPerYear,
+                pvSurfaceArea,
+              })
+            }
+          >
+            Edit
+          </Button>
+        ) : undefined,
     }),
-    [handleToEditPage]
+    [cookies.staffData?.role, handleToEditPage]
   );
 
   const handleConstructParams = useCallback(
@@ -136,6 +140,7 @@ export default function Plts() {
       <TableAction
         onSubmit={handleSearchData}
         buttonTitle="Add New PLTS"
+        enableButton={cookies.staffData?.role === "admin"}
         onButtonClick={() => navigate("/plts/create")}
       />
 

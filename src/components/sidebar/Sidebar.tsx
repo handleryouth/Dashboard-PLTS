@@ -51,9 +51,12 @@ export default function Sidebar() {
 
           <SidebarChildren groupLinks={mapLinks} />
 
-          <SidebarChildren groupLinks={positionLinks} />
-
-          <SidebarChildren groupLinks={aclLinks} />
+          {cookies.staffData?.role === "admin" && (
+            <>
+              <SidebarChildren groupLinks={positionLinks} />
+              <SidebarChildren groupLinks={aclLinks} />
+            </>
+          )}
         </div>
 
         <Button

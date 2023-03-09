@@ -1,9 +1,11 @@
-import { GeneratorDataPropsExcludeDeviceType } from "../../common";
+import { GeneratorDataAverageProps } from "../../common";
 
 export interface ModbusAddress {
   dataName: string;
   modbusAddress: number;
   unit: string;
+  signed: "unsigned" | "signed";
+  valuePrecision: number;
 }
 
 export interface PLTSProfileBody {
@@ -64,12 +66,21 @@ export interface PLTSListResponse {
   pvSurfaceArea: number;
 }
 
-export interface PLTSProfileEditBody extends PLTSProfileBody {
+export interface PLTSProfileEditBody
+  extends Omit<PLTSProfileBody, "modbusAddress"> {
   id: string;
+  modbusAddress: (ModbusAddress & {
+    dataKey: string;
+  })[];
 }
 
 export interface PLTSProfileDeleteParams {
   id: string;
+  pltsName: string;
+}
+
+export interface PLTSDataKeyParams {
+  pltsName: string;
 }
 
 export interface PLTSProfileList {
@@ -88,16 +99,20 @@ export interface PLTSProfileDetailResponse {
   pltsName: string;
   port: string;
   smaDeviceName: string;
+  globalHorizontalIrradiance: number;
+  installedPower: number;
+  powerPerYear: number;
+  pvSurfaceArea: number;
 }
 
 export interface PLTSProfileDetailAverageParams {
   pltsName: string;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
 }
 
 export interface PLTSProfileDetailAverageResponse {
-  data: GeneratorDataPropsExcludeDeviceType[];
+  data: GeneratorDataAverageProps[];
   dataKeyArray: string[];
 }
 
@@ -107,8 +122,26 @@ export interface PLTSAnalyticValueParams {
 }
 
 export interface PLTSAnalyticValueResponse {
-  installedPowerLoadFactor: number;
-  performanceRatio: number;
-  compensatedPerformanceRatio: number;
-  capacityFactor: number;
+  installedPowerLoadFactor: number | null;
+  performanceRatio: number | null;
+  compensatedPerformanceRatio: number | null;
+  capacityFactor: number | null;
+  installedPowerLoadDuration: number | null;
+  maximumPowerLoadDuration: number | null;
+}
+
+export interface PLTSComparingValueDataProps {
+  [key: string]: string | number;
+  _id: string;
+  time: string;
+  totalData: number;
+}
+
+export interface PLTSComparingValueResponse {
+  data: PLTSComparingValueDataProps[];
+  pltsKey: string[];
+}
+
+export interface PLTSComparingValueParams {
+  dataName: string;
 }

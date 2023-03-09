@@ -17,7 +17,9 @@ export default function Calendar({
   const customId = useId();
   return (
     <div className="field">
-      <label htmlFor={customId}>{label}</label>
+      <label htmlFor={customId} className="block">
+        {label}
+      </label>
       <NativeCalendar
         {...props}
         dateFormat="dd/mm/yy"

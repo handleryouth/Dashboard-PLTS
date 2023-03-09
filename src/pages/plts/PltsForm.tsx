@@ -3,9 +3,9 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Input, Button, Container, Dropdown } from "components";
 import { PLTSPositionDataResponse, PLTSProfileBody } from "types";
-import { requestHelper } from "utils";
-import { PositionModal } from "./modals";
-import { SelectItem } from "primereact/selectitem";
+import { camelCase, requestHelper } from "utils";
+import { DeleteModal, PositionModal } from "./modals";
+import { SelectItem, SelectItemOptionsType } from "primereact/selectitem";
 
 export const PLTS_FORM_INITIAL_STATE: PLTSProfileBody = {
   pltsName: "",
@@ -24,8 +24,21 @@ export interface PLTSFormProps {
   edit?: boolean;
 }
 
+export const PLTS_SIGNED_VALUE_DROPDOWN: SelectItemOptionsType = [
+  {
+    label: "Signed",
+    value: "signed",
+  },
+  {
+    label: "Unsigned",
+    value: "unsigned",
+  },
+];
+
+export type PLTSFormModalState = "delete" | "position" | undefined;
+
 export default function PltsForm({ edit }: PLTSFormProps) {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<PLTSFormModalState>();
 
   const { state } = useLocation();
 
@@ -62,6 +75,14 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       const response = await requestHelper("create_plts_profile", {
         body: {
           ...data,
+          modbusAddress: data.modbusAddress.map((item) => ({
+            dataName: item.dataName,
+            unit: item.unit,
+            modbusAddress: item.modbusAddress,
+            dataKey: camelCase(item.dataName),
+            signed: item.signed,
+            valuePrecision: item.valuePrecision || 1,
+          })),
         },
       });
 
@@ -74,9 +95,19 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
   const handleEditData = useCallback(
     async (data: PLTSProfileBody) => {
+      console.log("form data", data);
+
       const response = await requestHelper("patch_plts_profile", {
         body: {
           ...data,
+          modbusAddress: data.modbusAddress.map((item) => ({
+            dataName: item.dataName,
+            unit: item.unit,
+            modbusAddress: item.modbusAddress,
+            dataKey: camelCase(item.dataName),
+            signed: item.signed,
+            valuePrecision: item.valuePrecision || 1,
+          })),
           id: state._id,
         },
       });
@@ -112,15 +143,33 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       : [];
   }, [pltsLocation]);
 
+  const handleDeletePLTS = useCallback(async () => {
+    const response = await requestHelper("delete_plts_profile", {
+      params: {
+        id: state._id,
+        pltsName: state.pltsName,
+      },
+    });
+
+    if (response && response.status === 202) {
+      navigate(-1);
+    }
+  }, [navigate, state]);
+
   useEffect(() => {
     getPltsLocation();
   }, [getPltsLocation]);
 
   return (
     <>
+      <DeleteModal
+        onCancel={() => setShowModal(undefined)}
+        onConfirm={handleDeletePLTS}
+        visible={showModal === "delete"}
+      />
       <PositionModal
-        toggleModalClosed={() => setShowModal(false)}
-        visible={showModal}
+        toggleModalClosed={() => setShowModal(undefined)}
+        visible={showModal === "position"}
         onRequestCompleted={getPltsLocation}
       />
 
@@ -187,7 +236,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             />
 
             <Button
-              onClick={() => setShowModal(true)}
+              onClick={() => setShowModal("position")}
               className="h-[54px] basis-2/5 bg-blue-500"
             >
               Add Device Position
@@ -274,6 +323,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                     dataName: "",
                     modbusAddress: 0,
                     unit: "",
+                    signed: "unsigned",
+                    valuePrecision: 1,
                   })
                 }
               >
@@ -336,6 +387,39 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                       )}
                     />
 
+                    <Controller
+                      name={`modbusAddress.${index}.signed`}
+                      control={control}
+                      rules={{
+                        required: "Value signed format required",
+                      }}
+                      render={({ field, fieldState }) => (
+                        <Dropdown
+                          id={field.name}
+                          label="Signed or Unsigned"
+                          {...field}
+                          errorMessage={fieldState.error?.message}
+                          options={PLTS_SIGNED_VALUE_DROPDOWN}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name={`modbusAddress.${index}.valuePrecision`}
+                      control={control}
+                      rules={{
+                        min: 1,
+                      }}
+                      render={({ field, fieldState }) => (
+                        <Input
+                          id={field.name}
+                          {...field}
+                          label="Value Precision"
+                          errorMessage={fieldState.error?.message}
+                        />
+                      )}
+                    />
+
                     <Button
                       className="basis-2/4 bg-red-500"
                       onClick={() => remove(index)}
@@ -354,6 +438,9 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               <Button className="bg-red-500 w-full">Cancel</Button>
             </div>
           </div>
+          {edit && (
+            <Button onClick={() => setShowModal("delete")}>Delete</Button>
+          )}
         </form>
       </Container>
     </>

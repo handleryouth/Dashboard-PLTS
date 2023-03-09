@@ -36,7 +36,9 @@ export default function AverageDashboard() {
       item: GeneratorDataPropsExcludeDeviceType
     ): RenderedChartItem<GeneratorDataPropsExcludeDeviceType> => ({
       ...item,
-      time: new Date(item.time).toLocaleTimeString(),
+      time: item.time
+        ? new Date(item.time).toLocaleString("id-ID")
+        : new Date().toLocaleString("id-ID"),
     }),
     []
   );

@@ -6,6 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { StaffDataProps, UserStaffType } from "types";
 import { requestHelper } from "utils";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { useCookies } from "react-cookie";
 
 const STAFF_ROLE_OPTIONS: SelectItemOptionsType = [
   { label: "Admin", value: "admin" },
@@ -14,6 +15,10 @@ const STAFF_ROLE_OPTIONS: SelectItemOptionsType = [
 
 export default function StaffManagementEdit() {
   const { id } = useParams<"id">();
+
+  const [cookies] = useCookies(["staffData"]);
+
+  const [staffData, setStaffData] = useState<StaffDataProps>();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,6 +36,7 @@ export default function StaffManagementEdit() {
     if (response && response.status === 200) {
       setIsLoading(false);
       reset(response.data.data);
+      setStaffData(response.data.data);
     }
   }, [id, reset]);
 
@@ -102,26 +108,28 @@ export default function StaffManagementEdit() {
             }}
           />
 
-          <Controller
-            control={control}
-            rules={{
-              required: "Role is required",
-            }}
-            name="role"
-            render={({ field, fieldState }) => {
-              return (
-                <Dropdown
-                  id={field.name}
-                  {...field}
-                  defaultValue={field?.value}
-                  label="Role"
-                  filter
-                  errorMessage={fieldState.error?.message}
-                  options={STAFF_ROLE_OPTIONS}
-                />
-              );
-            }}
-          />
+          {cookies.staffData.email !== staffData?.email && (
+            <Controller
+              control={control}
+              rules={{
+                required: "Role is required",
+              }}
+              name="role"
+              render={({ field, fieldState }) => {
+                return (
+                  <Dropdown
+                    id={field.name}
+                    {...field}
+                    defaultValue={field?.value}
+                    label="Role"
+                    filter
+                    errorMessage={fieldState.error?.message}
+                    options={STAFF_ROLE_OPTIONS}
+                  />
+                );
+              }}
+            />
+          )}
 
           <div className="flex items-center justify-between gap-x-8 mt-4">
             <Button className="w-full bg-blue-500" type="submit">

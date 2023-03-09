@@ -1,17 +1,33 @@
-import { Container, Table, TableAction } from "components";
 import { useCallback, useState, useEffect, useMemo } from "react";
-import { StaffDataProps, StaffDataResponse, TableContent } from "types";
-import { requestHelper } from "utils";
 import { SplitButton } from "primereact/splitbutton";
 import { MenuItem } from "primereact/menuitem";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Container, Pagination, Table, TableAction } from "components";
+import {
+  ServiceMessageResponse,
+  StaffDataProps,
+  TableActionSearchProps,
+  TableContent,
+} from "types";
+import { requestHelper } from "utils";
+import { useCookies } from "react-cookie";
 
 export type StaffManagementTableHeaderProps =
   | keyof StaffDataProps
   | "actionButton";
 
+export interface StaffManagementParams {
+  search?: string;
+  page?: number;
+}
+
 export default function StaffManagement() {
-  const [staffData, setStaffData] = useState<StaffDataResponse>();
+  const [staffData, setStaffData] =
+    useState<ServiceMessageResponse<StaffDataProps[]>>();
+
+  const [cookies, setCookies] = useCookies(["staffData"]);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
@@ -19,13 +35,14 @@ export default function StaffManagement() {
     const response = await requestHelper("get_staff_list", {
       params: {
         limit: 10,
-        page: 1,
+        page: Number(searchParams.get("page")) || 1,
+        search: searchParams.get("search") ?? "",
       },
     });
     if (response && response.status === 200) {
       setStaffData(response.data);
     }
-  }, []);
+  }, [searchParams]);
 
   const handleActivateStaff = useCallback(
     async (id: string) => {
@@ -58,22 +75,30 @@ export default function StaffManagement() {
   );
 
   const actionButtonMenuItem = useCallback(
-    ({ _id, status, email }: StaffDataProps): MenuItem[] => {
-      return [
-        {
-          label: "Deactivate",
-          visible: status === "active",
-          icon: "pi pi-user-minus",
-          command: () => handleDeactivateStaff(_id),
-        },
-        {
-          label: "Activate",
-          visible: status === "inactive",
-          icon: "pi pi-user-plus",
-          command: () => {
-            handleActivateStaff(_id);
+    ({ _id, status, name }: StaffDataProps): MenuItem[] => {
+      let actionMenuItem: MenuItem[] = [];
+
+      if (!(cookies.staffData?.name === name)) {
+        actionMenuItem = [
+          {
+            label: "Deactivate",
+            visible: status === "active",
+            icon: "pi pi-user-minus",
+            command: () => handleDeactivateStaff(_id),
           },
-        },
+          {
+            label: "Activate",
+            visible: status === "inactive",
+            icon: "pi pi-user-plus",
+            command: () => {
+              handleActivateStaff(_id);
+            },
+          },
+        ];
+      }
+
+      return [
+        ...actionMenuItem,
         {
           label: "Edit",
           icon: "pi pi-pencil",
@@ -83,7 +108,12 @@ export default function StaffManagement() {
         },
       ];
     },
-    [handleActivateStaff, handleDeactivateStaff, navigate]
+    [
+      cookies.staffData.name,
+      handleActivateStaff,
+      handleDeactivateStaff,
+      navigate,
+    ]
   );
 
   const getHeaderTable = useMemo(
@@ -123,13 +153,39 @@ export default function StaffManagement() {
     [actionButtonMenuItem]
   );
 
+  const handleConstructParams = useCallback(
+    ({ page = 1, search = "" }: StaffManagementParams) => {
+      setSearchParams({
+        search: search,
+        page: page.toString(),
+      });
+    },
+    [setSearchParams]
+  );
+
+  const handleSearchData = useCallback(
+    ({ search }: TableActionSearchProps) => {
+      handleConstructParams({ search });
+    },
+    [handleConstructParams]
+  );
+
   useEffect(() => {
     getStaffData();
   }, [getStaffData]);
 
   return (
     <Container>
-      <TableAction onSubmit={() => null} enableButton={false} />
+      <TableAction onSubmit={handleSearchData} enableButton={false} />
+      <Pagination
+        handlePageChange={(event) =>
+          handleConstructParams({
+            page: event.first,
+          })
+        }
+        page={1}
+        resultsLength={staffData?.total ?? 0}
+      />
       {staffData && (
         <Table
           columns={getHeaderTable}

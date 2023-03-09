@@ -16,16 +16,13 @@ requestInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
     const originalRequest = error.config;
 
     if (
       error.response.status === 401 &&
-      originalRequest.url ===
-        `${process.env.REACT_APP_SERVER_URL}api/login/refresh`
+      originalRequest.url !== `/api/login/`
     ) {
-      return Promise.reject(error);
-    } else if (error.response.status === 401) {
       const refreshToken = getCookie("refreshToken");
 
       const { email } = getCookie("staffData") as StaffDataProps;
@@ -65,8 +62,9 @@ requestInstance.interceptors.response.use(
           title: "Internal Server Error",
         })
       );
-      return Promise.reject(error);
     }
+
+    return error;
   }
 );
 

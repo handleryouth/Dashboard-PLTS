@@ -1,15 +1,27 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Seo } from "components";
 import { requestHelper } from "utils";
 import { useCookies } from "react-cookie";
 import { SetTokenFunctionProps } from "types";
+import { useForm, Controller } from "react-hook-form";
+
+export interface LoginFormProps {
+  email: string;
+  password: string;
+}
+
+export const LOGIN_FORM_INITIAL_VALUES: LoginFormProps = {
+  email: "",
+  password: "",
+};
 
 export default function Login() {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const { control, handleSubmit, setError } = useForm<LoginFormProps>({
+    defaultValues: LOGIN_FORM_INITIAL_VALUES,
+  });
 
-  const [cookies, setCookies, removeCookies] = useCookies([
+  const [, setCookies] = useCookies([
     "accessToken",
     "refreshToken",
     "staffData",
@@ -18,20 +30,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleSetTokenCookies = useCallback(
-    ({
-      accessToken,
-      refreshToken,
-      email,
-      staffData,
-    }: SetTokenFunctionProps) => {
-      // setCookie({
-      //   cookieKey: "accessToken",
-      //   cookieValue: accessToken,
-      //   cookieOptions: {
-      //     path: "/",
-      //   },
-      // });
-
+    ({ accessToken, refreshToken, staffData }: SetTokenFunctionProps) => {
       setCookies("accessToken", accessToken, {
         path: "/",
       });
@@ -49,24 +48,44 @@ export default function Login() {
     [navigate, setCookies]
   );
 
-  const sendLoginData = useCallback(async () => {
-    const response = await requestHelper("plts_auth_login", {
-      body: {
-        email,
-        password,
-      },
-      withCredentials: false,
-    });
-
-    if (response && response.status === 200) {
-      handleSetTokenCookies({
-        accessToken: response.data.data.accessToken,
-        refreshToken: response.data.data.refreshToken,
-        email: response.data.data.email,
-        staffData: response.data.data.staffData,
+  const sendLoginData = useCallback(
+    async ({ email, password }: LoginFormProps) => {
+      const response = await requestHelper("plts_auth_login", {
+        body: {
+          email,
+          password,
+        },
+        withCredentials: false,
       });
-    }
-  }, [email, handleSetTokenCookies, password]);
+
+      console.log("response", response);
+
+      if (response && response.status === 200) {
+        handleSetTokenCookies({
+          accessToken: response.data.data.accessToken,
+          refreshToken: response.data.data.refreshToken,
+          email: response.data.data.email,
+          staffData: response.data.data.staffData,
+        });
+      } else {
+        console.log("this is running");
+        setError("email", {
+          message: "Email or password is incorrect",
+        });
+        setError("password", {
+          message: "Email or password is incorrect",
+        });
+      }
+    },
+    [handleSetTokenCookies, setError]
+  );
+
+  const handleSubmitEvent = useCallback(
+    (data: LoginFormProps) => {
+      sendLoginData(data);
+    },
+    [sendLoginData]
+  );
 
   return (
     <>
@@ -85,24 +104,48 @@ export default function Login() {
             </div>
             <p>Please fill your detail to access your account</p>
 
-            <div className="flex flex-col gap-y-8">
-              <Input
-                label="Email"
-                inputClassName="w-full"
-                onChange={(value) => setEmail(value)}
+            <form
+              className="flex flex-col gap-y-8"
+              onSubmit={handleSubmit(handleSubmitEvent)}
+            >
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: "Email is required",
+                }}
+                render={({ field, fieldState }) => (
+                  <Input
+                    id={field.name}
+                    {...field}
+                    label="Email"
+                    errorMessage={fieldState.error?.message}
+                    inputClassName="w-full"
+                  />
+                )}
               />
-              <Input
-                label="Password"
-                inputClassName="w-full"
-                onChange={(value) => setPassword(value)}
+
+              <Controller
+                control={control}
+                name="password"
+                rules={{
+                  required: "Password is required",
+                }}
+                render={({ field, fieldState }) => (
+                  <Input
+                    id={field.name}
+                    {...field}
+                    label="Password"
+                    errorMessage={fieldState.error?.message}
+                    inputClassName="w-full"
+                  />
+                )}
               />
-              <Button
-                className="w-full text-white bg-blue-500"
-                onClick={sendLoginData}
-              >
+
+              <Button className="w-full text-white bg-blue-500" type="submit">
                 Sign in
               </Button>
-            </div>
+            </form>
 
             <p className="text-center">
               Didn't have an account? Sign up{" "}

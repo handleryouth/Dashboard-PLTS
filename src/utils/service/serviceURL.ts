@@ -3,7 +3,6 @@ import {
   LoginResponse,
   GeneratorDataProps,
   StaffRequestParams,
-  StaffDataResponse,
   ActivateStaffBodyProps,
   ServiceMessageResponse,
   DeactivateStaffBodyProps,
@@ -27,6 +26,9 @@ import {
   StaffDataProps,
   PLTSAnalyticValueParams,
   PLTSAnalyticValueResponse,
+  PLTSDataKeyParams,
+  PLTSComparingValueParams,
+  PLTSComparingValueResponse,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -43,7 +45,7 @@ export interface ServiceURL {
   }>;
   get_staff_list: ServiceStructure<{
     params: StaffRequestParams;
-    response: StaffDataResponse;
+    response: ServiceMessageResponse<StaffDataProps[]>;
   }>;
   activate_staff: ServiceStructure<{
     body: ActivateStaffBodyProps;
@@ -107,5 +109,20 @@ export interface ServiceURL {
   get_plts_analytic_value: ServiceStructure<{
     params: PLTSAnalyticValueParams;
     response: ServiceMessageResponse<PLTSAnalyticValueResponse>;
+  }>;
+  delete_plts_profile: ServiceStructure<{
+    params: PLTSProfileDeleteParams;
+    response: ServiceMessageResponse;
+  }>;
+  get_plts_data_key: ServiceStructure<{
+    params: PLTSDataKeyParams;
+    response: ServiceMessageResponse<string[]>;
+  }>;
+  get_plts_comparing_data_key: ServiceStructure<{
+    response: ServiceMessageResponse<string[]>;
+  }>;
+  get_plts_comparing_value: ServiceStructure<{
+    params: PLTSComparingValueParams;
+    response: ServiceMessageResponse<PLTSComparingValueResponse>;
   }>;
 }

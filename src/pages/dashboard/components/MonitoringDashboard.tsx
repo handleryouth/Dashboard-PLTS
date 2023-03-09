@@ -29,7 +29,8 @@ export default function MonitoringDashboard() {
       <div>
         <div className="flex items-center justify-between">
           <h3 className="my-0">Monitoring Dashboard</h3>
-          <Button className="bg-blue-500" onClick={() => setShowModal(true)}>
+          <Button className="bg-blue-500"
+           onClick={() => setShowModal(true)}>
             Show new graph
           </Button>
         </div>
