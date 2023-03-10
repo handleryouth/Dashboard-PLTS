@@ -142,6 +142,16 @@ export interface PLTSComparingValueResponse {
   pltsKey: string[];
 }
 
+export interface PLTSCumulativeValueResponse {
+  data: PLTSComparingValueDataProps[];
+  pltsKey: string[];
+}
+
+export interface PLTSCumulativeValueParams {
+  dataName: string;
+  dataTime: string;
+}
+
 export interface PLTSComparingValueParams {
   dataName: string;
 }

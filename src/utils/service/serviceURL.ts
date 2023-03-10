@@ -29,6 +29,8 @@ import {
   PLTSDataKeyParams,
   PLTSComparingValueParams,
   PLTSComparingValueResponse,
+  PLTSCumulativeValueResponse,
+  PLTSCumulativeValueParams,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -124,5 +126,9 @@ export interface ServiceURL {
   get_plts_comparing_value: ServiceStructure<{
     params: PLTSComparingValueParams;
     response: ServiceMessageResponse<PLTSComparingValueResponse>;
+  }>;
+  get_plts_cumulative_value: ServiceStructure<{
+    params: PLTSCumulativeValueParams;
+    response: ServiceMessageResponse<PLTSCumulativeValueResponse>;
   }>;
 }

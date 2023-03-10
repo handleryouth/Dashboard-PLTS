@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { SelectButton } from "primereact/selectbutton";
 import {
   LineSegment,
   VictoryAxis,
@@ -8,14 +9,38 @@ import {
   VictoryLabel,
   VictoryLegend,
   VictoryTooltip,
-  VictoryZoomContainer,
 } from "victory";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import { Dropdown } from "components";
 import { PLTSComparingValueResponse } from "types";
+import { SelectItem } from "primereact/selectitem";
+import { ProgressSpinner } from "primereact/progressspinner";
+
+export const BUTTON_LABEL_TIME_SELECTION: SelectItem[] = [
+  {
+    label: "Daily",
+    value: "daily",
+  },
+  {
+    label: "Weekly",
+    value: "weekly",
+  },
+  {
+    label: "Monthly",
+    value: "monthly",
+  },
+  {
+    label: "Yearly",
+    value: "yearly",
+  },
+];
 
 export default function CumulativeDashboard() {
   const [dataKey, setDataKey] = useState<string[]>([]);
+
+  const [period, setPeriod] = useState("daily");
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -28,7 +53,7 @@ export default function CumulativeDashboard() {
   const [comparingData, setComparingData] =
     useState<PLTSComparingValueResponse>();
 
-  console.log("comparing data", comparingData);
+  console.log("comparing data", period);
 
   const [dropdownValue, setDropdownValue] = useState<string>();
 
@@ -38,19 +63,25 @@ export default function CumulativeDashboard() {
     if (response && response.status === 200) {
       setDataKey(response.data.data);
     }
+
+    setIsLoading(false);
   }, []);
 
   const getDataValue = useCallback(async () => {
-    const response = await requestHelper("get_plts_comparing_value", {
+    setIsLoading(true);
+    const response = await requestHelper("get_plts_cumulative_value", {
       params: {
         dataName: dropdownValue,
+        dataTime: period,
       },
     });
 
     if (response && response.status === 200) {
       setComparingData(response.data.data);
     }
-  }, [dropdownValue]);
+
+    setIsLoading(false);
+  }, [dropdownValue, period]);
 
   const handleRenderDropdownItem = useMemo(() => {
     return dataKey.map((item) => {
@@ -71,14 +102,32 @@ export default function CumulativeDashboard() {
     }
   }, [dropdownValue, getDataValue]);
 
+  const generateDateLocale = useCallback(
+    (dateValue: string) => {
+      switch (period) {
+        case "daily":
+          return new Date(dateValue).toLocaleTimeString("id-ID");
+        case "weekly":
+          return new Date(dateValue).toLocaleDateString("id-ID");
+        case "monthly":
+          return new Date(dateValue).toLocaleDateString("id-ID");
+        case "yearly":
+          return new Date(dateValue).toLocaleDateString("id-ID");
+        default:
+          return new Date(dateValue).toLocaleTimeString("id-ID");
+      }
+    },
+    [period]
+  );
+
   const generatedData = useCallback(
     (dataKey: string) => {
       return comparingData?.data.map((item) => ({
-        x: new Date(item.time).toLocaleTimeString("id-ID"),
+        x: generateDateLocale(item.time),
         y: item[dataKey],
       }));
     },
-    [comparingData?.data]
+    [comparingData?.data, generateDateLocale]
   );
 
   const generateLegend = useMemo(() => {
@@ -86,8 +135,6 @@ export default function CumulativeDashboard() {
       name: convertCamelCaseToPascalCase(item),
     }));
   }, [comparingData?.pltsKey]);
-
-  console.log("comparing data", comparingData);
 
   return (
     <div ref={graphRef}>
@@ -105,50 +152,64 @@ export default function CumulativeDashboard() {
           className="w-full"
         />
       </div>
-      <VictoryChart width={boundingRect.width} height={450}>
-        <VictoryGroup offset={20} colorScale="qualitative">
-          {comparingData?.pltsKey.map((item) => (
-            <VictoryBar
-              key={item}
-              data={generatedData(item)}
-              labels={({ datum }) => datum.y}
-              labelComponent={
-                <VictoryTooltip dy={0} centerOffset={{ x: 25 }} />
-              }
-            />
-          ))}
-        </VictoryGroup>
 
-        <VictoryAxis
-          axisLabelComponent={<VictoryLabel />}
-          fixLabelOverlap
-          style={{
-            tickLabels: { angle: -20 },
-            grid: { stroke: "#000000", strokeWidth: 0.5 },
-          }}
-          standalone={false}
-          gridComponent={<LineSegment />}
-          tickLabelComponent={<VictoryLabel verticalAnchor="start" />}
-        />
-        <VictoryAxis
-          dependentAxis
-          standalone={false}
-          gridComponent={<LineSegment />}
-          tickLabelComponent={
-            <VictoryLabel verticalAnchor="middle" textAnchor="start" x={0} />
-          }
-          style={{
-            grid: { stroke: "#000000", strokeWidth: 0.5 },
-          }}
-        />
+      <SelectButton
+        className="text-center my-4"
+        value={period}
+        options={BUTTON_LABEL_TIME_SELECTION}
+        onChange={(e) => setPeriod(e.value)}
+      />
 
-        <VictoryLegend
-          orientation="horizontal"
-          colorScale="qualitative"
-          gutter={20}
-          data={generateLegend}
-        />
-      </VictoryChart>
+      {isLoading ? (
+        <div className="text-center my-8">
+          <ProgressSpinner className="w-14 h-14" />
+        </div>
+      ) : (
+        <VictoryChart width={boundingRect.width} height={450}>
+          <VictoryGroup offset={20} colorScale="qualitative">
+            {comparingData?.pltsKey.map((item) => (
+              <VictoryBar
+                key={item}
+                data={generatedData(item)}
+                labels={({ datum }) => datum.y}
+                labelComponent={
+                  <VictoryTooltip dy={0} centerOffset={{ x: 25 }} />
+                }
+              />
+            ))}
+          </VictoryGroup>
+
+          <VictoryAxis
+            axisLabelComponent={<VictoryLabel />}
+            fixLabelOverlap
+            style={{
+              tickLabels: { angle: -20 },
+              grid: { stroke: "#000000", strokeWidth: 0.5 },
+            }}
+            standalone={false}
+            gridComponent={<LineSegment />}
+            tickLabelComponent={<VictoryLabel verticalAnchor="start" />}
+          />
+          <VictoryAxis
+            dependentAxis
+            standalone={false}
+            gridComponent={<LineSegment />}
+            tickLabelComponent={
+              <VictoryLabel verticalAnchor="middle" textAnchor="start" x={0} />
+            }
+            style={{
+              grid: { stroke: "#000000", strokeWidth: 0.5 },
+            }}
+          />
+
+          <VictoryLegend
+            orientation="horizontal"
+            colorScale="qualitative"
+            gutter={20}
+            data={generateLegend}
+          />
+        </VictoryChart>
+      )}
     </div>
   );
 }

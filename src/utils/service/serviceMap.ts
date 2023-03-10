@@ -108,4 +108,8 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/comparing-value",
   },
+  get_plts_cumulative_value: {
+    method: "GET",
+    url: "/api/plts/cumulative-value",
+  },
 };

@@ -40,6 +40,7 @@ requestInstance.interceptors.response.use(
               cookieOptions: {
                 path: "/",
               },
+              
             });
 
             return requestInstance(originalRequest);
