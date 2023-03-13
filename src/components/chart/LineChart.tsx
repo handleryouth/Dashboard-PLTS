@@ -53,7 +53,7 @@ export default function LineChart<T extends Object>({
       ref={graphRef}
     >
       <div className="flex items-start justify-between flex-col monitoringChartBreakpoint:flex-row monitoringChartBreakpoint:items-end">
-        <div className="basis-1/2">
+        <div className="basis-1/4">
           <h3 className="mt-0 font-bold">{title}</h3>
         </div>
 

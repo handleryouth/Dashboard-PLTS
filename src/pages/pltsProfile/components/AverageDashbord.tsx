@@ -122,8 +122,8 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
             }}
             renderItem={handleRenderItem}
             customDropdownComponent={
-              <div className="flex items-end gap-x-4 justify-end">
-                <Button className="bg-blue-500" onClick={downloadCSVFile}>
+              <div className="flex items-end gap-x-4 justify-end ">
+                <Button className="bg-blue-500 w-max" onClick={downloadCSVFile}>
                   Download CSV
                 </Button>
 

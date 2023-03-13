@@ -57,7 +57,7 @@ export default function MonitoringChart({
 
   const handleSSEEvent = useCallback(async () => {
     const sseSource = new EventSource(
-      `http://${process.env.REACT_APP_SERVER_URL}:8000/api/plts?pltsName=${title}`,
+      `${process.env.REACT_APP_SERVER_URL}api/plts?pltsName=${title}`,
 
       {
         withCredentials: true,
