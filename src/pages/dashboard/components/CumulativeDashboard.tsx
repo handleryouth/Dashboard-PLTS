@@ -68,6 +68,7 @@ export default function CumulativeDashboard() {
   }, []);
 
   const getDataValue = useCallback(async () => {
+    let mounted = true;
     setIsLoading(true);
     const response = await requestHelper("get_plts_cumulative_value", {
       params: {
@@ -76,11 +77,15 @@ export default function CumulativeDashboard() {
       },
     });
 
-    if (response && response.status === 200) {
+    if (response && response.status === 200 && mounted) {
       setComparingData(response.data.data);
     }
 
     setIsLoading(false);
+
+    return () => {
+      mounted = false;
+    };
   }, [dropdownValue, period]);
 
   const handleRenderDropdownItem = useMemo(() => {
@@ -106,9 +111,11 @@ export default function CumulativeDashboard() {
     (dateValue: string) => {
       switch (period) {
         case "hourly":
-          return new Date(dateValue).toLocaleTimeString("id-ID");
+          return new Date(dateValue).toLocaleTimeString("id-ID", {
+            hour: "numeric",
+          });
         case "daily":
-          return new Date(dateValue).toLocaleDateString("id-ID");
+          return new Date(dateValue).toLocaleString("id-ID");
         case "monthly":
           return new Date(dateValue).toLocaleString("id-ID", {
             month: "long",
