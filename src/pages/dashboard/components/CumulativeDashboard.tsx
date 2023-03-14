@@ -18,12 +18,12 @@ import { ProgressSpinner } from "primereact/progressspinner";
 
 export const BUTTON_LABEL_TIME_SELECTION: SelectItem[] = [
   {
-    label: "Daily",
-    value: "daily",
+    label: "Hourly",
+    value: "hourly",
   },
   {
-    label: "Weekly",
-    value: "weekly",
+    label: "Daily",
+    value: "daily",
   },
   {
     label: "Monthly",
@@ -105,14 +105,18 @@ export default function CumulativeDashboard() {
   const generateDateLocale = useCallback(
     (dateValue: string) => {
       switch (period) {
-        case "daily":
+        case "hourly":
           return new Date(dateValue).toLocaleTimeString("id-ID");
-        case "weekly":
+        case "daily":
           return new Date(dateValue).toLocaleDateString("id-ID");
         case "monthly":
-          return new Date(dateValue).toLocaleDateString("id-ID");
+          return new Date(dateValue).toLocaleString("id-ID", {
+            month: "long",
+          });
         case "yearly":
-          return new Date(dateValue).toLocaleDateString("id-ID");
+          return new Date(dateValue).toLocaleString("id-ID", {
+            year: "numeric",
+          });
         default:
           return new Date(dateValue).toLocaleTimeString("id-ID");
       }
@@ -158,6 +162,7 @@ export default function CumulativeDashboard() {
         value={period}
         options={BUTTON_LABEL_TIME_SELECTION}
         onChange={(e) => setPeriod(e.value)}
+        unselectable={false}
       />
 
       {isLoading ? (
