@@ -3,17 +3,11 @@ import { useForm, Controller } from "react-hook-form";
 import { Dialog } from "primereact/dialog";
 import { Button, Dropdown } from "components";
 import { requestHelper } from "utils";
-import { PLTSProfileList } from "types";
-
-export interface AddGraphModalProps {
-  visible: boolean;
-  toggleCloseModal: () => void;
-  onSubmitModal: (item: AddGraphModalFormProps) => void;
-}
-
-export interface AddGraphModalFormProps {
-  graphName: string;
-}
+import {
+  AddGraphModalFormProps,
+  AddGraphModalProps,
+  PLTSProfileList,
+} from "types";
 
 export default function AddGraphModal({
   toggleCloseModal,

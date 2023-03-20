@@ -1,22 +1,17 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 import { Container, Table, TableAction } from "components";
 import { requestHelper } from "utils";
-import { PLTSPositionDataResponse, TableContent } from "types";
+import {
+  DeleteModalStateProps,
+  PLTSPositionDataResponse,
+  PositionTableHeaderProps,
+  TableContent,
+} from "types";
 import { useNavigate } from "react-router-dom";
 import { SplitButton } from "primereact/splitbutton";
 import { MenuItem } from "primereact/menuitem";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { PositionDropdownItemsTemplate } from "./components";
-
-export type PositionTableHeaderProps =
-  | keyof PLTSPositionDataResponse
-  | "actionButton";
-
-export interface DeleteModalStateProps {
-  visible: boolean;
-  name: string;
-  id: string;
-}
 
 export default function Position() {
   const [positionData, setPositionData] =

@@ -1,5 +1,4 @@
 import { Button, Container, Dropdown, Input } from "components";
-import { SelectItemOptionsType } from "primereact/selectitem";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
@@ -7,11 +6,7 @@ import { StaffDataProps, UserStaffType } from "types";
 import { requestHelper } from "utils";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useCookies } from "react-cookie";
-
-const STAFF_ROLE_OPTIONS: SelectItemOptionsType = [
-  { label: "Admin", value: "admin" },
-  { label: "User", value: "user" },
-];
+import { STAFF_ROLE_OPTIONS } from "const";
 
 export default function StaffManagementEdit() {
   const { id } = useParams<"id">();

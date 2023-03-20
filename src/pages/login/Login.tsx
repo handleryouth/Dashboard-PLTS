@@ -1,20 +1,11 @@
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { useCookies } from "react-cookie";
 import { Button, Input, Seo } from "components";
 import { requestHelper } from "utils";
-import { useCookies } from "react-cookie";
-import { SetTokenFunctionProps } from "types";
-import { useForm, Controller } from "react-hook-form";
-
-export interface LoginFormProps {
-  email: string;
-  password: string;
-}
-
-export const LOGIN_FORM_INITIAL_VALUES: LoginFormProps = {
-  email: "",
-  password: "",
-};
+import { LoginFormProps, SetTokenFunctionProps } from "types";
+import { LOGIN_FORM_INITIAL_VALUES } from "const";
 
 export default function Login() {
   const { control, handleSubmit, setError } = useForm<LoginFormProps>({

@@ -31,6 +31,12 @@ import {
   PLTSComparingValueResponse,
   PLTSCumulativeValueResponse,
   PLTSCumulativeValueParams,
+  PLTSProfileParams,
+  PLTSCSVDownloadFileParams,
+  PLTSClusterValueParams,
+  PLTSClusterValueResponse,
+  PLTSTotalClusterParams,
+  PLTSTotalClusterResponse,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -90,6 +96,7 @@ export interface ServiceURL {
     params: PLTSProfileDeleteParams;
   }>;
   get_plts_profile_list: ServiceStructure<{
+    params: PLTSProfileParams;
     response: ServiceMessageResponse<PLTSProfileList[]>;
   }>;
   get_plts_profile_detail: ServiceStructure<{
@@ -105,7 +112,7 @@ export interface ServiceURL {
     response: ServiceMessageResponse<StaffDataProps>;
   }>;
   get_plts_average_file: ServiceStructure<{
-    params: PLTSProfileDetailAverageParams;
+    params: PLTSCSVDownloadFileParams;
     response: ServiceMessageResponse<string>;
   }>;
   get_plts_analytic_value: ServiceStructure<{
@@ -130,5 +137,13 @@ export interface ServiceURL {
   get_plts_cumulative_value: ServiceStructure<{
     params: PLTSCumulativeValueParams;
     response: ServiceMessageResponse<PLTSCumulativeValueResponse>;
+  }>;
+  get_plts_cluster_value: ServiceStructure<{
+    params: PLTSClusterValueParams;
+    response: ServiceMessageResponse<PLTSClusterValueResponse>;
+  }>;
+  get_plts_total_cluster: ServiceStructure<{
+    params: PLTSTotalClusterParams;
+    response: ServiceMessageResponse<PLTSTotalClusterResponse>;
   }>;
 }

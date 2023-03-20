@@ -5,7 +5,11 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Container, Section } from "components";
 import { PLTSProfileDetailResponse } from "types";
 import { requestHelper } from "utils";
-import { AverageDashbord, PLTSAnalyticValue } from "./components";
+import {
+  AverageDashbord,
+  ClusterDashboard,
+  PLTSAnalyticValue,
+} from "./components";
 import { MonitoringChart } from "../dashboard";
 import { LatLngExpression } from "leaflet";
 
@@ -103,6 +107,8 @@ export default function PltsDetail() {
           <AverageDashbord pltsName={pltsDetailData.pltsName} />
 
           <PLTSAnalyticValue pltsName={pltsDetailData.pltsName} id={id!} />
+
+          <ClusterDashboard />
 
           <div>
             <h3>About</h3>

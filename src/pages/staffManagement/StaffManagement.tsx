@@ -6,26 +6,19 @@ import { Container, Pagination, Table, TableAction } from "components";
 import {
   ServiceMessageResponse,
   StaffDataProps,
+  StaffManagementParams,
+  StaffManagementTableHeaderProps,
   TableActionSearchProps,
   TableContent,
 } from "types";
 import { requestHelper } from "utils";
 import { useCookies } from "react-cookie";
 
-export type StaffManagementTableHeaderProps =
-  | keyof StaffDataProps
-  | "actionButton";
-
-export interface StaffManagementParams {
-  search?: string;
-  page?: number;
-}
-
 export default function StaffManagement() {
   const [staffData, setStaffData] =
     useState<ServiceMessageResponse<StaffDataProps[]>>();
 
-  const [cookies, setCookies] = useCookies(["staffData"]);
+  const [cookies] = useCookies(["staffData"]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 

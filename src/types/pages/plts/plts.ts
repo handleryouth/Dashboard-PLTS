@@ -19,6 +19,8 @@ export interface PLTSProfileBody {
   globalHorizontalIrradiance: number;
   pvSurfaceArea: number;
   powerPerYear: number;
+  deviceType?: "pvInverter" | "batteryInverter";
+  connectedTo?: string;
 }
 
 export interface PLTSPositionBody {
@@ -64,6 +66,9 @@ export interface PLTSListResponse {
   installedPower: number;
   powerPerYear: number;
   pvSurfaceArea: number;
+  deviceType: "pvInverter" | "batteryInverter";
+  connectedTo?: string;
+  connectedWith?: string;
 }
 
 export interface PLTSProfileEditBody
@@ -81,6 +86,11 @@ export interface PLTSProfileDeleteParams {
 
 export interface PLTSDataKeyParams {
   pltsName: string;
+}
+
+export interface PLTSProfileParams {
+  id?: string;
+  deviceType: "pvInverter" | "batteryInverter";
 }
 
 export interface PLTSProfileList {
@@ -106,6 +116,11 @@ export interface PLTSProfileDetailResponse {
 }
 
 export interface PLTSProfileDetailAverageParams {
+  pltsName: string;
+  dataTime: string;
+}
+
+export interface PLTSCSVDownloadFileParams {
   pltsName: string;
   startDate: string;
   endDate: string;
@@ -154,4 +169,41 @@ export interface PLTSCumulativeValueParams {
 
 export interface PLTSComparingValueParams {
   dataName: string;
+}
+
+export interface PLTSClusterValueParams {
+  id: string;
+  dataTime: string;
+}
+
+export interface PLTSClusterValueResponseDataProps {
+  [key: string]: string | number;
+  time: string;
+}
+
+export interface PLTSClusterValueResponse {
+  dataKey: string[];
+  data: PLTSClusterValueResponseDataProps[];
+}
+
+export interface PLTSTotalClusterParams {
+  dataTime: string;
+}
+
+export interface TotalClusterDataProps {
+  _id: string;
+  time: string;
+  batteryInverter: number;
+  pvInverter: number;
+  gridPower: number;
+}
+
+export interface PLTSTotalClusterResponse {
+  data: TotalClusterDataProps[];
+  dataKey: string[];
+}
+
+export interface PLTSAnalyticValueProps {
+  id: string;
+  pltsName: string;
 }

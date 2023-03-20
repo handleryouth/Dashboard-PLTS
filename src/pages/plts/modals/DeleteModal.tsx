@@ -1,11 +1,6 @@
-import { Button } from "components";
 import { ConfirmDialog } from "primereact/confirmdialog";
-
-export interface DeleteModalProps {
-  onConfirm: () => void;
-  onCancel: () => void;
-  visible: boolean;
-}
+import { Button } from "components";
+import { DeleteModalProps } from "types";
 
 export default function DeleteModal({
   onCancel,

@@ -6,3 +6,4 @@ export * from "./leaflet";
 export * from "./image";
 export * from "./text";
 export * from "./redux";
+export * from "./date";

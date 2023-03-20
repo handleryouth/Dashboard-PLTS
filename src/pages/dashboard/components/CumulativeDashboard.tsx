@@ -10,30 +10,15 @@ import {
   VictoryLegend,
   VictoryTooltip,
 } from "victory";
-import { convertCamelCaseToPascalCase, requestHelper } from "utils";
+import {
+  convertCamelCaseToPascalCase,
+  generateDateLocale,
+  requestHelper,
+} from "utils";
 import { Dropdown } from "components";
 import { PLTSComparingValueResponse } from "types";
-import { SelectItem } from "primereact/selectitem";
 import { ProgressSpinner } from "primereact/progressspinner";
-
-export const BUTTON_LABEL_TIME_SELECTION: SelectItem[] = [
-  {
-    label: "Hourly",
-    value: "hourly",
-  },
-  {
-    label: "Daily",
-    value: "daily",
-  },
-  {
-    label: "Monthly",
-    value: "monthly",
-  },
-  {
-    label: "Yearly",
-    value: "yearly",
-  },
-];
+import { BUTTON_LABEL_TIME_SELECTION } from "const";
 
 export default function CumulativeDashboard() {
   const [dataKey, setDataKey] = useState<string[]>([]);
@@ -107,30 +92,6 @@ export default function CumulativeDashboard() {
     }
   }, [dropdownValue, getDataValue]);
 
-  const generateDateLocale = useCallback(
-    (dateValue: string) => {
-      switch (period) {
-        case "hourly":
-          return new Date(dateValue).toLocaleTimeString("id-ID", {
-            hour: "numeric",
-          });
-        case "daily":
-          return new Date(dateValue).toLocaleString("id-ID");
-        case "monthly":
-          return new Date(dateValue).toLocaleString("id-ID", {
-            month: "long",
-          });
-        case "yearly":
-          return new Date(dateValue).toLocaleString("id-ID", {
-            year: "numeric",
-          });
-        default:
-          return new Date(dateValue).toLocaleTimeString("id-ID");
-      }
-    },
-    [period]
-  );
-
   const generatedData = useCallback(
     (dataKey: string) => {
       return comparingData?.data.map((item) => ({
@@ -138,7 +99,7 @@ export default function CumulativeDashboard() {
         y: item[dataKey],
       }));
     },
-    [comparingData?.data, generateDateLocale]
+    [comparingData?.data]
   );
 
   const generateLegend = useMemo(() => {

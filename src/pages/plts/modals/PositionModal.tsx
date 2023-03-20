@@ -4,13 +4,11 @@ import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { Dialog } from "primereact/dialog";
 import { Button, Input } from "components";
 import { requestHelper } from "utils";
-import { EarthPosition, PositionModalFormType } from "types";
-
-export interface PositionModalProps {
-  toggleModalClosed: () => void;
-  visible: boolean;
-  onRequestCompleted: () => void;
-}
+import {
+  EarthPosition,
+  PositionModalFormType,
+  PositionModalProps,
+} from "types";
 
 export default function PositionModal({
   toggleModalClosed,

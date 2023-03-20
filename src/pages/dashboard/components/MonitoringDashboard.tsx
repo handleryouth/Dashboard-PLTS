@@ -1,7 +1,8 @@
 import { useState, useCallback } from "react";
-import MonitoringChart from "./MonitoringChart";
 import { Button } from "components";
-import { AddGraphModal, AddGraphModalFormProps } from "./modals";
+import { AddGraphModalFormProps } from "types";
+import MonitoringChart from "./MonitoringChart";
+import { AddGraphModal } from "./modals";
 
 export default function MonitoringDashboard() {
   const [graphList, setGraphList] = useState<string[]>([]);
@@ -29,8 +30,7 @@ export default function MonitoringDashboard() {
       <div>
         <div className="flex items-center justify-between">
           <h3 className="my-0">Monitoring Dashboard</h3>
-          <Button className="bg-blue-500"
-           onClick={() => setShowModal(true)}>
+          <Button className="bg-blue-500" onClick={() => setShowModal(true)}>
             Show new graph
           </Button>
         </div>

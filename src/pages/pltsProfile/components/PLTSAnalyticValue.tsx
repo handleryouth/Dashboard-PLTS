@@ -1,21 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Section } from "components";
 import { requestHelper } from "utils";
-import { PLTSAnalyticValueResponse } from "types";
-
-export interface PLTSAnalyticValueProps {
-  id: string;
-  pltsName: string;
-}
-
-export const ANALYTIC_DATA_INITIAL_STATE: PLTSAnalyticValueResponse = {
-  capacityFactor: 0,
-  compensatedPerformanceRatio: 0,
-  installedPowerLoadFactor: 0,
-  performanceRatio: 0,
-  installedPowerLoadDuration: 0,
-  maximumPowerLoadDuration: 0,
-};
+import { PLTSAnalyticValueProps, PLTSAnalyticValueResponse } from "types";
+import { ANALYTIC_DATA_INITIAL_STATE } from "const";
 
 export default function PLTSAnalyticValue({
   id,

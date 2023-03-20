@@ -1,27 +1,16 @@
-import { Button, Container, Input } from "components";
 import { useState, useMemo, useRef, useCallback } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   EarthPosition,
-  PLTSPositionDataResponse,
+  PositionFormLocationState,
+  PositionFormProps,
   PositionModalFormType,
 } from "types";
+import { Button, Container, Input } from "components";
+import { POSITION_FORM_INITIAL_STATE } from "const";
 import { requestHelper } from "utils";
-
-export interface PositionFormProps {
-  edit?: boolean;
-}
-
-export interface PositionFormLocationState {
-  state: PLTSPositionDataResponse;
-}
-
-const POSITION_FORM_INITIAL_STATE: PositionModalFormType = {
-  address: "",
-  name: "",
-};
 
 export default function PositionForm({ edit }: PositionFormProps) {
   const navigate = useNavigate();

@@ -1,8 +1,12 @@
-import { useCallback, useState, useEffect, useMemo } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Input, Button, Container, Dropdown } from "components";
-import { PLTSPositionDataResponse, PLTSProfileBody } from "types";
+import {
+  PLTSPositionDataResponse,
+  PLTSProfileBody,
+  PLTSProfileList,
+} from "types";
 import { camelCase, requestHelper } from "utils";
 import { DeleteModal, PositionModal } from "./modals";
 import { SelectItem, SelectItemOptionsType } from "primereact/selectitem";
@@ -18,6 +22,7 @@ export const PLTS_FORM_INITIAL_STATE: PLTSProfileBody = {
   installedPower: 0,
   pvSurfaceArea: 0,
   powerPerYear: 0,
+  deviceType: "pvInverter",
 };
 
 export interface PLTSFormProps {
@@ -35,6 +40,17 @@ export const PLTS_SIGNED_VALUE_DROPDOWN: SelectItemOptionsType = [
   },
 ];
 
+export const PLTS_DEVICE_TYPE_DROPDOWN: SelectItemOptionsType = [
+  {
+    label: "PV Inverter",
+    value: "pvInverter",
+  },
+  {
+    label: "Battery Inverter",
+    value: "batteryInverter",
+  },
+];
+
 export type PLTSFormModalState = "delete" | "position" | undefined;
 
 export default function PltsForm({ edit }: PLTSFormProps) {
@@ -48,7 +64,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
     []
   );
 
-  const { control, handleSubmit } = useForm<PLTSProfileBody>({
+  const [pltsProfile, setPltsProfile] = useState<PLTSProfileList[]>([]);
+
+  const previousDeviceType = useRef<string | undefined>(
+    edit ? state.deviceType : "deviceType"
+  );
+
+  const { control, handleSubmit, reset } = useForm<PLTSProfileBody>({
     defaultValues: edit
       ? {
           devicePosition: state.devicePosition?._id ?? "-",
@@ -61,9 +83,38 @@ export default function PltsForm({ edit }: PLTSFormProps) {
           installedPower: state.installedPower,
           pvSurfaceArea: state.pvSurfaceArea,
           powerPerYear: state.powerPerYear,
+          deviceType: state.deviceType,
+          connectedTo: state?.connectedTo ?? state.connectedWith,
         }
       : PLTS_FORM_INITIAL_STATE,
   });
+
+  const deviceType = useWatch({
+    control,
+    name: "deviceType",
+  });
+
+  const getPLTSProfile = useCallback(async () => {
+    const response = await requestHelper("get_plts_profile_list", {
+      params: {
+        id: edit ? state._id : undefined,
+        deviceType: deviceType,
+      },
+    });
+
+    if (response && response.status === 200) {
+      setPltsProfile(response.data.data);
+
+      if (deviceType !== previousDeviceType.current) {
+        reset((formValues) => ({
+          ...formValues,
+          connectedTo: "",
+        }));
+
+        previousDeviceType.current = deviceType;
+      }
+    }
+  }, [edit, state._id, deviceType, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -143,6 +194,15 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       : [];
   }, [pltsLocation]);
 
+  const generatePltsProfile = useMemo<SelectItem[]>(() => {
+    return pltsProfile.length > 0
+      ? pltsProfile.map((item) => ({
+          label: item.pltsName,
+          value: item._id,
+        }))
+      : [];
+  }, [pltsProfile]);
+
   const handleDeletePLTS = useCallback(async () => {
     const response = await requestHelper("delete_plts_profile", {
       params: {
@@ -159,6 +219,10 @@ export default function PltsForm({ edit }: PLTSFormProps) {
   useEffect(() => {
     getPltsLocation();
   }, [getPltsLocation]);
+
+  useEffect(() => {
+    getPLTSProfile();
+  }, [getPLTSProfile]);
 
   return (
     <>
@@ -213,6 +277,57 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               );
             }}
           />
+
+          <Controller
+            name="deviceType"
+            control={control}
+            rules={{
+              required: "Device Type is required",
+            }}
+            render={({ field, fieldState }) => {
+              return (
+                <Dropdown
+                  {...field}
+                  id={field.name}
+                  label="Device Type"
+                  errorMessage={fieldState.error?.message}
+                  options={PLTS_DEVICE_TYPE_DROPDOWN}
+                />
+              );
+            }}
+          />
+
+          <div className="flex items-end gap-2">
+            <Controller
+              name="connectedTo"
+              control={control}
+              render={({ field, fieldState }) => {
+                return (
+                  <Dropdown
+                    {...field}
+                    id={field.name}
+                    label="Connected To/With"
+                    errorMessage={fieldState.error?.message}
+                    options={generatePltsProfile}
+                  />
+                );
+              }}
+            />
+
+            <Button
+              className="basis-2/5 h-[54px]"
+              onClick={() => {
+                reset((formValues) => {
+                  return {
+                    ...formValues,
+                    connectedTo: "",
+                  };
+                });
+              }}
+            >
+              Remove connected to
+            </Button>
+          </div>
 
           <div className="flex items-end gap-x-2 justify-between">
             <Controller
@@ -435,7 +550,12 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               <Button type="submit" className="bg-blue-500 w-full">
                 Save
               </Button>
-              <Button className="bg-red-500 w-full">Cancel</Button>
+              <Button
+                className="bg-red-500 w-full"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
             </div>
           </div>
           {edit && (

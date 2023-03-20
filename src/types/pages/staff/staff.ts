@@ -12,7 +12,7 @@ export interface StaffDataProps {
 
 export interface StaffDataResponse {
   data: StaffDataProps[];
-  total: number;  
+  total: number;
 }
 
 export interface StaffRequestParams {
@@ -40,4 +40,13 @@ export interface EditStaffBodyProps {
   email: string;
   name: string;
   role: UserStaffType;
+}
+
+export type StaffManagementTableHeaderProps =
+  | keyof StaffDataProps
+  | "actionButton";
+
+export interface StaffManagementParams {
+  search?: string;
+  page?: number;
 }

@@ -1,12 +1,7 @@
-import { Section } from "components";
-import { Sidebar } from "primereact/sidebar";
 import { useNavigate } from "react-router-dom";
-import { PLTSMapListResponse } from "types";
-
-export interface SmallSideDetailProps {
-  visible: boolean;
-  data?: PLTSMapListResponse;
-}
+import { Sidebar } from "primereact/sidebar";
+import { SmallSideDetailProps } from "types";
+import { Section } from "components";
 
 export default function SmallSideDetail({
   data,

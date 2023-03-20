@@ -1,41 +1,28 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Button, Dropdown, LineChart, RenderedChartItem } from "components";
 import {
-  Button,
-  Calendar,
-  Dropdown,
-  LineChart,
-  RenderedChartItem,
-} from "components";
-import {
+  AverageDashbordProps,
+  FilterModalStateProps,
   GeneratorDataAverageProps,
   PLTSProfileDetailAverageResponse,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
-
-export interface AverageDashbordProps {
-  pltsName: string;
-}
-
-export interface FilterModalStateProps {
-  startDate: Date;
-  endDate: Date;
-}
-
-export const INITIAL_STATE_DATE: FilterModalStateProps = {
-  startDate: new Date(new Date().setHours(0, 0, 0, 0)),
-  endDate: new Date(),
-};
+import { SelectButton } from "primereact/selectbutton";
+import { BUTTON_LABEL_TIME_SELECTION } from "const";
+import CSVModal from "./CSVModal";
 
 export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
   const [dropdownValue, setDropdownValue] =
     useState<keyof GeneratorDataAverageProps>();
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
   const [generatorData, setGeneratorData] =
     useState<PLTSProfileDetailAverageResponse>();
 
-  const [filterDate, setFilterDate] = useState(INITIAL_STATE_DATE);
+  const [period, setPeriod] = useState("daily");
 
   const handleRenderItem = useCallback(
     (
@@ -56,8 +43,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
       {
         params: {
           pltsName,
-          endDate: filterDate.endDate.toISOString(),
-          startDate: filterDate.startDate.toISOString(),
+          dataTime: period,
         },
       }
     );
@@ -66,7 +52,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
       setGeneratorData(response.data.data);
       setIsLoading(false);
     }
-  }, [filterDate, pltsName]);
+  }, [period, pltsName]);
 
   const handleRenderDropdownItem = useMemo(() => {
     return generatorData?.dataKeyArray.map((item) => {
@@ -77,27 +63,30 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
     });
   }, [generatorData]);
 
-  const downloadCSVFile = useCallback(async () => {
-    const data = await requestHelper("get_plts_average_file", {
-      params: {
-        pltsName,
-        endDate: filterDate.endDate.toISOString(),
-        startDate: filterDate.startDate.toISOString(),
-      },
-    });
-    if (data && data.status === 200) {
-      const url = window.URL.createObjectURL(
-        new Blob([data.data.data], {
-          type: "text/csv",
-        })
-      );
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "data.csv");
-      document.body.appendChild(link);
-      link.click();
-    }
-  }, [filterDate, pltsName]);
+  const downloadCSVFile = useCallback(
+    async (dateValue: FilterModalStateProps) => {
+      const data = await requestHelper("get_plts_average_file", {
+        params: {
+          pltsName,
+          endDate: dateValue.endDate.toISOString(),
+          startDate: dateValue.startDate.toISOString(),
+        },
+      });
+      if (data && data.status === 200) {
+        const url = window.URL.createObjectURL(
+          new Blob([data.data.data], {
+            type: "text/csv",
+          })
+        );
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "data.csv");
+        document.body.appendChild(link);
+        link.click();
+      }
+    },
+    [pltsName]
+  );
 
   useEffect(() => {
     getAverageValue();
@@ -107,6 +96,11 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
 
   return (
     <>
+      <CSVModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onConfirm={downloadCSVFile}
+      />
       <div className="my-8">
         {isLoading ? (
           <div>
@@ -123,31 +117,19 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
             renderItem={handleRenderItem}
             customDropdownComponent={
               <div className="flex items-end gap-x-4 justify-end ">
-                <Button className="bg-blue-500 w-max" onClick={downloadCSVFile}>
+                <Button
+                  className="bg-blue-500 w-max"
+                  onClick={() => setModalVisible(true)}
+                >
                   Download CSV
                 </Button>
 
-                <Calendar
-                  label="Start Date"
-                  value={filterDate.startDate}
-                  onChange={(e) =>
-                    setFilterDate((prevState) => ({
-                      ...prevState,
-                      startDate: e.value as Date,
-                    }))
-                  }
-                />
-
-                <Calendar
-                  label="End Date"
-                  className="w-auto"
-                  value={filterDate.endDate}
-                  onChange={(e) =>
-                    setFilterDate((prevState) => ({
-                      ...prevState,
-                      endDate: e.value as Date,
-                    }))
-                  }
+                <SelectButton
+                  className="text-center"
+                  value={period}
+                  options={BUTTON_LABEL_TIME_SELECTION}
+                  onChange={(e) => setPeriod(e.value)}
+                  unselectable={false}
                 />
 
                 <Dropdown

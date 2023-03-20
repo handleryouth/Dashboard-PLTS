@@ -1,4 +1,4 @@
-import { PLTSMapKey } from "../../pages";
+import { PLTSMapKey, PLTSMapListResponse } from "../../pages";
 
 export interface MapCoordinates {
   name: string;
@@ -6,4 +6,9 @@ export interface MapCoordinates {
   lat: number;
   lng: number;
   dataKey: PLTSMapKey;
+}
+
+export interface SmallSideDetailProps {
+  visible: boolean;
+  data?: PLTSMapListResponse;
 }

@@ -112,4 +112,12 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/cumulative-value",
   },
+  get_plts_cluster_value: {
+    method: "GET",
+    url: "/api/plts/cluster-value-power",
+  },
+  get_plts_total_cluster: {
+    method: "GET",
+    url: "/api/plts/cluster-comparing-value",
+  },
 };

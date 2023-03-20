@@ -21,7 +21,7 @@ export default function Plts() {
   const [pltsList, setPltsList] =
     useState<ServiceMessageResponse<PLTSListResponse[]>>();
 
-  const [cookies, setCookie] = useCookies(["staffData"]);
+  const [cookies] = useCookies(["staffData"]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -63,6 +63,9 @@ export default function Plts() {
       installedPower,
       powerPerYear,
       pvSurfaceArea,
+      deviceType,
+      connectedTo,
+      connectedWith,
     }: PLTSListResponse): Partial<Record<PLTSTableHeader, TableContent>> => ({
       devicePosition: (
         <div>
@@ -91,6 +94,9 @@ export default function Plts() {
                 installedPower,
                 powerPerYear,
                 pvSurfaceArea,
+                deviceType,
+                connectedTo,
+                connectedWith,
               })
             }
           >

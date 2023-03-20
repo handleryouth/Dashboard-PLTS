@@ -1,16 +1,13 @@
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Button, LineChart, RenderedChartItem } from "components";
-import { GeneratorDataProps, GeneratorDataPropsExcludeDeviceType } from "types";
+import {
+  GeneratorDataProps,
+  GeneratorDataPropsExcludeDeviceType,
+  MonitoringChartProps,
+} from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import { ProgressSpinner } from "primereact/progressspinner";
-
-export interface MonitoringChartProps {
-  title: string;
-  customClassname?: string;
-  onButtonClicked?: () => void;
-  buttonTitle?: string;
-}
 
 export default function MonitoringChart({
   title,

@@ -7,6 +7,8 @@ import {
   PLTSProfileList,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
+import { SelectButton } from "primereact/selectbutton";
+import { BUTTON_LABEL_TIME_SELECTION } from "const";
 
 export interface AverageDashboardStateProps {
   location: PLTSMapKey;
@@ -21,6 +23,8 @@ export const AVERAGE_DASHBOARD_INITIAL_STATE: AverageDashboardStateProps = {
 export default function AverageDashboard() {
   const [dropdownValue, setDropdownValue] =
     useState<keyof GeneratorDataPropsExcludeDeviceType>();
+
+  const [period, setPeriod] = useState("daily");
 
   const [positionDropdown, setPositionDropdown] = useState<string>();
 
@@ -49,6 +53,7 @@ export default function AverageDashboard() {
       {
         params: {
           pltsName: positionDropdown,
+          dataTime: period,
         },
       }
     );
@@ -56,7 +61,7 @@ export default function AverageDashboard() {
     if (response && response.status === 200) {
       setGeneratorData(response.data.data);
     }
-  }, [positionDropdown]);
+  }, [period, positionDropdown]);
 
   const getPltsLocation = useCallback(async () => {
     const response = await requestHelper("get_plts_profile_list");
@@ -104,7 +109,15 @@ export default function AverageDashboard() {
       title="Average Value"
       renderItem={handleRenderItem}
       customDropdownComponent={
-        <div className="flex items-center gap-x-4 w-full">
+        <div className="flex items-center justify-end  gap-x-4 w-full">
+          <SelectButton
+            className="text-center"
+            value={period}
+            options={BUTTON_LABEL_TIME_SELECTION}
+            onChange={(e) => setPeriod(e.value)}
+            unselectable={false}
+          />
+
           <Dropdown
             filter
             value={positionDropdown}
@@ -113,7 +126,7 @@ export default function AverageDashboard() {
               setPositionDropdown(e.target.value);
             }}
             options={getPositionDropdownItem}
-            className="w-full"
+            containerClassName="w-auto"
           />
 
           <Dropdown
@@ -124,7 +137,7 @@ export default function AverageDashboard() {
             onChange={(e) => {
               setDropdownValue(e.target.value);
             }}
-            className="w-full"
+            containerClassName="w-auto"
           />
         </div>
       }
