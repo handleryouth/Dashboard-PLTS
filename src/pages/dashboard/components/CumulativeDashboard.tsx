@@ -95,11 +95,11 @@ export default function CumulativeDashboard() {
   const generatedData = useCallback(
     (dataKey: string) => {
       return comparingData?.data.map((item) => ({
-        x: generateDateLocale(item.time),
+        x: generateDateLocale(period, item.time),
         y: item[dataKey],
       }));
     },
-    [comparingData?.data]
+    [comparingData?.data, period]
   );
 
   const generateLegend = useMemo(() => {

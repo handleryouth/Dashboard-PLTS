@@ -4,8 +4,8 @@ import { MenuItem } from "primereact/menuitem";
 export function sidebarItems() {
   const pltsLinks: MenuItem[] = [
     {
-      label: "PLTS",
-      url: "/plts",
+      label: "Inverter",
+      url: "/inverter",
       template: (item, options) => (
         <GenerateSidebarChildrenTemplate item={item} options={options} />
       ),

@@ -24,12 +24,12 @@ export default function SmallSideDetail({
       {data?.plantProfile.map((item) => {
         return (
           <div
-            onClick={() => navigate(`/plts/${item._id}`)}
+            onClick={() => navigate(`/inverter/${item._id}`)}
             key={item._id}
             className="flex gap-y-4 flex-col bg-gray-300 rounded-md p-4 cursor-pointer"
           >
             <Section
-              title="PLTS Name"
+              title="Inverter Name"
               titleClassName="text-sm"
               value={item.pltsName}
               direction="column"

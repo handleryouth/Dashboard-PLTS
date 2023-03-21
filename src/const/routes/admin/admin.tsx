@@ -34,22 +34,22 @@ export const ADMIN_ROUTES: RouteListProps[] = [
   },
   {
     name: "pltsDetail",
-    path: "/plts/:id",
+    path: "/inverter/:id",
     element: <PltsDetail />,
   },
   {
     name: "pltsCreate",
-    path: "/plts/create",
+    path: "/inverter/create",
     element: <PltsForm />,
   },
   {
     name: "pltsEdit",
-    path: "/plts/edit",
+    path: "/inverter/edit",
     element: <PltsForm edit />,
   },
   {
     name: "pltsList",
-    path: "/plts",
+    path: "/inverter",
     element: <Plts />,
   },
   {

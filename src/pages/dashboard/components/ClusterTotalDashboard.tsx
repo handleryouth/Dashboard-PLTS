@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, memo, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import {
   VictoryChart,
   VictoryGroup,
@@ -10,10 +10,18 @@ import {
 } from "victory";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PLTSTotalClusterResponse, TotalClusterDataProps } from "types";
-import { convertCamelCaseToPascalCase, requestHelper } from "utils";
+import {
+  convertCamelCaseToPascalCase,
+  generateDateLocale,
+  requestHelper,
+} from "utils";
+import { SelectButton } from "primereact/selectbutton";
+import { BUTTON_LABEL_TIME_SELECTION } from "const";
 
 export default function ClusterTotalDashboard() {
   const [loading, setLoading] = useState(true);
+
+  const [period, setPeriod] = useState("hourly");
 
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -30,7 +38,7 @@ export default function ClusterTotalDashboard() {
     setLoading(true);
     const response = await requestHelper("get_plts_total_cluster", {
       params: {
-        dataTime: "hourly",
+        dataTime: period,
       },
     });
 
@@ -38,7 +46,7 @@ export default function ClusterTotalDashboard() {
       setClusterTotalData(response.data.data);
     }
     setLoading(false);
-  }, []);
+  }, [period]);
 
   useEffect(() => {
     getTotalClusterData();
@@ -47,13 +55,11 @@ export default function ClusterTotalDashboard() {
   const generatedData = useCallback(
     (dataKey: string) => {
       return clusterTotalData?.data.map((item) => ({
-        x: new Date(item.time).toLocaleTimeString("id-ID", {
-          hour: "numeric",
-        }),
+        x: generateDateLocale(period, item.time),
         y: item[dataKey as keyof TotalClusterDataProps],
       }));
     },
-    [clusterTotalData]
+    [clusterTotalData?.data, period]
   );
 
   const generateLegend = useMemo(() => {
@@ -108,7 +114,17 @@ export default function ClusterTotalDashboard() {
 
   return (
     <div ref={graphRef}>
-      <h3>Cluster Data</h3>
+      <div className="flex items-center justify-between">
+        <h3>Cluster Total Power Graph</h3>
+
+        <SelectButton
+          className="text-center my-4"
+          value={period}
+          options={BUTTON_LABEL_TIME_SELECTION}
+          onChange={(e) => setPeriod(e.value)}
+          unselectable={false}
+        />
+      </div>
 
       {loading ? (
         <div className="text-center">
@@ -120,5 +136,3 @@ export default function ClusterTotalDashboard() {
     </div>
   );
 }
-
-export const MemoizedClusterTotalDashboard = memo(ClusterTotalDashboard);

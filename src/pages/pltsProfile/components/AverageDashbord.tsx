@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { ProgressSpinner } from "primereact/progressspinner";
+import { SelectButton } from "primereact/selectbutton";
 import { Button, Dropdown, LineChart, RenderedChartItem } from "components";
 import {
   AverageDashbordProps,
@@ -8,7 +8,6 @@ import {
   PLTSProfileDetailAverageResponse,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
-import { SelectButton } from "primereact/selectbutton";
 import { BUTTON_LABEL_TIME_SELECTION } from "const";
 import CSVModal from "./CSVModal";
 
@@ -102,50 +101,45 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
         onConfirm={downloadCSVFile}
       />
       <div className="my-8">
-        {isLoading ? (
-          <div>
-            <ProgressSpinner />
-          </div>
-        ) : (
-          <LineChart
-            title="Average Value"
-            chartData={dropdownValue ? generatorData?.data ?? [] : []}
-            coordinate={{
-              x: "time",
-              y: dropdownValue,
-            }}
-            renderItem={handleRenderItem}
-            customDropdownComponent={
-              <div className="flex items-end gap-x-4 justify-end ">
-                <Button
-                  className="bg-blue-500 w-max"
-                  onClick={() => setModalVisible(true)}
-                >
-                  Download CSV
-                </Button>
+        <LineChart
+          isLoading={isLoading}
+          title="Average Graph"
+          chartData={dropdownValue ? generatorData?.data ?? [] : []}
+          coordinate={{
+            x: "time",
+            y: dropdownValue,
+          }}
+          renderItem={handleRenderItem}
+          customDropdownComponent={
+            <div className="flex items-end gap-x-4 justify-end ">
+              <Button
+                className="bg-blue-500 w-max"
+                onClick={() => setModalVisible(true)}
+              >
+                Download CSV
+              </Button>
 
-                <SelectButton
-                  className="text-center"
-                  value={period}
-                  options={BUTTON_LABEL_TIME_SELECTION}
-                  onChange={(e) => setPeriod(e.value)}
-                  unselectable={false}
-                />
+              <SelectButton
+                className="text-center"
+                value={period}
+                options={BUTTON_LABEL_TIME_SELECTION}
+                onChange={(e) => setPeriod(e.value)}
+                unselectable={false}
+              />
 
-                <Dropdown
-                  value={dropdownValue}
-                  options={handleRenderDropdownItem}
-                  placeholder="Select Data"
-                  filter
-                  onChange={(e) => {
-                    setDropdownValue(() => e.target.value);
-                  }}
-                  containerClassName="w-auto"
-                />
-              </div>
-            }
-          />
-        )}
+              <Dropdown
+                value={dropdownValue}
+                options={handleRenderDropdownItem}
+                placeholder="Select Data"
+                filter
+                onChange={(e) => {
+                  setDropdownValue(() => e.target.value);
+                }}
+                containerClassName="w-auto"
+              />
+            </div>
+          }
+        />
       </div>
     </>
   );

@@ -29,7 +29,7 @@ export default function Plts() {
 
   const handleToEditPage = useCallback(
     (data: PLTSListResponse) => {
-      navigate("/plts/edit", {
+      navigate("/inverter/edit", {
         state: data,
       });
     },
@@ -38,7 +38,7 @@ export default function Plts() {
 
   const getHeaderTable = useMemo(
     (): Partial<Record<PLTSTableHeader, string>> => ({
-      pltsName: "PLTS Name",
+      pltsName: "Inverter Name",
       smaDeviceName: "SMA Device Name",
       ipAddress: "IP Address",
       port: "Port",
@@ -147,7 +147,7 @@ export default function Plts() {
         onSubmit={handleSearchData}
         buttonTitle="Add New PLTS"
         enableButton={cookies.staffData?.role === "admin"}
-        onButtonClick={() => navigate("/plts/create")}
+        onButtonClick={() => navigate("/inverter/create")}
       />
 
       <Pagination
@@ -155,7 +155,7 @@ export default function Plts() {
           handleConstructParams({
             page: event.first,
           })
-        }
+      }
         page={1}
         resultsLength={pltsList?.total ?? 0}
       />
@@ -165,7 +165,7 @@ export default function Plts() {
         data={pltsList?.data ?? []}
         keyItem={getKeyItem}
         renderItem={renderItem}
-        onClickRowItem={({ _id }) => navigate(`/plts/${_id}`)}
+        onClickRowItem={({ _id }) => navigate(`/inverter/${_id}`)}
         excludeOnClickRowItem={
           {
             actionbutton: false,

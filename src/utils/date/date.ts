@@ -1,5 +1,5 @@
-export const generateDateLocale = (dateValue: string) => {
-  switch (dateValue) {
+export const generateDateLocale = (dataTime: string, dateValue: string) => {
+  switch (dataTime) {
     case "hourly":
       return new Date(dateValue).toLocaleTimeString("id-ID", {
         hour: "numeric",

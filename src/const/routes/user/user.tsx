@@ -14,12 +14,12 @@ export const USER_ROUTES: RouteListProps[] = [
   },
   {
     name: "pltsDetail",
-    path: "/plts/:id",
+    path: "/inverter/:id",
     element: <PltsDetail />,
   },
   {
     name: "pltsList",
-    path: "/plts",
+    path: "/inverter",
     element: <Plts />,
   },
   {

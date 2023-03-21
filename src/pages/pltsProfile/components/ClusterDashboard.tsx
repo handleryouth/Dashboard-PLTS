@@ -57,11 +57,11 @@ export default function ClusterDashboard() {
     (dataKey: string) => {
       console.log("datakey", dataKey);
       return clusterData?.data.map((item) => ({
-        x: generateDateLocale(item.time),
+        x: generateDateLocale(period, item.time),
         y: item[dataKey],
       }));
     },
-    [clusterData?.data]
+    [clusterData?.data, period]
   );
 
   const generateLegend = useMemo(() => {
@@ -76,19 +76,20 @@ export default function ClusterDashboard() {
 
   return (
     <div ref={graphRef}>
-      <h3>Cluster Data</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="my-0">Cluster Power Graph</h3>
 
-      <SelectButton
-        className="text-center my-4"
-        value={period}
-        options={BUTTON_LABEL_TIME_SELECTION}
-        onChange={(e) => setPeriod(e.value)}
-        unselectable={false}
-      />
+        <SelectButton
+          value={period}
+          options={BUTTON_LABEL_TIME_SELECTION}
+          onChange={(e) => setPeriod(e.value)}
+          unselectable={false}
+        />
+      </div>
 
       {loading ? (
         <div className="text-center">
-          <ProgressSpinner />
+          <ProgressSpinner className="w-14 h-14" />
         </div>
       ) : (
         <VictoryChart width={boundingRect.width} height={450}>

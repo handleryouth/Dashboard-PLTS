@@ -69,7 +69,7 @@ export default function AddGraphModal({
           render={({ field, fieldState }) => (
             <Dropdown
               id={field.name}
-              placeholder="Select Graph Name"
+              placeholder="Select Graph"
               {...field}
               errorMessage={fieldState.error?.message}
               options={getDropdownItem}

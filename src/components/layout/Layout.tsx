@@ -11,10 +11,12 @@ export interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [cookies] = useCookies(["accessToken"]);
 
+  console.log("cookies", cookies);
+
   return (
     <SidebarContextProvider>
       <div className="bg-slate-100 min-h-screen h-full min-w-[490px]">
-        <Header />
+        {cookies.accessToken && <Header />}
         {cookies.accessToken && <SideButton />}
         <div className=" prose !min-w-[490px]  relative py-8 !max-w-screen-bigDisplay mx-auto">
           {cookies.accessToken && <Sidebar />}

@@ -1,3 +1,4 @@
+import { ProgressSpinner } from "primereact/progressspinner";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import {
   LineSegment,
@@ -21,6 +22,7 @@ export interface LineChartProps<T extends Object> {
     y?: keyof T;
   };
   allowZoom?: boolean;
+  isLoading?: boolean;
 }
 
 export default function LineChart<T extends Object>({
@@ -31,6 +33,7 @@ export default function LineChart<T extends Object>({
   coordinate,
   renderItem,
   allowZoom = false,
+  isLoading,
 }: LineChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -59,46 +62,53 @@ export default function LineChart<T extends Object>({
 
         {customDropdownComponent}
       </div>
-      <VictoryChart
-        containerComponent={<VictoryZoomContainer allowZoom={allowZoom} />}
-        width={boundingRect.width}
-        height={340}
-      >
-        <VictoryLine
-          data={generatedData}
-          style={{
-            data: {
-              stroke: "#42A5F5",
-            },
-            parent: { border: "1px solid #ccc", height: "100%" },
-          }}
-          standalone={false}
-          labels={({ datum }) => datum.y}
-          labelComponent={<VictoryLabel renderInPortal dy={-20} />}
-        />
-        <VictoryAxis
-          axisLabelComponent={<VictoryLabel />}
-          // fixLabelOverlap
-          style={{
-            tickLabels: { angle: -20 },
-            grid: { stroke: "#000000", strokeWidth: 0.5 },
-          }}
-          standalone={false}
-          gridComponent={<LineSegment />}
-          tickLabelComponent={<VictoryLabel verticalAnchor="start" />}
-        />
-        <VictoryAxis
-          dependentAxis
-          standalone={false}
-          gridComponent={<LineSegment />}
-          tickLabelComponent={
-            <VictoryLabel verticalAnchor="middle" textAnchor="start" x={0} />
-          }
-          style={{
-            grid: { stroke: "#000000", strokeWidth: 0.5 },
-          }}
-        />
-      </VictoryChart>
+
+      {isLoading ? (
+        <div className="text-center mt-4">
+          <ProgressSpinner className="w-14 h-14" />
+        </div>
+      ) : (
+        <VictoryChart
+          containerComponent={<VictoryZoomContainer allowZoom={allowZoom} />}
+          width={boundingRect.width}
+          height={340}
+        >
+          <VictoryLine
+            data={generatedData}
+            style={{
+              data: {
+                stroke: "#42A5F5",
+              },
+              parent: { border: "1px solid #ccc", height: "100%" },
+            }}
+            standalone={false}
+            labels={({ datum }) => datum.y}
+            labelComponent={<VictoryLabel renderInPortal dy={-20} />}
+          />
+          <VictoryAxis
+            axisLabelComponent={<VictoryLabel />}
+            // fixLabelOverlap
+            style={{
+              tickLabels: { angle: -20 },
+              grid: { stroke: "#000000", strokeWidth: 0.5 },
+            }}
+            standalone={false}
+            gridComponent={<LineSegment />}
+            tickLabelComponent={<VictoryLabel verticalAnchor="start" />}
+          />
+          <VictoryAxis
+            dependentAxis
+            standalone={false}
+            gridComponent={<LineSegment />}
+            tickLabelComponent={
+              <VictoryLabel verticalAnchor="middle" textAnchor="start" x={0} />
+            }
+            style={{
+              grid: { stroke: "#000000", strokeWidth: 0.5 },
+            }}
+          />
+        </VictoryChart>
+      )}
     </div>
   );
 }

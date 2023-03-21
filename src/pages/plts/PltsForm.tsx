@@ -114,7 +114,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
         previousDeviceType.current = deviceType;
       }
     }
-  }, [edit, state._id, deviceType, reset]);
+  }, [edit, state?._id, deviceType, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -255,7 +255,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                 autoFocus
                 {...field}
                 errorMessage={fieldState.error?.message}
-                label="PLTS Name"
+                label="Inverter Name"
               />
             )}
           />

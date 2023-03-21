@@ -102,6 +102,8 @@ export interface PltsProfileDetail {
   id: string;
 }
 
+export type DeviceType = "pvInverter" | "batteryInverter";
+
 export interface PLTSProfileDetailResponse {
   _id: string;
   devicePosition: PLTSPositionDataResponse;
@@ -113,6 +115,7 @@ export interface PLTSProfileDetailResponse {
   installedPower: number;
   powerPerYear: number;
   pvSurfaceArea: number;
+  deviceType: DeviceType;
 }
 
 export interface PLTSProfileDetailAverageParams {
@@ -206,4 +209,5 @@ export interface PLTSTotalClusterResponse {
 export interface PLTSAnalyticValueProps {
   id: string;
   pltsName: string;
+  deviceType: DeviceType;
 }

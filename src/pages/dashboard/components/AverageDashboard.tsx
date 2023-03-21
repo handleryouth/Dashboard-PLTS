@@ -24,6 +24,8 @@ export default function AverageDashboard() {
   const [dropdownValue, setDropdownValue] =
     useState<keyof GeneratorDataPropsExcludeDeviceType>();
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [period, setPeriod] = useState("daily");
 
   const [positionDropdown, setPositionDropdown] = useState<string>();
@@ -48,6 +50,7 @@ export default function AverageDashboard() {
   );
 
   const getAverageValue = useCallback(async () => {
+    setIsLoading(true);
     const response = await requestHelper(
       "get_plts_profile_detail_average_value",
       {
@@ -61,14 +64,17 @@ export default function AverageDashboard() {
     if (response && response.status === 200) {
       setGeneratorData(response.data.data);
     }
+    setIsLoading(false);
   }, [period, positionDropdown]);
 
   const getPltsLocation = useCallback(async () => {
+    setIsLoading(true);
     const response = await requestHelper("get_plts_profile_list");
 
     if (response && response.status === 200) {
       setPositionListData(response.data.data);
     }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -101,12 +107,13 @@ export default function AverageDashboard() {
 
   return (
     <LineChart
+      isLoading={isLoading}
       chartData={generatorData?.data ?? []}
       coordinate={{
         x: "time",
         y: dropdownValue,
       }}
-      title="Average Value"
+      title="Average Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={
         <div className="flex items-center justify-end  gap-x-4 w-full">

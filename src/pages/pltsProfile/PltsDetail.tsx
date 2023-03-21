@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Container, Section } from "components";
 import { PLTSProfileDetailResponse } from "types";
-import { requestHelper } from "utils";
+import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import {
   AverageDashbord,
   ClusterDashboard,
@@ -106,14 +106,34 @@ export default function PltsDetail() {
 
           <AverageDashbord pltsName={pltsDetailData.pltsName} />
 
-          <PLTSAnalyticValue pltsName={pltsDetailData.pltsName} id={id!} />
+          {pltsDetailData?.deviceType === "pvInverter" && (
+            <PLTSAnalyticValue
+              pltsName={pltsDetailData.pltsName}
+              id={id!}
+              deviceType={pltsDetailData.deviceType}
+            />
+          )}
 
           <ClusterDashboard />
 
           <div>
             <h3>About</h3>
             <div className="grid grid-cols-2">
-              <Section title="PLTS Name" value="PLTS 1" direction="column" />
+              <Section
+                title="Inverter Name"
+                value={pltsDetailData?.pltsName ?? "-"}
+                direction="column"
+              />
+              <Section
+                title="Device Type"
+                value={
+                  pltsDetailData?.deviceType
+                    ? convertCamelCaseToPascalCase(pltsDetailData.deviceType)
+                    : "-"
+                }
+                direction="column"
+              />
+
               <Section
                 title="SMA Device Name"
                 value={pltsDetailData?.smaDeviceName ?? "-"}

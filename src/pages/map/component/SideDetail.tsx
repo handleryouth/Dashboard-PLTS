@@ -22,12 +22,12 @@ export default function SideDetail({ data }: SideDetailProps) {
         <h3>All Plants Profile</h3>
         {data?.plantProfile.map((item) => (
           <div
-            onClick={() => navigate(`/plts/${item._id}`)}
+            onClick={() => navigate(`/inverter/${item._id}`)}
             key={item._id}
             className="flex gap-y-4 flex-col bg-white rounded-md p-4 cursor-pointer"
           >
             <Section
-              title="PLTS Name"
+              title="Inverter Name"
               titleClassName="text-sm"
               value={item.pltsName}
               direction="column"

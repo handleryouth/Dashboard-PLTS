@@ -7,6 +7,7 @@ import { ANALYTIC_DATA_INITIAL_STATE } from "const";
 export default function PLTSAnalyticValue({
   id,
   pltsName,
+  deviceType,
 }: PLTSAnalyticValueProps) {
   const [analyticData, setAnalyticData] = useState<PLTSAnalyticValueResponse>(
     ANALYTIC_DATA_INITIAL_STATE
@@ -26,8 +27,10 @@ export default function PLTSAnalyticValue({
   }, [id, pltsName]);
 
   useEffect(() => {
-    handleLoadData();
-  }, [handleLoadData]);
+    if (deviceType === "pvInverter") {
+      handleLoadData();
+    }
+  }, [deviceType, handleLoadData]);
 
   return (
     <>
