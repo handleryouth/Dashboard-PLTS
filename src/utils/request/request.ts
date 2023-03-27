@@ -8,13 +8,17 @@ export interface RequestHelperConfig<T extends keyof ServiceURL> {
   withCredentials?: boolean;
 }
 
+export interface CustomAxiosResponse<T> extends AxiosResponse<T> {
+  response?: any;
+}
+
 export async function requestHelper<T extends keyof ServiceURL>(
   requestKey: T,
   config?: RequestHelperConfig<T>
 ) {
   const { method, url } = serviceMap[requestKey];
 
-  const loadData: AxiosResponse<ServiceURL[T]["response"]> =
+  const loadData: CustomAxiosResponse<ServiceURL[T]["response"]> =
     await requestInstance({
       method,
       url,

@@ -2,6 +2,7 @@ import { Container } from "components";
 import {
   AverageDashboard,
   ClusterTotalDashboard,
+  EnergyDashboard,
   MonitoringDashboard,
 } from "./components";
 
@@ -19,6 +20,10 @@ export default function MainDashboard() {
 
         <Container>
           <ClusterTotalDashboard />
+        </Container>
+
+        <Container>
+          <EnergyDashboard />
         </Container>
       </div>
     </>

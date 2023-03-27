@@ -1,15 +1,11 @@
 import axios from "axios";
-import { getCookie, setCookie } from "../cookie";
 import { showModal, store } from "utils";
 import { StaffDataProps } from "types";
+import { getCookie, setCookie } from "../cookie";
 
 export const requestInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
   withCredentials: true,
-});
-
-export const loginInstance = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_URL,
 });
 
 requestInstance.interceptors.response.use(
@@ -40,7 +36,6 @@ requestInstance.interceptors.response.use(
               cookieOptions: {
                 path: "/",
               },
-              
             });
 
             return requestInstance(originalRequest);

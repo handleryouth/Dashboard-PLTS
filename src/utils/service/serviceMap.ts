@@ -36,10 +36,6 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/staff/detail",
   },
-  get_average: {
-    method: "GET",
-    url: "/api/plts/average-plts",
-  },
   create_plts_profile: {
     method: "POST",
     url: "/api/plts/add-plts",
@@ -119,5 +115,17 @@ export const serviceMap: ServiceMapProps = {
   get_plts_total_cluster: {
     method: "GET",
     url: "/api/plts/cluster-comparing-value",
+  },
+  get_plts_detail_energy: {
+    method: "GET",
+    url: "/api/plts/plts-energy",
+  },
+  get_plts_hourly_power: {
+    method: "GET",
+    url: "/api/plts/plts-hourly-power",
+  },
+  post_signup_data: {
+    method: "POST",
+    url: "/api/login/create",
   },
 };

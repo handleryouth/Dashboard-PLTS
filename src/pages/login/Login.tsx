@@ -2,15 +2,18 @@ import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
-import { Button, Input, Seo } from "components";
-import { requestHelper } from "utils";
+import { Button, Input, Seo, Password } from "components";
+import { requestHelper, showModal } from "utils";
 import { LoginFormProps, SetTokenFunctionProps } from "types";
 import { LOGIN_FORM_INITIAL_VALUES } from "const";
+import { useDispatch } from "react-redux";
 
 export default function Login() {
   const { control, handleSubmit, setError } = useForm<LoginFormProps>({
     defaultValues: LOGIN_FORM_INITIAL_VALUES,
   });
+
+  const dispatch = useDispatch();
 
   const [, setCookies] = useCookies([
     "accessToken",
@@ -49,26 +52,29 @@ export default function Login() {
         withCredentials: false,
       });
 
-      console.log("response", response);
-
-      if (response && response.status === 200) {
+      if (response.status === 200) {
         handleSetTokenCookies({
           accessToken: response.data.data.accessToken,
           refreshToken: response.data.data.refreshToken,
           email: response.data.data.email,
           staffData: response.data.data.staffData,
         });
-      } else {
-        console.log("this is running");
+      } else if (response.response?.status === 401) {
+        dispatch(
+          showModal({
+            message: response.response.data.message,
+            title: "Login Failed",
+          })
+        );
         setError("email", {
-          message: "Email or password is incorrect",
+          message: response.response.data.message,
         });
         setError("password", {
-          message: "Email or password is incorrect",
+          message: response.response.data.message,
         });
       }
     },
-    [handleSetTokenCookies, setError]
+    [dispatch, handleSetTokenCookies, setError]
   );
 
   const handleSubmitEvent = useCallback(
@@ -111,7 +117,6 @@ export default function Login() {
                     {...field}
                     label="Email"
                     errorMessage={fieldState.error?.message}
-                    inputClassName="w-full"
                   />
                 )}
               />
@@ -123,12 +128,10 @@ export default function Login() {
                   required: "Password is required",
                 }}
                 render={({ field, fieldState }) => (
-                  <Input
+                  <Password
                     id={field.name}
                     {...field}
-                    label="Password"
                     errorMessage={fieldState.error?.message}
-                    inputClassName="w-full"
                   />
                 )}
               />

@@ -108,7 +108,7 @@ export default function AverageDashboard() {
   return (
     <LineChart
       isLoading={isLoading}
-      chartData={generatorData?.data ?? []}
+      singleChartData={generatorData?.data ?? []}
       coordinate={{
         x: "time",
         y: dropdownValue,
@@ -128,7 +128,7 @@ export default function AverageDashboard() {
           <Dropdown
             filter
             value={positionDropdown}
-            placeholder="Select Plts Position"
+            placeholder="Select Inverter Position"
             onChange={(e) => {
               setPositionDropdown(e.target.value);
             }}

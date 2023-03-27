@@ -177,6 +177,7 @@ export interface PLTSComparingValueParams {
 export interface PLTSClusterValueParams {
   id: string;
   dataTime: string;
+  dataType?: "power" | "energy";
 }
 
 export interface PLTSClusterValueResponseDataProps {
@@ -191,6 +192,7 @@ export interface PLTSClusterValueResponse {
 
 export interface PLTSTotalClusterParams {
   dataTime: string;
+  dataType?: "power" | "energy";
 }
 
 export interface TotalClusterDataProps {
@@ -210,4 +212,24 @@ export interface PLTSAnalyticValueProps {
   id: string;
   pltsName: string;
   deviceType: DeviceType;
+}
+
+export interface PLTSDetailEnergyParams {
+  dataTime: string;
+  pltsName: string;
+}
+
+export interface PLTSDetailEnergyResponse {
+  _id: string;
+  power: number;
+  time: string;
+}
+
+export interface PLTSDetailPowerParams {
+  pltsName: string;
+}
+
+export interface PLTSDetailPowerResponse {
+  time: string;
+  power: number;
 }

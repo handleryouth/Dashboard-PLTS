@@ -104,7 +104,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
         <LineChart
           isLoading={isLoading}
           title="Average Graph"
-          chartData={dropdownValue ? generatorData?.data ?? [] : []}
+          singleChartData={dropdownValue ? generatorData?.data ?? [] : []}
           coordinate={{
             x: "time",
             y: dropdownValue,

@@ -7,7 +7,6 @@ import {
   ServiceMessageResponse,
   DeactivateStaffBodyProps,
   EditStaffBodyProps,
-  GeneratorDataPropsExcludeDeviceType,
   PLTSProfileBody,
   PLTSPositionBody,
   PLTSPositionDataResponse,
@@ -37,6 +36,10 @@ import {
   PLTSClusterValueResponse,
   PLTSTotalClusterParams,
   PLTSTotalClusterResponse,
+  PLTSDetailEnergyParams,
+  PLTSDetailEnergyResponse,
+  PLTSDetailPowerParams,
+  SignupParams,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -66,9 +69,6 @@ export interface ServiceURL {
   edit_staff: ServiceStructure<{
     body: EditStaffBodyProps;
     response: ServiceMessageResponse;
-  }>;
-  get_average: ServiceStructure<{
-    response: ServiceMessageResponse<GeneratorDataPropsExcludeDeviceType[]>;
   }>;
   create_plts_profile: ServiceStructure<{
     body: PLTSProfileBody;
@@ -145,5 +145,15 @@ export interface ServiceURL {
   get_plts_total_cluster: ServiceStructure<{
     params: PLTSTotalClusterParams;
     response: ServiceMessageResponse<PLTSTotalClusterResponse>;
+  }>;
+  get_plts_detail_energy: ServiceStructure<{
+    params: PLTSDetailEnergyParams;
+    response: ServiceMessageResponse<PLTSDetailEnergyResponse>;
+  }>;
+  get_plts_hourly_power: ServiceStructure<{
+    params: PLTSDetailPowerParams;
+  }>;
+  post_signup_data: ServiceStructure<{
+    body: SignupParams;
   }>;
 }

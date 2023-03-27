@@ -6,24 +6,35 @@ import {
 
 export interface PasswordProps extends PrimereactPasswordProps {
   containerClassName?: string;
+  errorMessage?: string;
+  label?: string;
+  inputClassName?: string;
 }
 
 export default function Password({
   containerClassName,
+  errorMessage,
+  label,
   ...rest
 }: PasswordProps) {
   const id = useId();
 
   return (
-    <div className={`flex flex-col ${containerClassName}`}>
-      <label htmlFor={id}>Password</label>
+    <div className={`field w-full ${containerClassName} relative`}>
+      <label htmlFor={rest.id ?? id} className="block">
+        {label ?? "Password"}
+      </label>
       <PrimereactPassword
+        {...rest}
+        inputClassName={rest.inputClassName + " w-full"}
         id={id}
         feedback={false}
         toggleMask
-        inputClassName={`w-full ${rest.inputClassName}`}
-        {...rest}
+        className={`${errorMessage && "p-invalid"} block w-full`}
       />
+      <small id={rest.id ?? id} className="p-error block absolute">
+        {errorMessage}
+      </small>
     </div>
   );
 }

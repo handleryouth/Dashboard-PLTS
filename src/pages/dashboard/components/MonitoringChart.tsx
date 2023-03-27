@@ -109,7 +109,7 @@ export default function MonitoringChart({
         <LineChart
           containerClassName={customClassname}
           title={title}
-          chartData={dropdownValue ? generatorData : []}
+          singleChartData={dropdownValue ? generatorData : []}
           coordinate={{
             x: "time",
             y: dropdownValue,

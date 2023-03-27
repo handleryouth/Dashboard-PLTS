@@ -7,7 +7,8 @@ import { PLTSProfileDetailResponse } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import {
   AverageDashbord,
-  ClusterDashboard,
+  ClusterPowerDashboard,
+  EnergyDashboard,
   PLTSAnalyticValue,
 } from "./components";
 import { MonitoringChart } from "../dashboard";
@@ -114,7 +115,9 @@ export default function PltsDetail() {
             />
           )}
 
-          <ClusterDashboard />
+          <ClusterPowerDashboard />
+
+          <EnergyDashboard />
 
           <div>
             <h3>About</h3>

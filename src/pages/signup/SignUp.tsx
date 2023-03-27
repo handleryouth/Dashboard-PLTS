@@ -1,29 +1,41 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
 import { Button, Input, Password, Seo } from "components";
-import { loginInstance } from "utils";
+import { requestHelper, showModal } from "utils";
+import { SignupParams } from "types";
+import { useDispatch } from "react-redux";
 
 export default function SignUp() {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState("");
+  const { control, handleSubmit, setError } = useForm<SignupParams>();
 
   const navigate = useNavigate();
 
-  const sendSignupData = useCallback(async () => {
-    const response = await loginInstance("/api/login/create", {
-      data: {
-        email,
-        password,
-        name: fullName,
-      },
-      method: "POST",
-    });
+  const dispatch = useDispatch();
 
-    if (response && response.status === 201) {
-      navigate("/login");
-    }
-  }, [navigate, email, fullName, password]);
+  const sendSignupData = useCallback(
+    async (data: SignupParams) => {
+      const response = await requestHelper("post_signup_data", {
+        body: data,
+      });
+
+      if (response.status === 201) {
+        navigate("/login");
+      } else if (response.response?.status === 409) {
+        dispatch(
+          showModal({
+            message: response.response.data.message,
+            title: "Signup Error",
+          })
+        );
+
+        setError("email", {
+          message: response.response.data.message,
+        });
+      }
+    },
+    [dispatch, navigate, setError]
+  );
 
   return (
     <>
@@ -33,27 +45,52 @@ export default function SignUp() {
           <div className="w-full mediumDisplay:w-9/12">
             <h1>Create Account</h1>
 
-            <div className="flex flex-col gap-y-5">
-              <Input
-                label="Full name"
-                inputClassName="w-full"
-                onChange={(value) => setFullName(value)}
+            <form
+              className="flex flex-col gap-y-5"
+              onSubmit={handleSubmit(sendSignupData)}
+            >
+              <Controller
+                control={control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <Input
+                    id={field.name}
+                    {...field}
+                    label="Full name"
+                    errorMessage={fieldState.error?.message}
+                  />
+                )}
               />
 
-              <Input
-                label="Email"
-                inputClassName="w-full"
-                onChange={(value) => setEmail(value)}
+              <Controller
+                control={control}
+                name="email"
+                render={({ field, fieldState }) => (
+                  <Input
+                    id={field.name}
+                    {...field}
+                    label="Email"
+                    errorMessage={fieldState.error?.message}
+                  />
+                )}
               />
 
-              <Password onChange={(e) => setPassword(e.target.value)} />
-              <Button
-                className="text-white bg-blue-500"
-                onClick={sendSignupData}
-              >
+              <Controller
+                control={control}
+                name="password"
+                render={({ field, fieldState }) => (
+                  <Password
+                    id={field.name}
+                    {...field}
+                    errorMessage={fieldState.error?.message}
+                  />
+                )}
+              />
+
+              <Button className="text-white bg-blue-500" type="submit">
                 Sign up
               </Button>
-            </div>
+            </form>
 
             <p className="text-center">
               Have an account? Sign in{" "}

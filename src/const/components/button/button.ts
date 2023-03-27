@@ -18,3 +18,18 @@ export const BUTTON_LABEL_TIME_SELECTION: SelectItem[] = [
     value: "yearly",
   },
 ];
+
+export const ENERGY_LABEL_TIME_SELECTION: SelectItem[] = [
+  {
+    label: "Daily",
+    value: "daily",
+  },
+  {
+    label: "Monthly",
+    value: "monthly",
+  },
+  {
+    label: "Yearly",
+    value: "yearly",
+  },
+];

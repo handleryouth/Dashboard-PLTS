@@ -1,8 +1,11 @@
-import { ProgressSpinner } from "primereact/progressspinner";
 import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { convertCamelCaseToPascalCase } from "utils";
 import {
   LineSegment,
   VictoryAxis,
+  VictoryGroup,
+  VictoryLegend,
   VictoryLine,
   VictoryZoomContainer,
 } from "victory";
@@ -13,7 +16,9 @@ export type RenderedChartItem<T> = Record<keyof T, string | number | undefined>;
 
 export interface LineChartProps<T extends Object> {
   title?: string;
-  chartData: T[];
+  singleChartData?: T[];
+  multipleChartData?: T[];
+  multipleChartDataKey?: string[];
   containerClassName?: string;
   renderItem: (item: T) => RenderedChartItem<T>;
   customDropdownComponent?: ReactNode;
@@ -26,7 +31,8 @@ export interface LineChartProps<T extends Object> {
 }
 
 export default function LineChart<T extends Object>({
-  chartData,
+  singleChartData,
+  multipleChartData,
   containerClassName,
   title,
   customDropdownComponent,
@@ -34,6 +40,7 @@ export default function LineChart<T extends Object>({
   renderItem,
   allowZoom = false,
   isLoading,
+  multipleChartDataKey,
 }: LineChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -44,11 +51,29 @@ export default function LineChart<T extends Object>({
   }, []);
 
   const generatedData = useMemo(() => {
-    return chartData.map((item) => ({
+    return singleChartData?.map((item) => ({
       x: renderItem(item)[coordinate.x],
       y: coordinate.y ? renderItem(item)[coordinate.y] : "",
     }));
-  }, [chartData, coordinate, renderItem]);
+  }, [singleChartData, coordinate, renderItem]);
+
+  const generatedMultipleData = useCallback(
+    (dataKey: keyof T) => {
+      return multipleChartData?.map((item) => {
+        return {
+          x: renderItem(item)[coordinate.x],
+          y: renderItem(item)[dataKey] ?? "",
+        };
+      });
+    },
+    [coordinate, multipleChartData, renderItem]
+  );
+
+  const generateLegend = useMemo(() => {
+    return multipleChartDataKey?.map((item) => ({
+      name: convertCamelCaseToPascalCase(item),
+    }));
+  }, [multipleChartDataKey]);
 
   return (
     <div
@@ -73,21 +98,34 @@ export default function LineChart<T extends Object>({
           width={boundingRect.width}
           height={340}
         >
-          <VictoryLine
-            data={generatedData}
-            style={{
-              data: {
-                stroke: "#42A5F5",
-              },
-              parent: { border: "1px solid #ccc", height: "100%" },
-            }}
-            standalone={false}
-            labels={({ datum }) => datum.y}
-            labelComponent={<VictoryLabel renderInPortal dy={-20} />}
-          />
+          <VictoryGroup colorScale="qualitative">
+            {singleChartData && (
+              <VictoryLine
+                data={generatedData}
+                style={{
+                  data: {
+                    stroke: "#42A5F5",
+                  },
+                  parent: { border: "1px solid #ccc", height: "100%" },
+                }}
+                standalone={false}
+                labels={({ datum }) => datum.y}
+                labelComponent={<VictoryLabel renderInPortal dy={-20} />}
+              />
+            )}
+
+            {multipleChartData &&
+              multipleChartDataKey &&
+              multipleChartDataKey.map((key, index) => (
+                <VictoryLine
+                  data={generatedMultipleData(key as keyof T)}
+                  key={index}
+                />
+              ))}
+          </VictoryGroup>
+
           <VictoryAxis
             axisLabelComponent={<VictoryLabel />}
-            // fixLabelOverlap
             style={{
               tickLabels: { angle: -20 },
               grid: { stroke: "#000000", strokeWidth: 0.5 },
@@ -107,6 +145,15 @@ export default function LineChart<T extends Object>({
               grid: { stroke: "#000000", strokeWidth: 0.5 },
             }}
           />
+
+          {multipleChartDataKey && (
+            <VictoryLegend
+              orientation="horizontal"
+              colorScale="qualitative"
+              gutter={20}
+              data={generateLegend}
+            />
+          )}
         </VictoryChart>
       )}
     </div>
