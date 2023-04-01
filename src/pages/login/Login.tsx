@@ -2,11 +2,11 @@ import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
+import { useDispatch } from "react-redux";
 import { Button, Input, Seo, Password } from "components";
 import { requestHelper, showModal } from "utils";
 import { LoginFormProps, SetTokenFunctionProps } from "types";
 import { LOGIN_FORM_INITIAL_VALUES } from "const";
-import { useDispatch } from "react-redux";
 
 export default function Login() {
   const { control, handleSubmit, setError } = useForm<LoginFormProps>({
@@ -19,22 +19,33 @@ export default function Login() {
     "accessToken",
     "refreshToken",
     "staffData",
+    "isLogin",
   ]);
 
   const navigate = useNavigate();
 
   const handleSetTokenCookies = useCallback(
-    ({ accessToken, refreshToken, staffData }: SetTokenFunctionProps) => {
-      setCookies("accessToken", accessToken, {
-        path: "/",
-      });
+    ({ staffData }: SetTokenFunctionProps) => {
+      // setCookies("accessToken", accessToken, {
+      //   path: "/",
+      //   sameSite: "strict",
+      //   httpOnly: true,
+      // });
 
-      setCookies("refreshToken", refreshToken, {
+      // setCookies("refreshToken", refreshToken, {
+      //   path: "/",
+      //   sameSite: "strict",
+      //   httpOnly: true,
+      // });
+
+      setCookies("isLogin", true, {
         path: "/",
+        sameSite: "lax",
       });
 
       setCookies("staffData", JSON.stringify(staffData), {
         path: "/",
+        sameSite: "lax",
       });
 
       navigate("/dashboard");
@@ -53,6 +64,13 @@ export default function Login() {
       });
 
       if (response.status === 200) {
+        console.log("logn response", response);
+
+        setCookies("isLogin", true, {
+          path: "/",
+          sameSite: "lax",
+        });
+
         handleSetTokenCookies({
           accessToken: response.data.data.accessToken,
           refreshToken: response.data.data.refreshToken,

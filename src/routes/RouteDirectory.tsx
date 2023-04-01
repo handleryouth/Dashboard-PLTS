@@ -4,13 +4,13 @@ import { Login, SignUp } from "pages";
 import { useCookies } from "react-cookie";
 
 export default function RouteStack() {
-  const [cookies] = useCookies(["accessToken", "staffData"]);
+  const [cookies] = useCookies(["isLogin", "staffData"]);
 
   console.log("cookies in web value:", cookies.staffData?.role);
 
   return (
     <Routes>
-      {cookies.accessToken ? (
+      {cookies.isLogin ? (
         cookies.staffData.role === "admin" ? (
           <>
             {ADMIN_ROUTES.map((item, index) => (

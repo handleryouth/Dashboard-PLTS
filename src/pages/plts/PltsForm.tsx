@@ -1,15 +1,16 @@
 import { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { SelectItem, SelectItemOptionsType } from "primereact/selectitem";
 import { Input, Button, Container, Dropdown } from "components";
 import {
   PLTSPositionDataResponse,
   PLTSProfileBody,
   PLTSProfileList,
 } from "types";
-import { camelCase, requestHelper } from "utils";
+import { camelCase, requestHelper, showModal as dispatchModal } from "utils";
 import { DeleteModal, PositionModal } from "./modals";
-import { SelectItem, SelectItemOptionsType } from "primereact/selectitem";
 
 export const PLTS_FORM_INITIAL_STATE: PLTSProfileBody = {
   pltsName: "",
@@ -59,6 +60,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
   const { state } = useLocation();
 
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const [pltsLocation, setPltsLocation] = useState<PLTSPositionDataResponse[]>(
     []
@@ -139,9 +142,16 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
       if (response && response.status === 201) {
         navigate(-1);
+      } else {
+        dispatch(
+          dispatchModal({
+            message: response.response.data.message,
+            title: "Error",
+          })
+        );
       }
     },
-    [navigate]
+    [dispatch, navigate]
   );
 
   const handleEditData = useCallback(
@@ -163,11 +173,18 @@ export default function PltsForm({ edit }: PLTSFormProps) {
         },
       });
 
-      if (response && response.status === 200) {
+      if (response.status === 200) {
         navigate(-1);
+      } else {
+        dispatch(
+          dispatchModal({
+            message: response.response.data.message,
+            title: "Error",
+          })
+        );
       }
     },
-    [navigate, state?._id]
+    [dispatch, navigate, state?._id]
   );
 
   const onSubmit = useCallback(
@@ -364,8 +381,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               required: "IP Address is required",
             }}
             control={control}
-            render={({ field }) => (
-              <Input id={field.name} {...field} label="IP Address" />
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                {...field}
+                label="IP Address"
+                errorMessage={fieldState.error?.message}
+              />
             )}
           />
 
@@ -375,8 +397,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               required: "Port is required",
             }}
             control={control}
-            render={({ field }) => (
-              <Input id={field.name} label="Port" {...field} />
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                label="Port"
+                {...field}
+                errorMessage={fieldState.error?.message}
+              />
             )}
           />
 
@@ -386,11 +413,12 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             rules={{
               required: "Global Horizontal Irradiance is required",
             }}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Input
                 id={field.name}
                 label="Global Horizontal Irradiance (kWh/m^2)"
                 {...field}
+                errorMessage={fieldState.error?.message}
               />
             )}
           />
@@ -401,8 +429,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             rules={{
               required: "PV Surface Area is required",
             }}
-            render={({ field }) => (
-              <Input id={field.name} label="PV Surface Area (m^2)" {...field} />
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                label="PV Surface Area (m^2)"
+                {...field}
+                errorMessage={fieldState.error?.message}
+              />
             )}
           />
 
@@ -412,8 +445,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               required: "Installed Power is required",
             }}
             control={control}
-            render={({ field }) => (
-              <Input id={field.name} label="Installed Power (Kw)" {...field} />
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                label="Installed Power (Kw)"
+                {...field}
+                errorMessage={fieldState.error?.message}
+              />
             )}
           />
 
@@ -423,8 +461,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               required: "Power Per Year is required",
             }}
             control={control}
-            render={({ field }) => (
-              <Input id={field.name} label="Power Per Year (KWh)" {...field} />
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                label="Power Per Year (KWh)"
+                {...field}
+                errorMessage={fieldState.error?.message}
+              />
             )}
           />
 

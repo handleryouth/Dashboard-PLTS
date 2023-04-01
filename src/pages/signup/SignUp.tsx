@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Button, Input, Password, Seo } from "components";
 import { requestHelper, showModal } from "utils";
 import { SignupParams } from "types";
-import { useDispatch } from "react-redux";
 
 export default function SignUp() {
   const { control, handleSubmit, setError } = useForm<SignupParams>();

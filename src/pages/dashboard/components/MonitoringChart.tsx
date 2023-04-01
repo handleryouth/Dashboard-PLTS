@@ -26,7 +26,7 @@ export default function MonitoringChart({
 
   const previousValueRef = useRef<GeneratorDataProps[]>([]);
 
-  const logDataOnMessage = useCallback((event: any) => {
+  const logDataOnMessage = useCallback((event: MessageEvent) => {
     setIsLoading(false);
     const newData = JSON.parse(event.data);
 
@@ -52,7 +52,7 @@ export default function MonitoringChart({
     }
   }, [title]);
 
-  const handleSSEEvent = useCallback(async () => {
+  useEffect(() => {
     const sseSource = new EventSource(
       `${process.env.REACT_APP_SERVER_URL}api/plts?pltsName=${title}`,
 
@@ -70,11 +70,11 @@ export default function MonitoringChart({
     sseSource.onerror = () => {
       sseSource.close();
     };
-  }, [logDataOnMessage, title]);
 
-  useEffect(() => {
-    handleSSEEvent();
-  }, [handleSSEEvent]);
+    return () => {
+      sseSource.close();
+    };
+  }, [logDataOnMessage, title]);
 
   useEffect(() => {
     getDataKey();

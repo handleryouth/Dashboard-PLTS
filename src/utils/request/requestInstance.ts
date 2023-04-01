@@ -8,6 +8,16 @@ export const requestInstance = axios.create({
   withCredentials: true,
 });
 
+requestInstance.interceptors.request.use(
+  (config) => {
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 requestInstance.interceptors.response.use(
   (response) => {
     return response;
@@ -19,15 +29,18 @@ requestInstance.interceptors.response.use(
       error.response.status === 401 &&
       originalRequest.url !== `/api/login/`
     ) {
-      const refreshToken = getCookie("refreshToken");
-
       const { email } = getCookie("staffData") as StaffDataProps;
 
       return axios
-        .post(`${process.env.REACT_APP_SERVER_URL}api/login/refresh`, {
-          refreshToken,
-          email,
-        })
+        .post(
+          `${process.env.REACT_APP_SERVER_URL}api/login/refresh`,
+          {
+            email,
+          },
+          {
+            withCredentials: true,
+          }
+        )
         .then((res) => {
           if (res.status === 201) {
             setCookie({

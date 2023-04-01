@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Sidebar as PrimereactSidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
-import { sidebarItems } from "utils";
+import { requestHelper, showModal, sidebarItems } from "utils";
 import { SidebarChildren } from "./components";
 import { useSidebar } from "./context";
 
@@ -12,22 +13,35 @@ export default function Sidebar() {
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const [cookies, , removeCookie] = useCookies([
     "staffData",
-    "accessToken",
+    "isLogin",
     "refreshToken",
+    "accessToken",
   ]);
 
   const { dashboardLinks, mapLinks, pltsLinks, aclLinks, positionLinks } =
     useMemo(() => sidebarItems(), []);
 
-  const signOut = useCallback(() => {
-    removeCookie("staffData");
-    removeCookie("accessToken");
-    removeCookie("refreshToken");
-    navigate("/");
-    toggleDashboardInactive();
-  }, [navigate, removeCookie, toggleDashboardInactive]);
+  const signOut = useCallback(async () => {
+    const response = await requestHelper("plts_auth_logout");
+
+    if (response.status === 200) {
+      removeCookie("staffData");
+      removeCookie("isLogin");
+      navigate("/");
+      toggleDashboardInactive();
+    } else {
+      dispatch(
+        showModal({
+          message: response.data.message,
+          title: "Error",
+        })
+      );
+    }
+  }, [dispatch, navigate, removeCookie, toggleDashboardInactive]);
 
   return (
     <PrimereactSidebar

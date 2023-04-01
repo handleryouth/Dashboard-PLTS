@@ -156,4 +156,7 @@ export interface ServiceURL {
   post_signup_data: ServiceStructure<{
     body: SignupParams;
   }>;
+  plts_auth_logout: ServiceStructure<{
+    response: ServiceMessageResponse;
+  }>;
 }

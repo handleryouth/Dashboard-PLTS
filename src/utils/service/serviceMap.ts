@@ -128,4 +128,8 @@ export const serviceMap: ServiceMapProps = {
     method: "POST",
     url: "/api/login/create",
   },
+  plts_auth_logout: {
+    method: "POST",
+    url: "/api/login/logout",
+  },
 };

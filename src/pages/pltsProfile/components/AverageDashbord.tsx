@@ -111,7 +111,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
           }}
           renderItem={handleRenderItem}
           customDropdownComponent={
-            <div className="flex items-end gap-x-4 justify-end ">
+            <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">
               <Button
                 className="bg-blue-500 w-max"
                 onClick={() => setModalVisible(true)}

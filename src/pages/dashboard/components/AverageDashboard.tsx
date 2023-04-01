@@ -116,7 +116,7 @@ export default function AverageDashboard() {
       title="Average Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={
-        <div className="flex items-center justify-end  gap-x-4 w-full">
+        <div className="flex items-center justify-center   mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">
           <SelectButton
             className="text-center"
             value={period}

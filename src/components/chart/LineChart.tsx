@@ -80,9 +80,9 @@ export default function LineChart<T extends Object>({
       className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
       ref={graphRef}
     >
-      <div className="flex items-start justify-between flex-col monitoringChartBreakpoint:flex-row monitoringChartBreakpoint:items-end">
+      <div className="flex items-center justify-between flex-col mediumToBigDisplay:flex-row  ">
         <div className="basis-1/4">
-          <h3 className="mt-0 font-bold">{title}</h3>
+          <h3 className="mb-4 mediumToBigDisplay:mb-0 font-bold">{title}</h3>
         </div>
 
         {customDropdownComponent}
@@ -95,7 +95,11 @@ export default function LineChart<T extends Object>({
       ) : (
         <VictoryChart
           containerComponent={<VictoryZoomContainer allowZoom={allowZoom} />}
-          width={boundingRect.width}
+          width={
+            boundingRect.width > 386 || boundingRect.width < 1360
+              ? boundingRect.width
+              : 386
+          }
           height={340}
         >
           <VictoryGroup colorScale="qualitative">
