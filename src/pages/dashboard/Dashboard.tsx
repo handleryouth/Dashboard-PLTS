@@ -9,7 +9,7 @@ import {
 export default function MainDashboard() {
   return (
     <>
-      <div className="flex flex-col py-4">
+      <div className="flex flex-col">
         <Container>
           <MonitoringDashboard />
         </Container>

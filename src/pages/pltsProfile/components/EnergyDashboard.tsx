@@ -53,7 +53,7 @@ export default function EnergyDashboard() {
   return (
     <div>
       <LineChart
-        title="Cluster Total Power Graph"
+        title="Cluster Energy Graph"
         isLoading={loading}
         multipleChartDataKey={energyData?.dataKey}
         multipleChartData={energyData?.data}

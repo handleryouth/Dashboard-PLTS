@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
-import { Button, Input, Seo, Password } from "components";
+import { Button, Input, Password, MemoizedSeo } from "components";
 import { requestHelper, showModal } from "utils";
 import { LoginFormProps, SetTokenFunctionProps } from "types";
 import { LOGIN_FORM_INITIAL_VALUES } from "const";
@@ -92,7 +92,7 @@ export default function Login() {
         });
       }
     },
-    [dispatch, handleSetTokenCookies, setError]
+    [dispatch, handleSetTokenCookies, setCookies, setError]
   );
 
   const handleSubmitEvent = useCallback(
@@ -104,9 +104,12 @@ export default function Login() {
 
   return (
     <>
-      <Seo title="Login Page" description="Login page for PLTS Dashboard" />
+      <MemoizedSeo
+        title="Login Page"
+        description="Login page for PLTS Dashboard"
+      />
 
-      <div className="flex items-center gap-[172px] overflow-hidden min-h-screen  p-6">
+      <div className="flex items-center gap-[172px] absolute top-1/4">
         <div className="flex w-full mediumDisplay:w-auto mediumDisplay:justify-end mediumDisplay:basis-1/2">
           <div className="w-full mediumDisplay:w-9/12">
             <div className="flex items-center">
@@ -172,7 +175,7 @@ export default function Login() {
           <img
             src="/solarpanel-700.jpg"
             alt="login-welcome"
-            className="my-0 w-[650px] h-[615px]"
+            className="my-0 aspect-4/3 w-full"
           />
         </div>
       </div>

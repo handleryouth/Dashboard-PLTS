@@ -11,6 +11,12 @@ module.exports = {
           },
         },
       },
+      aspectRatio: {
+        "4/3": "4 / 3",
+      },
+      height: {
+        "97%": "97%",
+      },
       transitionProperty: {
         width: "width",
         visibility: "visibility",

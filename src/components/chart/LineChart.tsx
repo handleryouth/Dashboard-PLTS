@@ -124,6 +124,8 @@ export default function LineChart<T extends Object>({
                 <VictoryLine
                   data={generatedMultipleData(key as keyof T)}
                   key={index}
+                  labels={({ datum }) => datum.y}
+                  labelComponent={<VictoryLabel renderInPortal dy={-20} />}
                 />
               ))}
           </VictoryGroup>

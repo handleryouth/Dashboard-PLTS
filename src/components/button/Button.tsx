@@ -1,12 +1,4 @@
-import { ReactNode } from "react";
-import {} from "primereact/button";
-
-export interface ButtonProps {
-  children?: ReactNode;
-  className?: string;
-  onClick?: () => void;
-  type?: "button" | "submit" | "reset";
-}
+import { ButtonProps } from "types";
 
 function Button({
   children,

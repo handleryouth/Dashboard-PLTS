@@ -1,12 +1,6 @@
 import { useId } from "react";
-import { CalendarProps } from "primereact/calendar";
 import { Calendar as NativeCalendar } from "primereact/calendar";
-
-export interface CustomCalendarProps extends CalendarProps {
-  label?: string;
-  className?: string;
-  errorMessage?: string;
-}
+import { CustomCalendarProps } from "types";
 
 export default function Calendar({
   label,

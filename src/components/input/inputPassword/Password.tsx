@@ -1,15 +1,6 @@
 import { useId } from "react";
-import {
-  Password as PrimereactPassword,
-  PasswordProps as PrimereactPasswordProps,
-} from "primereact/password";
-
-export interface PasswordProps extends PrimereactPasswordProps {
-  containerClassName?: string;
-  errorMessage?: string;
-  label?: string;
-  inputClassName?: string;
-}
+import { Password as PrimereactPassword } from "primereact/password";
+import { PasswordProps } from "types";
 
 export default function Password({
   containerClassName,

@@ -1,10 +1,5 @@
-import { Card, CardProps } from "primereact/card";
-import { ReactNode } from "react";
-
-export interface ContainerProps extends CardProps {
-  children?: ReactNode;
-  className?: string;
-}
+import { Card } from "primereact/card";
+import { ContainerProps } from "types";
 
 export default function Container({
   children,

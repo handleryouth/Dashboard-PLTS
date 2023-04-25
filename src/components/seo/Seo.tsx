@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Helmet } from "react-helmet-async";
 import { SeoProps } from "types";
 
-const Seo = ({ title, description }: SeoProps) => {
+export default function Seo({ title, description }: SeoProps) {
   return (
     <Helmet>
       <title>{title ?? "Elektro ITS PLTS Dashboard"}</title>
@@ -49,8 +50,9 @@ const Seo = ({ title, description }: SeoProps) => {
         property="twitter:image"
         content="https://i.ibb.co/YWJyXBv/handleryouth-xyz.webp"
       />
+      <link rel="icon" type="image/x-icon" href="/elektro-logo.png"></link>
     </Helmet>
   );
-};
+}
 
-export default Seo;
+export const MemoizedSeo = memo(Seo);

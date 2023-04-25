@@ -1,14 +1,6 @@
 import { useId } from "react";
-import { InputText, InputTextProps } from "primereact/inputtext";
-
-export interface InputProps extends Omit<InputTextProps, "onChange"> {
-  label?: string;
-  errorMessage?: string;
-  inputClassName?: string;
-  onChange: (e: string) => void;
-  autoFocus?: boolean;
-  containerClassName?: string;
-}
+import { InputText } from "primereact/inputtext";
+import { InputProps } from "types";
 
 export default function Input({
   errorMessage,
