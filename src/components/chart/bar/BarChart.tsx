@@ -1,20 +1,19 @@
-import { ReactNode, useCallback, useMemo, useState } from "react";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { ReactNode, useCallback, useMemo, useState } from "react";
+import { RenderedChartItem } from "types";
 import { convertCamelCaseToPascalCase } from "utils";
 import {
   LineSegment,
   VictoryAxis,
+  VictoryBar,
+  VictoryChart,
   VictoryGroup,
+  VictoryLabel,
   VictoryLegend,
-  VictoryLine,
   VictoryZoomContainer,
 } from "victory";
-import { VictoryChart } from "victory-chart";
-import { VictoryLabel } from "victory-core";
 
-export type RenderedChartItem<T> = Record<keyof T, string | number | undefined>;
-
-export interface LineChartProps<T extends Object> {
+export interface BarChartProps<T extends Object> {
   title?: string;
   singleChartData?: T[];
   multipleChartData?: T[];
@@ -28,20 +27,24 @@ export interface LineChartProps<T extends Object> {
   };
   allowZoom?: boolean;
   isLoading?: boolean;
+  xUnit?: string;
+  yUnit?: string;
 }
 
-export default function LineChart<T extends Object>({
-  singleChartData,
-  multipleChartData,
-  containerClassName,
-  title,
-  customDropdownComponent,
+export default function BarChart<T extends Object>({
   coordinate,
   renderItem,
   allowZoom = false,
+  containerClassName,
+  customDropdownComponent,
   isLoading,
+  multipleChartData,
   multipleChartDataKey,
-}: LineChartProps<T>) {
+  singleChartData,
+  title,
+  xUnit = "",
+  yUnit = "",
+}: BarChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
   const graphRef = useCallback((node: HTMLDivElement) => {
@@ -57,6 +60,12 @@ export default function LineChart<T extends Object>({
     }));
   }, [singleChartData, coordinate, renderItem]);
 
+  const generateLegend = useMemo(() => {
+    return multipleChartDataKey?.map((item) => ({
+      name: convertCamelCaseToPascalCase(item),
+    }));
+  }, [multipleChartDataKey]);
+
   const generatedMultipleData = useCallback(
     (dataKey: keyof T) => {
       return multipleChartData?.map((item) => {
@@ -68,12 +77,6 @@ export default function LineChart<T extends Object>({
     },
     [coordinate, multipleChartData, renderItem]
   );
-
-  const generateLegend = useMemo(() => {
-    return multipleChartDataKey?.map((item) => ({
-      name: convertCamelCaseToPascalCase(item),
-    }));
-  }, [multipleChartDataKey]);
 
   return (
     <div
@@ -104,7 +107,7 @@ export default function LineChart<T extends Object>({
         >
           <VictoryGroup colorScale="qualitative">
             {singleChartData && (
-              <VictoryLine
+              <VictoryBar
                 data={generatedData}
                 style={{
                   data: {
@@ -121,7 +124,7 @@ export default function LineChart<T extends Object>({
             {multipleChartData &&
               multipleChartDataKey &&
               multipleChartDataKey.map((key, index) => (
-                <VictoryLine
+                <VictoryBar
                   data={generatedMultipleData(key as keyof T)}
                   key={index}
                   labels={({ datum }) => datum.y}
@@ -138,12 +141,14 @@ export default function LineChart<T extends Object>({
             }}
             standalone={false}
             gridComponent={<LineSegment />}
+            tickFormat={(tick) => `${tick} ${xUnit}`}
             tickLabelComponent={<VictoryLabel verticalAnchor="start" />}
           />
           <VictoryAxis
             dependentAxis
             standalone={false}
             gridComponent={<LineSegment />}
+            tickFormat={(tick) => `${tick} ${yUnit}`}
             tickLabelComponent={
               <VictoryLabel verticalAnchor="middle" textAnchor="start" x={0} />
             }

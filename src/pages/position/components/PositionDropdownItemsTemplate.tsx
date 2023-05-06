@@ -8,8 +8,6 @@ export interface PositionDropdownItemsTemplateProps {
   iconClassName?: string;
 }
 
-// options.props.splitButtonProps.menuButtonProps
-
 export default function PositionDropdownItemsTemplate({
   item,
   options,

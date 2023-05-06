@@ -19,4 +19,7 @@ export type PositionTableHeaderProps =
   | keyof PLTSPositionDataResponse
   | "actionButton";
 
-
+export interface PositionParams {
+  search?: string;
+  page?: number;
+}

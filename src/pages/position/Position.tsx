@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
-import { Container, Table, TableAction } from "components";
+import { Container, Pagination, Table, TableAction } from "components";
 import { requestHelper } from "utils";
 import {
   DeleteModalStateProps,
   PLTSPositionDataResponse,
+  PositionParams,
   PositionTableHeaderProps,
+  ServiceMessageResponse,
+  TableActionSearchProps,
   TableContent,
 } from "types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { SplitButton } from "primereact/splitbutton";
 import { MenuItem } from "primereact/menuitem";
 import { ConfirmDialog } from "primereact/confirmdialog";
@@ -15,19 +18,27 @@ import { PositionDropdownItemsTemplate } from "./components";
 
 export default function Position() {
   const [positionData, setPositionData] =
-    useState<PLTSPositionDataResponse[]>();
+    useState<ServiceMessageResponse<PLTSPositionDataResponse[]>>();
 
   const [showModal, setShowModal] = useState<DeleteModalStateProps>();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
   const handleLoadData = useCallback(async () => {
-    const response = await requestHelper("get_plts_location");
+    const response = await requestHelper("get_plts_location", {
+      params: {
+        limit: 10,
+        page: Number(searchParams.get("page")) || 1,
+        search: searchParams.get("search") ?? "",
+      },
+    });
 
     if (response && response.status === 200) {
-      setPositionData(response.data.data);
+      setPositionData(response.data);
     }
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     handleLoadData();
@@ -111,6 +122,23 @@ export default function Position() {
     ];
   }, [handleNavigateToEditPage]);
 
+  const handleConstructParams = useCallback(
+    ({ page = 1, search = "" }: PositionParams) => {
+      setSearchParams({
+        search: search,
+        page: page.toString(),
+      });
+    },
+    [setSearchParams]
+  );
+
+  const handleSearchData = useCallback(
+    ({ search }: TableActionSearchProps) => {
+      handleConstructParams({ search });
+    },
+    [handleConstructParams]
+  );
+
   const getRenderedItem = useCallback(
     ({
       _id,
@@ -143,22 +171,6 @@ export default function Position() {
               plantProfile,
             }}
           />
-
-          {/* <Button
-            onClick={() =>
-              navigate("/position/edit", {
-                state: {
-                  _id,
-                  address,
-                  lat,
-                  lng,
-                  name,
-                },
-              })
-            }
-          >
-            Edit
-          </Button> */}
         </>
       ),
     }),
@@ -178,15 +190,25 @@ export default function Position() {
       />
       <Container>
         <TableAction
-          onSubmit={() => null}
+          onSubmit={handleSearchData}
           buttonTitle="Add New Position"
           onButtonClick={() => navigate("/position/create")}
+        />
+
+        <Pagination
+          handlePageChange={(event) =>
+            handleConstructParams({
+              page: event.first,
+            })
+          }
+          page={1}
+          resultsLength={positionData?.total ?? 0}
         />
 
         <Table
           columns={getHeaderTable}
           keyItem={getTableKeyItem}
-          data={positionData}
+          data={positionData?.data}
           renderItem={getRenderedItem}
         />
       </Container>

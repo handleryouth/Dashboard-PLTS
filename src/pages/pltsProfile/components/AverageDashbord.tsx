@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { SelectButton } from "primereact/selectbutton";
-import { Button, Dropdown, LineChart, RenderedChartItem } from "components";
+import { Button, Dropdown, LineChart } from "components";
 import {
   AverageDashbordProps,
   FilterModalStateProps,
   GeneratorDataAverageProps,
   PLTSProfileDetailAverageResponse,
+  RenderedChartItem,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import { BUTTON_LABEL_TIME_SELECTION } from "const";
@@ -90,8 +91,6 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
   useEffect(() => {
     getAverageValue();
   }, [getAverageValue]);
-
-  console.log("dropdownvalue", dropdownValue);
 
   return (
     <>

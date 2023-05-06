@@ -38,8 +38,6 @@ export default function CumulativeDashboard() {
   const [comparingData, setComparingData] =
     useState<PLTSComparingValueResponse>();
 
-  console.log("comparing data", period);
-
   const [dropdownValue, setDropdownValue] = useState<string>();
 
   const getDataKey = useCallback(async () => {

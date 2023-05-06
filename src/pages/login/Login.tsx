@@ -64,8 +64,6 @@ export default function Login() {
       });
 
       if (response.status === 200) {
-        console.log("logn response", response);
-
         setCookies("isLogin", true, {
           path: "/",
           sameSite: "lax",

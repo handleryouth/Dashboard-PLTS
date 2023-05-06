@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
-import { Dropdown, LineChart, RenderedChartItem } from "components";
+import { Dropdown, LineChart } from "components";
 import {
   GeneratorDataPropsExcludeDeviceType,
   PLTSMapKey,
   PLTSProfileDetailAverageResponse,
   PLTSProfileList,
+  RenderedChartItem,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import { SelectButton } from "primereact/selectbutton";
@@ -105,6 +106,16 @@ export default function AverageDashboard() {
     });
   }, [generatorData?.dataKeyArray]);
 
+  const getDataUnit = useMemo(() => {
+    const yUnit = generatorData?.unit.find(
+      (item) => item.dataKey === dropdownValue
+    )?.unit;
+
+    return {
+      y: yUnit ?? "",
+    };
+  }, [dropdownValue, generatorData?.unit]);
+
   return (
     <LineChart
       isLoading={isLoading}
@@ -114,6 +125,7 @@ export default function AverageDashboard() {
         y: dropdownValue,
       }}
       title="Average Graph"
+      yUnit={getDataUnit.y}
       renderItem={handleRenderItem}
       customDropdownComponent={
         <div className="flex items-center justify-center   mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">

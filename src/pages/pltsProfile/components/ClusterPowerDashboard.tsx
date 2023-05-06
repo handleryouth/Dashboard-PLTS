@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import {
   PLTSClusterValueResponse,
   PLTSClusterValueResponseDataProps,
+  RenderedChartItem,
 } from "types";
 import { generateDateLocale, requestHelper } from "utils";
-import { LineChart, RenderedChartItem } from "components";
+import { BarChart, LineChart } from "components";
 
 export default function ClusterDashboard() {
   const { id } = useParams<"id">();
@@ -29,8 +30,6 @@ export default function ClusterDashboard() {
     setLoading(false);
   }, [id]);
 
-  console.log("cluster data", clusterData);
-
   const renderChartItem = useCallback(
     (
       item: PLTSClusterValueResponseDataProps
@@ -49,10 +48,11 @@ export default function ClusterDashboard() {
 
   return (
     <div>
-      <LineChart
+      <BarChart
         isLoading={loading}
         multipleChartDataKey={clusterData?.dataKey}
         multipleChartData={clusterData?.data}
+        yUnit="W"
         coordinate={{
           x: "time",
         }}

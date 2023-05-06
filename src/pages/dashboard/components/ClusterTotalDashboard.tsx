@@ -1,7 +1,11 @@
 import { useCallback, useState, useEffect } from "react";
-import { PLTSTotalClusterResponse, TotalClusterDataProps } from "types";
+import {
+  PLTSTotalClusterResponse,
+  TotalClusterDataProps,
+  RenderedChartItem,
+} from "types";
 import { generateDateLocale, requestHelper } from "utils";
-import { LineChart, RenderedChartItem } from "components";
+import { LineChart } from "components";
 
 export default function ClusterTotalDashboard() {
   const [loading, setLoading] = useState(true);
@@ -41,6 +45,7 @@ export default function ClusterTotalDashboard() {
     <div>
       <LineChart
         title="Cluster Total Power Graph"
+        yUnit="W"
         isLoading={loading}
         multipleChartDataKey={clusterTotalData?.dataKey}
         multipleChartData={clusterTotalData?.data}

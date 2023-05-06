@@ -6,8 +6,6 @@ import { useCookies } from "react-cookie";
 export default function RouteStack() {
   const [cookies] = useCookies(["isLogin", "staffData"]);
 
-  console.log("cookies in web value:", cookies.staffData?.role);
-
   return (
     <Routes>
       {cookies.isLogin ? (

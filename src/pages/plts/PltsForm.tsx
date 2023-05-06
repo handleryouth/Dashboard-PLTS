@@ -2,57 +2,22 @@ import { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { SelectItem, SelectItemOptionsType } from "primereact/selectitem";
+import { SelectItem } from "primereact/selectitem";
 import { Input, Button, Container, Dropdown } from "components";
 import {
+  PLTSFormModalState,
+  PLTSFormProps,
   PLTSPositionDataResponse,
   PLTSProfileBody,
   PLTSProfileList,
 } from "types";
 import { camelCase, requestHelper, showModal as dispatchModal } from "utils";
-import { DeleteModal, PositionModal } from "./modals";
-
-export const PLTS_FORM_INITIAL_STATE: PLTSProfileBody = {
-  pltsName: "",
-  smaDeviceName: "",
-  devicePosition: "",
-  ipAddress: "",
-  port: "",
-  modbusAddress: [],
-  globalHorizontalIrradiance: 0,
-  installedPower: 0,
-  pvSurfaceArea: 0,
-  powerPerYear: 0,
-  deviceType: "pvInverter",
-};
-
-export interface PLTSFormProps {
-  edit?: boolean;
-}
-
-export const PLTS_SIGNED_VALUE_DROPDOWN: SelectItemOptionsType = [
-  {
-    label: "Signed",
-    value: "signed",
-  },
-  {
-    label: "Unsigned",
-    value: "unsigned",
-  },
-];
-
-export const PLTS_DEVICE_TYPE_DROPDOWN: SelectItemOptionsType = [
-  {
-    label: "PV Inverter",
-    value: "pvInverter",
-  },
-  {
-    label: "Battery Inverter",
-    value: "batteryInverter",
-  },
-];
-
-export type PLTSFormModalState = "delete" | "position" | undefined;
+import {
+  PLTS_DEVICE_TYPE_DROPDOWN,
+  PLTS_FORM_INITIAL_STATE,
+  PLTS_SIGNED_VALUE_DROPDOWN,
+} from "const";
+import { DeleteModal, FormConfirmationModal, PositionModal } from "./modals";
 
 export default function PltsForm({ edit }: PLTSFormProps) {
   const [showModal, setShowModal] = useState<PLTSFormModalState>();
@@ -156,8 +121,6 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
   const handleEditData = useCallback(
     async (data: PLTSProfileBody) => {
-      console.log("form data", data);
-
       const response = await requestHelper("patch_plts_profile", {
         body: {
           ...data,
@@ -254,11 +217,14 @@ export default function PltsForm({ edit }: PLTSFormProps) {
         onRequestCompleted={getPltsLocation}
       />
 
+      <FormConfirmationModal
+        visible={showModal === "confirmation"}
+        toggleClosedModal={() => setShowModal(undefined)}
+        onSubmit={handleSubmit(onSubmit)}
+      />
+
       <Container>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mx-auto w-3/4 flex flex-col gap-y-4"
-        >
+        <form className="mx-auto w-3/4 flex flex-col gap-y-4">
           <Controller
             name="pltsName"
             control={control}
@@ -590,7 +556,10 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             </div>
 
             <div className="flex items-center justify-center gap-8 mt-8">
-              <Button type="submit" className="bg-blue-500 w-full">
+              <Button
+                onClick={() => setShowModal("confirmation")}
+                className="bg-blue-500 w-full"
+              >
                 Save
               </Button>
               <Button

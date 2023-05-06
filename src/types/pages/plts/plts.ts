@@ -30,6 +30,12 @@ export interface PLTSPositionBody {
   lng: number;
 }
 
+export interface PLTSPositionParams {
+  search?: string;
+  page?: number;
+  limit: number;
+}
+
 export interface PLTSPositionDataResponse {
   _id: string;
   name: string;
@@ -129,9 +135,25 @@ export interface PLTSCSVDownloadFileParams {
   endDate: string;
 }
 
+export interface PltsUnitProps {
+  unit: string;
+  dataKey: string;
+}
+
+export interface PLTSFormProps {
+  edit?: boolean;
+}
+
+export type PLTSFormModalState =
+  | "delete"
+  | "position"
+  | "confirmation"
+  | undefined;
+
 export interface PLTSProfileDetailAverageResponse {
   data: GeneratorDataAverageProps[];
   dataKeyArray: string[];
+  unit: PltsUnitProps[];
 }
 
 export interface PLTSAnalyticValueParams {

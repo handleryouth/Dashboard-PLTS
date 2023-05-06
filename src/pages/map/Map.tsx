@@ -48,6 +48,7 @@ export default function Map() {
             style={{
               minHeight: "100vh",
               width: "100%",
+              zIndex: 0,
             }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

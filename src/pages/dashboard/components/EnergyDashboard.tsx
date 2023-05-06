@@ -1,7 +1,7 @@
-import { LineChart } from "components";
-import { ENERGY_LABEL_TIME_SELECTION } from "const";
-import { SelectButton } from "primereact/selectbutton";
 import { useCallback, useEffect, useState } from "react";
+import { SelectButton } from "primereact/selectbutton";
+import { BarChart } from "components";
+import { ENERGY_LABEL_TIME_SELECTION } from "const";
 import { PLTSTotalClusterResponse, TotalClusterDataProps } from "types";
 import { generateDateLocale, requestHelper } from "utils";
 
@@ -43,11 +43,12 @@ export default function EnergyDashboard() {
 
   return (
     <div>
-      <LineChart
+      <BarChart
         title="Cluster Total Energy Graph"
         isLoading={loading}
         multipleChartDataKey={energyData?.dataKey}
         multipleChartData={energyData?.data}
+        yUnit="W"
         coordinate={{
           x: "time",
         }}

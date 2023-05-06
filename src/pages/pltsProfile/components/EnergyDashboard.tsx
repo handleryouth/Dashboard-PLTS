@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SelectButton } from "primereact/selectbutton";
-import { LineChart, RenderedChartItem } from "components";
+import { BarChart } from "components";
 import { ENERGY_LABEL_TIME_SELECTION } from "const";
 import {
   PLTSClusterValueResponse,
   PLTSClusterValueResponseDataProps,
+  RenderedChartItem,
 } from "types";
 import { generateDateLocale, requestHelper } from "utils";
 
@@ -52,11 +53,12 @@ export default function EnergyDashboard() {
 
   return (
     <div>
-      <LineChart
+      <BarChart
         title="Cluster Energy Graph"
         isLoading={loading}
         multipleChartDataKey={energyData?.dataKey}
         multipleChartData={energyData?.data}
+        yUnit="W"
         coordinate={{
           x: "time",
         }}

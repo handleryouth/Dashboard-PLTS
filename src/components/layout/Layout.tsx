@@ -8,8 +8,6 @@ import { MemoizedSeo } from "../seo";
 export default function Layout({ children }: LayoutProps) {
   const [cookies] = useCookies(["isLogin"]);
 
-  console.log("cookies", cookies);
-
   return (
     <>
       <MemoizedSeo />

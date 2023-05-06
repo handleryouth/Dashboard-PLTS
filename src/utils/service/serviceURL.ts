@@ -40,6 +40,7 @@ import {
   PLTSDetailEnergyResponse,
   PLTSDetailPowerParams,
   SignupParams,
+  PLTSPositionParams,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -77,6 +78,7 @@ export interface ServiceURL {
     body: PLTSPositionBody;
   }>;
   get_plts_location: ServiceStructure<{
+    params: PLTSPositionParams;
     response: ServiceMessageResponse<PLTSPositionDataResponse[]>;
   }>;
   get_plts_list: ServiceStructure<{

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { MenuItem } from "primereact/menuitem";
+import { Time } from "../time";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -37,12 +38,16 @@ export default function Header() {
   );
 
   return (
-    <div className="bg-white">
-      <BreadCrumb
-        className=" mx-auto prose prose-a:my-0 prose-li:my-0  max-w-screen-bigDisplay min-w-[490px] border-none"
-        model={breadcrumbMenu}
-        home={home}
-      />
+    <div className="bg-white sticky top-0 z-20">
+      <div className=" mx-auto flex items-center justify-between max-w-screen-bigDisplay min-w-[490px]">
+        <BreadCrumb
+          className="prose prose-a:my-0 prose-li:my-0  border-none"
+          model={breadcrumbMenu}
+          home={home}
+        />
+
+        <Time />
+      </div>
     </div>
   );
 }
