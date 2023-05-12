@@ -1,11 +1,17 @@
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { SplitButton } from "primereact/splitbutton";
 import { MenuItem } from "primereact/menuitem";
-import { Container, Pagination, Table, TableAction } from "components";
+import { useQuery } from "@tanstack/react-query";
 import {
-  ServiceMessageResponse,
+  Container,
+  ErrorComponent,
+  Pagination,
+  Table,
+  TableAction,
+} from "components";
+import {
   StaffDataProps,
   StaffManagementParams,
   StaffManagementTableHeaderProps,
@@ -15,14 +21,7 @@ import {
 import { requestHelper } from "utils";
 
 export default function StaffManagement() {
-  const [staffData, setStaffData] =
-    useState<ServiceMessageResponse<StaffDataProps[]>>();
-
-  const [cookies] = useCookies(["staffData"]);
-
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const navigate = useNavigate();
 
   const getStaffData = useCallback(async () => {
     const response = await requestHelper("get_staff_list", {
@@ -33,9 +32,30 @@ export default function StaffManagement() {
       },
     });
     if (response && response.status === 200) {
-      setStaffData(response.data);
+      return response.data;
     }
   }, [searchParams]);
+
+  const {
+    data: staffData,
+    isError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryFn: getStaffData,
+    queryKey: [
+      "staffData",
+      searchParams.get("search") ?? "",
+      searchParams.get("page") || 1,
+    ],
+    staleTime: 0,
+    cacheTime: 0,
+    useErrorBoundary: false,
+  });
+
+  const [cookies] = useCookies(["staffData"]);
+
+  const navigate = useNavigate();
 
   const handleActivateStaff = useCallback(
     async (id: string) => {
@@ -163,26 +183,29 @@ export default function StaffManagement() {
     [handleConstructParams]
   );
 
-  useEffect(() => {
-    getStaffData();
-  }, [getStaffData]);
-
   return (
     <Container>
-      <TableAction onSubmit={handleSearchData} enableButton={false} />
+      <TableAction
+        onSubmit={handleSearchData}
+        enableButton={false}
+        inputPlaceholder="Search by name"
+      />
       <Pagination
         handlePageChange={(event) =>
           handleConstructParams({
-            page: event.first,
+            page: event.first + 1,
           })
         }
-        page={1}
+        page={Number(searchParams.get("page")) || 1}
         resultsLength={staffData?.total ?? 0}
       />
-      {staffData && (
+      {isError ? (
+        <ErrorComponent refetch={refetch} />
+      ) : (
         <Table
+          loading={isLoading}
           columns={getHeaderTable}
-          data={staffData.data}
+          data={staffData?.data ?? []}
           keyItem={getKeyItem}
           renderItem={getRenderedItem}
         />

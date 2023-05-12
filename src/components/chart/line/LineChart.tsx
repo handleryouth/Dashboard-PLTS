@@ -62,19 +62,19 @@ export default function LineChart<T extends Object>({
 
   return (
     <div
-      className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
+      className={`prose w-full h-full  ${containerClassName ?? ""}`}
       ref={graphRef}
     >
-      <div className="flex items-center justify-between flex-col mediumToBigDisplay:flex-row  ">
-        <div className="basis-1/4">
-          <h3 className="mb-4 mediumToBigDisplay:mb-0 font-bold">{title}</h3>
+      <div className="flex items-center justify-between flex-col mediumToBigDisplay:flex-row">
+        <div className="basis-1/2 prose-h3:mt-0">
+          <h3 className="mb-4  mediumToBigDisplay:mb-0 font-bold">{title}</h3>
         </div>
 
         {customDropdownComponent}
       </div>
 
       {isLoading ? (
-        <div className="text-center mt-4">
+        <div className="flex items-center justify-center h-full min-h-[10rem]">
           <ProgressSpinner className="w-14 h-14" />
         </div>
       ) : (

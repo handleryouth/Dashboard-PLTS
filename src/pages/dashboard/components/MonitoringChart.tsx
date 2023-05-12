@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { Dropdown } from "primereact/dropdown";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { Button, LineChart } from "components";
 import {
+  DataUnitProps,
   GeneratorDataProps,
   GeneratorDataPropsExcludeDeviceType,
   MonitoringChartProps,
@@ -18,6 +18,8 @@ export default function MonitoringChart({
 }: MonitoringChartProps) {
   const [generatorData, setGeneratorData] = useState<GeneratorDataProps[]>([]);
 
+  const [dataUnit, setDataUnit] = useState<DataUnitProps[]>([]);
+
   const [dataKey, setDataKey] = useState<string[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +32,8 @@ export default function MonitoringChart({
   const logDataOnMessage = useCallback((event: MessageEvent) => {
     setIsLoading(false);
     const newData = JSON.parse(event.data);
+
+    setDataUnit(newData.unit);
 
     if (previousValueRef.current.length > 5) {
       const previousDataSliced = previousValueRef.current.slice(1);
@@ -93,6 +97,16 @@ export default function MonitoringChart({
     []
   );
 
+  const getDataUnit = useMemo(() => {
+    const yUnit = dataUnit?.find(
+      (item) => item.dataKey === dropdownValue
+    )?.unit;
+
+    return {
+      y: yUnit ?? "",
+    };
+  }, [dataUnit, dropdownValue]);
+
   const handleRenderDropdownItem = useMemo(() => {
     return dataKey.map((item) => {
       return {
@@ -103,43 +117,39 @@ export default function MonitoringChart({
   }, [dataKey]);
 
   return (
-    <>
-      {isLoading ? (
-        <ProgressSpinner className="h-14 w-14" />
-      ) : (
-        <LineChart
-          containerClassName={customClassname}
-          title={title}
-          singleChartData={dropdownValue ? generatorData : []}
-          coordinate={{
-            x: "time",
-            y: dropdownValue,
-          }}
-          renderItem={handleRenderItem}
-          customDropdownComponent={
-            <div className="flex items-center gap-x-4 w-full">
-              {buttonTitle && (
-                <Button
-                  className="w-full"
-                  onClick={() => onButtonClicked && onButtonClicked()}
-                >
-                  {buttonTitle}
-                </Button>
-              )}
-              <Dropdown
-                value={dropdownValue}
-                options={handleRenderDropdownItem}
-                placeholder="Select Data"
-                filter
-                onChange={(e) => {
-                  setDropdownValue(e.target.value);
-                }}
-                className="w-full"
-              />
-            </div>
-          }
-        />
-      )}
-    </>
+    <LineChart
+      containerClassName={customClassname}
+      title={title}
+      isLoading={isLoading}
+      yUnit={getDataUnit.y}
+      singleChartData={dropdownValue ? generatorData : []}
+      coordinate={{
+        x: "time",
+        y: dropdownValue,
+      }}
+      renderItem={handleRenderItem}
+      customDropdownComponent={
+        <div className="flex items-center gap-x-4 w-full">
+          {buttonTitle && (
+            <Button
+              className="w-full"
+              onClick={() => onButtonClicked && onButtonClicked()}
+            >
+              {buttonTitle}
+            </Button>
+          )}
+          <Dropdown
+            value={dropdownValue}
+            options={handleRenderDropdownItem}
+            placeholder="Select Data"
+            filter
+            onChange={(e) => {
+              setDropdownValue(e.target.value);
+            }}
+            className="w-full"
+          />
+        </div>
+      }
+    />
   );
 }

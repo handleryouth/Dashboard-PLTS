@@ -39,9 +39,6 @@ export const PLTS_FORM_INITIAL_STATE: PLTSProfileBody = {
   ipAddress: "",
   port: "",
   modbusAddress: [],
-  globalHorizontalIrradiance: 0,
   installedPower: 0,
-  pvSurfaceArea: 0,
-  powerPerYear: 0,
   deviceType: "pvInverter",
 };

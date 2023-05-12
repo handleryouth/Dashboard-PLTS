@@ -13,6 +13,7 @@ export default function TableAction({
   buttonTitle,
   onButtonClick,
   enableButton = true,
+  inputPlaceholder,
 }: TableActionProps) {
   const { control, handleSubmit } = useForm({
     defaultValues: TABLE_ACTION_INITIAL_SEARCH,
@@ -29,7 +30,7 @@ export default function TableAction({
               containerClassName="w-96"
               id={field.name}
               {...field}
-              placeholder="Search"
+              placeholder={inputPlaceholder ?? "Search"}
             />
           )}
         />

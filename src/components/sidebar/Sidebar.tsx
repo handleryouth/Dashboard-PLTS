@@ -3,10 +3,10 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Sidebar as PrimereactSidebar } from "primereact/sidebar";
-import { Button } from "primereact/button";
 import { requestHelper, showModal, sidebarItems } from "utils";
 import { SidebarChildren } from "./components";
 import { useSidebar } from "./context";
+import { Button } from "../button";
 
 export default function Sidebar() {
   const { showDashboard, toggleDashboardInactive } = useSidebar();
@@ -75,9 +75,10 @@ export default function Sidebar() {
 
         <Button
           onClick={signOut}
-          label="Logout"
-          className="w-full bg-red-500/40 text-red-500 hover:!bg-red-500 hover:!text-white"
-        />
+          className="bg-red-500/40 text-red-500 hover:!bg-red-500 hover:!text-white transition-colors"
+        >
+          Log out
+        </Button>
       </div>
     </PrimereactSidebar>
   );

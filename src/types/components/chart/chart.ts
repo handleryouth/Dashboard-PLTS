@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
-import { PltsUnitProps } from "../../pages";
 
-export type RenderedChartItem<T> = Record<keyof T, string | number | undefined>;
+export type RenderedChartItem<T> = Partial<
+  Record<keyof T, string | number | undefined>
+>;
 
 export interface LineChartProps<T extends Object> {
   title?: string;

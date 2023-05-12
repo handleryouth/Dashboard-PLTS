@@ -10,4 +10,5 @@ export interface TableActionProps {
   customButtonComponent?: ReactNode;
   onButtonClick?: () => void;
   enableButton?: boolean;
+  inputPlaceholder?: string;
 }

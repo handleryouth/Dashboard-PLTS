@@ -1,15 +1,18 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
 import { Button, Dropdown, LineChart } from "components";
 import {
   AverageDashbordProps,
   FilterModalStateProps,
   GeneratorDataAverageProps,
-  PLTSProfileDetailAverageResponse,
   RenderedChartItem,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
-import { BUTTON_LABEL_TIME_SELECTION } from "const";
+import {
+  AVERAGE_DASHBOARD_STALE_TIME,
+  BUTTON_LABEL_TIME_SELECTION,
+} from "const";
 import CSVModal from "./CSVModal";
 
 export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
@@ -18,11 +21,20 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [generatorData, setGeneratorData] =
-    useState<PLTSProfileDetailAverageResponse>();
-
   const [period, setPeriod] = useState("daily");
+
+  const { data: generatorData, isLoading } = useQuery({
+    queryKey: ["averageData", pltsName, period],
+    queryFn: () =>
+      requestHelper("get_plts_profile_detail_average_value", {
+        params: {
+          pltsName,
+          dataTime: period,
+        },
+      }),
+    staleTime: AVERAGE_DASHBOARD_STALE_TIME,
+    useErrorBoundary: true,
+  });
 
   const handleRenderItem = useCallback(
     (
@@ -36,26 +48,8 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
     []
   );
 
-  const getAverageValue = useCallback(async () => {
-    setIsLoading(true);
-    const response = await requestHelper(
-      "get_plts_profile_detail_average_value",
-      {
-        params: {
-          pltsName,
-          dataTime: period,
-        },
-      }
-    );
-
-    if (response && response.status === 200) {
-      setGeneratorData(response.data.data);
-      setIsLoading(false);
-    }
-  }, [period, pltsName]);
-
   const handleRenderDropdownItem = useMemo(() => {
-    return generatorData?.dataKeyArray.map((item) => {
+    return generatorData?.data.data.dataKeyArray.map((item) => {
       return {
         label: convertCamelCaseToPascalCase(item),
         value: item,
@@ -88,10 +82,6 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
     [pltsName]
   );
 
-  useEffect(() => {
-    getAverageValue();
-  }, [getAverageValue]);
-
   return (
     <>
       <CSVModal
@@ -99,47 +89,48 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
         onCancel={() => setModalVisible(false)}
         onConfirm={downloadCSVFile}
       />
-      <div className="my-8">
-        <LineChart
-          isLoading={isLoading}
-          title="Average Graph"
-          singleChartData={dropdownValue ? generatorData?.data ?? [] : []}
-          coordinate={{
-            x: "time",
-            y: dropdownValue,
-          }}
-          renderItem={handleRenderItem}
-          customDropdownComponent={
-            <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">
-              <Button
-                className="bg-blue-500 w-max"
-                onClick={() => setModalVisible(true)}
-              >
-                Download CSV
-              </Button>
 
-              <SelectButton
-                className="text-center"
-                value={period}
-                options={BUTTON_LABEL_TIME_SELECTION}
-                onChange={(e) => setPeriod(e.value)}
-                unselectable={false}
-              />
+      <LineChart
+        isLoading={isLoading}
+        title="Average Graph"
+        singleChartData={
+          dropdownValue ? generatorData?.data.data.data ?? [] : []
+        }
+        coordinate={{
+          x: "time",
+          y: dropdownValue,
+        }}
+        renderItem={handleRenderItem}
+        customDropdownComponent={
+          <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">
+            <Button
+              className="bg-blue-500 w-max"
+              onClick={() => setModalVisible(true)}
+            >
+              Download CSV
+            </Button>
 
-              <Dropdown
-                value={dropdownValue}
-                options={handleRenderDropdownItem}
-                placeholder="Select Data"
-                filter
-                onChange={(e) => {
-                  setDropdownValue(() => e.target.value);
-                }}
-                containerClassName="w-auto"
-              />
-            </div>
-          }
-        />
-      </div>
+            <SelectButton
+              className="text-center"
+              value={period}
+              options={BUTTON_LABEL_TIME_SELECTION}
+              onChange={(e) => setPeriod(e.value)}
+              unselectable={false}
+            />
+
+            <Dropdown
+              value={dropdownValue}
+              options={handleRenderDropdownItem}
+              placeholder="Select Data"
+              filter
+              onChange={(e) => {
+                setDropdownValue(() => e.target.value);
+              }}
+              containerClassName="w-auto"
+            />
+          </div>
+        }
+      />
     </>
   );
 }

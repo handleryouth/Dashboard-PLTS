@@ -1,9 +1,10 @@
-import { useCallback, useState, useMemo, useEffect } from "react";
+import { useCallback, useState, useMemo } from "react";
+import { LatLngExpression } from "leaflet";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Container, Section } from "components";
-import { PLTSProfileDetailResponse } from "types";
+import { Container, Section, ErrorRefetch } from "components";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import {
   AverageDashbord,
@@ -12,7 +13,6 @@ import {
   PLTSAnalyticValue,
 } from "./components";
 import { MonitoringChart } from "../dashboard";
-import { LatLngExpression } from "leaflet";
 
 export interface ContainerWidth {
   width: number;
@@ -22,17 +22,7 @@ export interface ContainerWidth {
 const MAP_DEFAULT_POSITION: LatLngExpression = [-7.284, 112.796];
 
 export default function PltsDetail() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [pltsDetailData, setPltsDetailData] =
-    useState<PLTSProfileDetailResponse>();
-
   const { id } = useParams<"id">();
-
-  const [containerWidth, setContainerWidth] = useState<ContainerWidth>({
-    height: 0,
-    width: 0,
-  });
 
   const getDetailData = useCallback(async () => {
     const response = await requestHelper("get_plts_profile_detail", {
@@ -42,20 +32,33 @@ export default function PltsDetail() {
     });
 
     if (response && response.status === 200) {
-      setPltsDetailData(response.data.data);
-      setIsLoading(false);
+      return response.data.data;
+    } else {
+      throw new Error("Failed to get data");
     }
   }, [id]);
+
+  const {
+    isLoading,
+    isError,
+    data: pltsDetailData,
+  } = useQuery({
+    queryKey: ["pltsDetail", id],
+    queryFn: getDetailData,
+    cacheTime: 0,
+    staleTime: 0,
+  });
+
+  const [containerWidth, setContainerWidth] = useState<ContainerWidth>({
+    height: 0,
+    width: 0,
+  });
 
   const containerRef = useCallback((node: HTMLDivElement) => {
     if (node !== null) {
       setContainerWidth(node.getBoundingClientRect());
     }
   }, []);
-
-  useEffect(() => {
-    getDetailData();
-  }, [getDetailData]);
 
   const memoizedMapComponent = useMemo(() => {
     return (
@@ -90,37 +93,52 @@ export default function PltsDetail() {
     );
   }, [containerWidth.height, pltsDetailData]);
 
+  if (isError) {
+    return <ErrorRefetch />;
+  }
+
   return (
     <Container>
-      <h1>PLTS Detail {pltsDetailData?.pltsName ?? "-"}</h1>
+      <h1>PLTS Detail </h1>
+      <h3>{pltsDetailData?.pltsName ?? "-"}</h3>
+
       {isLoading ? (
-        <ProgressSpinner className="text-center" />
-      ) : pltsDetailData ? (
-        <>
+        <ProgressSpinner className="h-14 w-full mx-auto" />
+      ) : (
+        <div className="flex flex-col gap-y-12">
           <div
             className="grid  grid-cols-1 mediumDisplay:grid-cols-2 items-center gap-x-4"
             ref={containerRef}
           >
             {memoizedMapComponent}
-            <MonitoringChart title={pltsDetailData.pltsName} />
+            <ErrorRefetch>
+              <MonitoringChart title={pltsDetailData?.pltsName ?? "-"} />
+            </ErrorRefetch>
           </div>
 
-          <AverageDashbord pltsName={pltsDetailData.pltsName} />
+          <ErrorRefetch>
+            <AverageDashbord pltsName={pltsDetailData?.pltsName ?? "-"} />
+          </ErrorRefetch>
 
           {pltsDetailData?.deviceType === "pvInverter" && (
-            <PLTSAnalyticValue
-              pltsName={pltsDetailData.pltsName}
-              id={id!}
-              deviceType={pltsDetailData.deviceType}
-            />
+            <ErrorRefetch>
+              <PLTSAnalyticValue
+                pltsName={pltsDetailData?.pltsName}
+                deviceType={pltsDetailData?.deviceType}
+              />
+            </ErrorRefetch>
           )}
 
-          <ClusterPowerDashboard />
+          <ErrorRefetch>
+            <ClusterPowerDashboard />
+          </ErrorRefetch>
 
-          <EnergyDashboard />
+          <ErrorRefetch>
+            <EnergyDashboard />
+          </ErrorRefetch>
 
           <div>
-            <h3>About</h3>
+            <h3 className="mt-0">About</h3>
             <div className="grid grid-cols-2">
               <Section
                 title="Inverter Name"
@@ -131,7 +149,7 @@ export default function PltsDetail() {
                 title="Device Type"
                 value={
                   pltsDetailData?.deviceType
-                    ? convertCamelCaseToPascalCase(pltsDetailData.deviceType)
+                    ? convertCamelCaseToPascalCase(pltsDetailData?.deviceType)
                     : "-"
                 }
                 direction="column"
@@ -144,7 +162,7 @@ export default function PltsDetail() {
               />
               <Section
                 title="IP Address"
-                value={pltsDetailData.ipAddress ?? "-"}
+                value={pltsDetailData?.ipAddress ?? "-"}
                 direction="column"
               />
               <Section
@@ -152,29 +170,8 @@ export default function PltsDetail() {
                 value={pltsDetailData?.port ?? "-"}
                 direction="column"
               />
-              <Section
-                title="Global Horizontal Irradiance (kWh/m^2)"
-                value={pltsDetailData?.globalHorizontalIrradiance ?? "-"}
-                direction="column"
-              />
-
-              <Section
-                title="Power per Year (kWh)"
-                value={pltsDetailData?.powerPerYear ?? "-"}
-                direction="column"
-              />
-
-              <Section
-                title="PV Surface Area (m^2)"
-                value={pltsDetailData?.pvSurfaceArea ?? "-"}
-                direction="column"
-              />
             </div>
           </div>
-        </>
-      ) : (
-        <div>
-          <h3>No data found.</h3>
         </div>
       )}
     </Container>

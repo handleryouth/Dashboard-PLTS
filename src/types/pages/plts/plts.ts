@@ -16,9 +16,6 @@ export interface PLTSProfileBody {
   port: string;
   modbusAddress: ModbusAddress[];
   installedPower: number;
-  globalHorizontalIrradiance: number;
-  pvSurfaceArea: number;
-  powerPerYear: number;
   deviceType?: "pvInverter" | "batteryInverter";
   connectedTo?: string;
 }
@@ -70,8 +67,6 @@ export interface PLTSListResponse {
   smaDeviceName: string;
   globalHorizontalIrradiance: number;
   installedPower: number;
-  powerPerYear: number;
-  pvSurfaceArea: number;
   deviceType: "pvInverter" | "batteryInverter";
   connectedTo?: string;
   connectedWith?: string;
@@ -119,8 +114,6 @@ export interface PLTSProfileDetailResponse {
   smaDeviceName: string;
   globalHorizontalIrradiance: number;
   installedPower: number;
-  powerPerYear: number;
-  pvSurfaceArea: number;
   deviceType: DeviceType;
 }
 
@@ -231,7 +224,6 @@ export interface PLTSTotalClusterResponse {
 }
 
 export interface PLTSAnalyticValueProps {
-  id: string;
   pltsName: string;
   deviceType: DeviceType;
 }

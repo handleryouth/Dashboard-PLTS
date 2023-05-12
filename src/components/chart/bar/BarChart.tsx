@@ -80,7 +80,7 @@ export default function BarChart<T extends Object>({
 
   return (
     <div
-      className={`w-full py-3 px-4 ${containerClassName ?? ""}`}
+      className={`prose w-full py-3 px-4 ${containerClassName ?? ""}`}
       ref={graphRef}
     >
       <div className="flex items-center justify-between flex-col mediumToBigDisplay:flex-row  ">

@@ -1,4 +1,5 @@
 import { useMemo, Fragment } from "react";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { TableComponentProps } from "types";
 
 export default function Table<T extends Object>({
@@ -8,15 +9,16 @@ export default function Table<T extends Object>({
   onClickRowItem,
   keyItem,
   excludeOnClickRowItem,
+  loading,
 }: TableComponentProps<T>) {
   const entries = useMemo(() => Object.entries(columns), [columns]);
 
   const handleRenderHeader = useMemo(
     () => (
-      <thead className="bg-gray-200 align-middle ">
+      <thead className="bg-gray-200 ">
         <tr className="text-lg ">
           {entries.map(([key, value]) => (
-            <th className="p-2 " key={key}>
+            <th className="table-padding  align-middle" key={key}>
               {value}
             </th>
           ))}
@@ -48,7 +50,8 @@ export default function Table<T extends Object>({
 
                   return (
                     <td
-                      className={`py-3 align-middle  ${
+                      className={`py-3 table-padding 
+                      align-middle  ${
                         checkExclude ? "cursor-pointer" : "cursor-default"
                       }`}
                       key={key}
@@ -70,10 +73,14 @@ export default function Table<T extends Object>({
 
   return (
     <div className="overflow-x-scroll w-full">
-      <table className="min-w-[960px]">
-        {handleRenderHeader}
-        {handleRenderItem}
-      </table>
+      {loading ? (
+        <ProgressSpinner className="w-14 h-14" />
+      ) : (
+        <table className="min-w-[960px] prose rounded-md overflow-hidden table-fixed">
+          {handleRenderHeader}
+          {handleRenderItem}
+        </table>
+      )}
     </div>
   );
 }

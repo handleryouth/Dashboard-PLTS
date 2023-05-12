@@ -198,7 +198,7 @@ export default function Position() {
         <Pagination
           handlePageChange={(event) =>
             handleConstructParams({
-              page: event.first,
+              page: event.first + 1,
             })
           }
           page={1}

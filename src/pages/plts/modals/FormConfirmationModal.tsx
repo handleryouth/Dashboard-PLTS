@@ -47,7 +47,9 @@ export default function FormConfirmationModal({
         <Button onClick={onSubmit} className="w-full bg-blue-500">
           Save
         </Button>
-        <Button className="w-full bg-red-500">Check Again</Button>
+        <Button onClick={toggleClosedModal} className="w-full bg-red-500">
+          Check Again
+        </Button>
       </div>
     </Dialog>
   );
