@@ -9,7 +9,6 @@ import { CookiesProvider } from "react-cookie";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { store } from "utils";
 import { ResponseModalInterceptorProvider } from "context";
 import { queryClient } from "const";
@@ -31,7 +30,6 @@ function App() {
             </BrowserRouter>
           </ResponseModalInterceptorProvider>
         </Provider>
-        <ReactQueryDevtools />
       </QueryClientProvider>
     </CookiesProvider>
   );
