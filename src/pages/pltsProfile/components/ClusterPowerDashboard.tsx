@@ -1,34 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import {
-  PLTSClusterValueResponse,
-  PLTSClusterValueResponseDataProps,
-  RenderedChartItem,
-} from "types";
+import { PLTSClusterValueResponseDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
-import { BarChart, LineChart } from "components";
+import { LineChart } from "components";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ClusterDashboard() {
   const { id } = useParams<"id">();
 
-  const [loading, setLoading] = useState(true);
-
-  const [clusterData, setClusterData] = useState<PLTSClusterValueResponse>();
-
-  const getClusterPowerValue = useCallback(async () => {
-    setLoading(true);
-    const responseData = await requestHelper("get_plts_cluster_value", {
-      params: {
-        id,
-        dataTime: "hourly",
-      },
-    });
-
-    if (responseData && responseData.status === 200) {
-      setClusterData(responseData.data.data);
-    }
-    setLoading(false);
-  }, [id]);
+  const { data: clusterData, isLoading } = useQuery({
+    queryKey: ["clusterPowerGraph"],
+    queryFn: () =>
+      requestHelper("get_plts_cluster_value", {
+        params: {
+          id,
+          dataTime: "hourly",
+        },
+      }),
+  });
 
   const renderChartItem = useCallback(
     (
@@ -42,16 +31,12 @@ export default function ClusterDashboard() {
     []
   );
 
-  useEffect(() => {
-    getClusterPowerValue();
-  }, [getClusterPowerValue]);
-
   return (
     <div>
-      <BarChart
-        isLoading={loading}
-        multipleChartDataKey={clusterData?.dataKey}
-        multipleChartData={clusterData?.data}
+      <LineChart
+        isLoading={isLoading}
+        multipleChartDataKey={clusterData?.data.data.dataKey}
+        multipleChartData={clusterData?.data.data.data}
         yUnit="W"
         coordinate={{
           x: "time",

@@ -5,32 +5,6 @@ export interface GeneratorDataDropdownProps extends Omit<SelectItem, "value"> {
   value?: keyof GeneratorDataProps;
 }
 
-export const GENERATOR_DATA_TRANSLATIONS: Record<
-  keyof GeneratorDataProps,
-  string
-> = {
-  apparentPower: "Apparent Power",
-  dailyYield: "Daily Yield",
-  deviceType: "Device Type",
-  gridCurrent: "Grid Current",
-  gridFrequency: "Grid Frequency",
-  gridNominalVoltage: "Grid Nominal Voltage",
-  gridVoltagePhaseL1: "Grid Voltage Phase L1",
-  gridVoltagePhaseL2: "Grid Voltage Phase L2",
-  displacementPowerFactor: "Displacement Power Factor",
-  gridVoltagePhaseL3: "Grid Voltage Phase L3",
-  operatingTime: "Operating Time",
-  power: "Power",
-  powerPhaseL1: "Power Phase L1",
-  powerPhaseL2: "Power Phase L2",
-  powerPhaseL3: "Power Phase L3",
-  reactivePower: "Reactive Power",
-  residualCurrent: "Residual Current",
-  temperature: "Temperature",
-  time: "Time",
-  totalYield: "Total Yield",
-};
-
 export const GENERATOR_DATA_DROPDOWN_ITEMS: GeneratorDataDropdownProps[] = [
   {
     label: "Apparent Power",

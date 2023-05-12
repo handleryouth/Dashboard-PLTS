@@ -1,10 +1,7 @@
 import { PanelMenu } from "primereact/panelmenu";
 import { SidebarChildrenProps } from "types";
 
-export default function SidebarChildren({
-  headerTitle,
-  groupLinks,
-}: SidebarChildrenProps) {
+export default function SidebarChildren({ groupLinks }: SidebarChildrenProps) {
   return (
     <div className="my-8">
       {groupLinks && (

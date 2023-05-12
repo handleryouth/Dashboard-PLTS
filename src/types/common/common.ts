@@ -3,6 +3,11 @@ export interface ValueProps {
   unit: string;
 }
 
+export interface DataUnitProps {
+  dataKey: string;
+  unit: string;
+}
+
 export interface GeneratorDataProps {
   deviceType: number;
   time: string;
@@ -24,11 +29,12 @@ export interface GeneratorDataProps {
   gridVoltagePhaseL1: number;
   gridVoltagePhaseL2: number;
   gridVoltagePhaseL3: number;
+  unit: DataUnitProps[];
 }
 
 export type GeneratorDataPropsExcludeDeviceType = Omit<
   GeneratorDataProps,
-  "deviceType"
+  "deviceType" | "unit"
 >;
 
 export interface GeneratorDataAverageProps {

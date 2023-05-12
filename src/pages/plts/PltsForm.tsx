@@ -47,10 +47,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
           port: state.port,
           pltsName: state.pltsName,
           smaDeviceName: state.smaDeviceName,
-          globalHorizontalIrradiance: state.globalHorizontalIrradiance,
           installedPower: state.installedPower,
-          pvSurfaceArea: state.pvSurfaceArea,
-          powerPerYear: state.powerPerYear,
           deviceType: state.deviceType,
           connectedTo: state?.connectedTo ?? state.connectedWith,
         }
@@ -374,38 +371,6 @@ export default function PltsForm({ edit }: PLTSFormProps) {
           />
 
           <Controller
-            name="globalHorizontalIrradiance"
-            control={control}
-            rules={{
-              required: "Global Horizontal Irradiance is required",
-            }}
-            render={({ field, fieldState }) => (
-              <Input
-                id={field.name}
-                label="Global Horizontal Irradiance (kWh/m^2)"
-                {...field}
-                errorMessage={fieldState.error?.message}
-              />
-            )}
-          />
-
-          <Controller
-            name="pvSurfaceArea"
-            control={control}
-            rules={{
-              required: "PV Surface Area is required",
-            }}
-            render={({ field, fieldState }) => (
-              <Input
-                id={field.name}
-                label="PV Surface Area (m^2)"
-                {...field}
-                errorMessage={fieldState.error?.message}
-              />
-            )}
-          />
-
-          <Controller
             name="installedPower"
             rules={{
               required: "Installed Power is required",
@@ -414,23 +379,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             render={({ field, fieldState }) => (
               <Input
                 id={field.name}
-                label="Installed Power (Kw)"
-                {...field}
-                errorMessage={fieldState.error?.message}
-              />
-            )}
-          />
-
-          <Controller
-            name="powerPerYear"
-            rules={{
-              required: "Power Per Year is required",
-            }}
-            control={control}
-            render={({ field, fieldState }) => (
-              <Input
-                id={field.name}
-                label="Power Per Year (KWh)"
+                label="Installed Power (W)"
                 {...field}
                 errorMessage={fieldState.error?.message}
               />

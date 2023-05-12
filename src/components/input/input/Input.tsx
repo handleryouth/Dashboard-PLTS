@@ -13,7 +13,7 @@ export default function Input({
 }: InputProps) {
   const customId = useId();
   return (
-    <div className={`field w-full ${containerClassName} relative`}>
+    <div className={`prose field w-full ${containerClassName} relative`}>
       <label htmlFor={props.id ?? customId} className="block">
         {label}
       </label>

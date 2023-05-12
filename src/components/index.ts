@@ -14,3 +14,4 @@ export * from "./header";
 export * from "./tableAction";
 export * from "./pagination";
 export * from "./calendar";
+export * from "./error";

@@ -1,14 +1,17 @@
-import { useCallback, useMemo, useEffect, useState } from "react";
-import { Button, Container, Pagination, Table, TableAction } from "components";
-import {
-  PLTSListResponse,
-  ServiceMessageResponse,
-  TableActionSearchProps,
-  TableContent,
-} from "types";
-import { requestHelper } from "utils";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCallback, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Button,
+  Container,
+  ErrorComponent,
+  Pagination,
+  Table,
+  TableAction,
+} from "components";
+import { PLTSListResponse, TableActionSearchProps, TableContent } from "types";
+import { requestHelper } from "utils";
 
 export type PLTSTableHeader = keyof PLTSListResponse | "actionbutton";
 
@@ -18,12 +21,39 @@ export interface PLTSListSearchParams {
 }
 
 export default function Plts() {
-  const [pltsList, setPltsList] =
-    useState<ServiceMessageResponse<PLTSListResponse[]>>();
-
   const [cookies] = useCookies(["staffData"]);
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleLoadData = useCallback(async () => {
+    const response = await requestHelper("get_plts_list", {
+      params: {
+        limit: 10,
+        page: Number(searchParams.get("page")) || 1,
+        search: searchParams.get("search") ?? "",
+      },
+    });
+
+    if (response && response.status === 200) {
+      return response.data;
+    }
+  }, [searchParams]);
+
+  const {
+    isLoading,
+    data: pltsList,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      "pltsList",
+      searchParams.get("search") ?? "",
+      searchParams.get("page") || 1,
+    ],
+    queryFn: handleLoadData,
+    staleTime: 0,
+    cacheTime: 0,
+  });
 
   const navigate = useNavigate();
 
@@ -61,8 +91,6 @@ export default function Plts() {
       modbusAddress,
       globalHorizontalIrradiance,
       installedPower,
-      powerPerYear,
-      pvSurfaceArea,
       deviceType,
       connectedTo,
       connectedWith,
@@ -80,7 +108,7 @@ export default function Plts() {
       actionbutton:
         cookies.staffData?.role === "admin" ? (
           <Button
-            className="bg-green-500"
+            className="bg-green-500 "
             onClick={() =>
               handleToEditPage({
                 _id,
@@ -92,8 +120,6 @@ export default function Plts() {
                 smaDeviceName,
                 globalHorizontalIrradiance,
                 installedPower,
-                powerPerYear,
-                pvSurfaceArea,
                 deviceType,
                 connectedTo,
                 connectedWith,
@@ -117,29 +143,12 @@ export default function Plts() {
     [setSearchParams]
   );
 
-  const handleLoadData = useCallback(async () => {
-    const response = await requestHelper("get_plts_list", {
-      params: {
-        limit: 10,
-        page: Number(searchParams.get("page")) || 1,
-        search: searchParams.get("search") ?? "",
-      },
-    });
-    if (response && response.status === 200) {
-      setPltsList(response.data!);
-    }
-  }, [searchParams]);
-
   const handleSearchData = useCallback(
     ({ search }: TableActionSearchProps) => {
       handleConstructParams({ search });
     },
     [handleConstructParams]
   );
-
-  useEffect(() => {
-    handleLoadData();
-  }, [handleLoadData, searchParams]);
 
   return (
     <Container>
@@ -148,30 +157,35 @@ export default function Plts() {
         buttonTitle="Add New PLTS"
         enableButton={cookies.staffData?.role === "admin"}
         onButtonClick={() => navigate("/inverter/create")}
+        inputPlaceholder="Search by PLTS Name"
       />
-
       <Pagination
-        handlePageChange={(event) =>
+        handlePageChange={(event) => {
           handleConstructParams({
-            page: event.first,
-          })
-      }
-        page={1}
+            page: event.first + 1,
+          });
+        }}
+        page={Number(searchParams.get("page")) || 1}
         resultsLength={pltsList?.total ?? 0}
       />
 
-      <Table
-        columns={getHeaderTable}
-        data={pltsList?.data ?? []}
-        keyItem={getKeyItem}
-        renderItem={renderItem}
-        onClickRowItem={({ _id }) => navigate(`/inverter/${_id}`)}
-        excludeOnClickRowItem={
-          {
-            actionbutton: false,
-          } as Partial<Record<PLTSTableHeader, boolean>>
-        }
-      />
+      {isError ? (
+        <ErrorComponent refetch={refetch} />
+      ) : (
+        <Table
+          columns={getHeaderTable}
+          loading={isLoading}
+          data={pltsList?.data ?? []}
+          keyItem={getKeyItem}
+          renderItem={renderItem}
+          onClickRowItem={({ _id }) => navigate(`/inverter/${_id}`)}
+          excludeOnClickRowItem={
+            {
+              actionbutton: false,
+            } as Partial<Record<PLTSTableHeader, boolean>>
+          }
+        />
+      )}
     </Container>
   );
 }

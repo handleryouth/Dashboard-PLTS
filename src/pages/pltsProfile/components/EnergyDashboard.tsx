@@ -1,13 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
 import { BarChart } from "components";
 import { ENERGY_LABEL_TIME_SELECTION } from "const";
-import {
-  PLTSClusterValueResponse,
-  PLTSClusterValueResponseDataProps,
-  RenderedChartItem,
-} from "types";
+import { PLTSClusterValueResponseDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
 
 export default function EnergyDashboard() {
@@ -15,25 +12,17 @@ export default function EnergyDashboard() {
 
   const { id } = useParams<"id">();
 
-  const [loading, setLoading] = useState(true);
-
-  const [energyData, setEnergyData] = useState<PLTSClusterValueResponse>();
-
-  const getEnergyData = useCallback(async () => {
-    setLoading(true);
-    const response = await requestHelper("get_plts_cluster_value", {
-      params: {
-        dataTime: period,
-        dataType: "energy",
-        id,
-      },
-    });
-
-    if (response && response.status === 200) {
-      setEnergyData(response.data.data);
-    }
-    setLoading(false);
-  }, [id, period]);
+  const { data: energyData, isLoading } = useQuery({
+    queryKey: ["clusterEnergyGraph", id, period],
+    queryFn: () =>
+      requestHelper("get_plts_cluster_value", {
+        params: {
+          dataTime: period,
+          dataType: "energy",
+          id,
+        },
+      }),
+  });
 
   const renderChartItem = useCallback(
     (
@@ -47,17 +36,13 @@ export default function EnergyDashboard() {
     [period]
   );
 
-  useEffect(() => {
-    getEnergyData();
-  }, [getEnergyData]);
-
   return (
     <div>
       <BarChart
         title="Cluster Energy Graph"
-        isLoading={loading}
-        multipleChartDataKey={energyData?.dataKey}
-        multipleChartData={energyData?.data}
+        isLoading={isLoading}
+        multipleChartDataKey={energyData?.data.data.dataKey}
+        multipleChartData={energyData?.data.data.data}
         yUnit="W"
         coordinate={{
           x: "time",

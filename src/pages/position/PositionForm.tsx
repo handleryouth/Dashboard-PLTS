@@ -10,10 +10,13 @@ import {
 } from "types";
 import { Button, Container, Input } from "components";
 import { POSITION_FORM_INITIAL_STATE } from "const";
+import { Toast } from "primereact/toast";
 import { requestHelper } from "utils";
 
 export default function PositionForm({ edit }: PositionFormProps) {
   const navigate = useNavigate();
+
+  const toastRef = useRef<Toast>(null);
 
   const { state }: PositionFormLocationState = useLocation();
 
@@ -47,6 +50,12 @@ export default function PositionForm({ edit }: PositionFormProps) {
       });
       if (response.status === 201) {
         navigate(-1);
+      } else {
+        toastRef.current?.show({
+          severity: "error",
+          summary: "Failed",
+          detail: "Failed to add position",
+        });
       }
     },
     [latitudeLongitude, navigate]
@@ -64,6 +73,12 @@ export default function PositionForm({ edit }: PositionFormProps) {
 
       if (response && response.status === 201) {
         navigate(-1);
+      } else {
+        toastRef.current?.show({
+          severity: "error",
+          summary: "Failed",
+          detail: "Failed to edit position",
+        });
       }
     },
     [latitudeLongitude?.lat, latitudeLongitude?.lng, navigate]
@@ -100,6 +115,7 @@ export default function PositionForm({ edit }: PositionFormProps) {
 
   return (
     <Container>
+      <Toast ref={toastRef} />
       <form
         onSubmit={handleSubmit(handleSubmitEvent)}
         className="flex flex-col gap-y-4"

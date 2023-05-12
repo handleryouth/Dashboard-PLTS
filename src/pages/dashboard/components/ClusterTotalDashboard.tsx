@@ -1,35 +1,21 @@
-import { useCallback, useState, useEffect } from "react";
-import {
-  PLTSTotalClusterResponse,
-  TotalClusterDataProps,
-  RenderedChartItem,
-} from "types";
+import { useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { TotalClusterDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
 import { LineChart } from "components";
+import { AVERAGE_CLUSTER_STALE_TIME } from "const";
 
 export default function ClusterTotalDashboard() {
-  const [loading, setLoading] = useState(true);
-
-  const [clusterTotalData, setClusterTotalData] =
-    useState<PLTSTotalClusterResponse>();
-
-  const getTotalClusterData = useCallback(async () => {
-    setLoading(true);
-    const response = await requestHelper("get_plts_total_cluster", {
-      params: {
-        dataTime: "hourly",
-      },
-    });
-
-    if (response && response.status === 200) {
-      setClusterTotalData(response.data.data);
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    getTotalClusterData();
-  }, [getTotalClusterData]);
+  const { data: clusterTotalData, isLoading } = useQuery({
+    queryKey: ["clusterTotalData"],
+    staleTime: AVERAGE_CLUSTER_STALE_TIME,
+    queryFn: () =>
+      requestHelper("get_plts_total_cluster", {
+        params: {
+          dataTime: "hourly",
+        },
+      }),
+  });
 
   const renderChartItem = useCallback(
     (item: TotalClusterDataProps): RenderedChartItem<TotalClusterDataProps> => {
@@ -46,9 +32,9 @@ export default function ClusterTotalDashboard() {
       <LineChart
         title="Cluster Total Power Graph"
         yUnit="W"
-        isLoading={loading}
-        multipleChartDataKey={clusterTotalData?.dataKey}
-        multipleChartData={clusterTotalData?.data}
+        isLoading={isLoading}
+        multipleChartDataKey={clusterTotalData?.data.data.dataKey}
+        multipleChartData={clusterTotalData?.data.data.data}
         coordinate={{
           x: "time",
         }}

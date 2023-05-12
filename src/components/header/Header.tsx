@@ -39,9 +39,9 @@ export default function Header() {
 
   return (
     <div className="bg-white sticky top-0 z-20">
-      <div className=" mx-auto flex items-center justify-between max-w-screen-bigDisplay min-w-[490px]">
+      <div className=" mx-auto flex items-center justify-between max-w-screen-bigDisplay min-w-[490px] px-4 py-4">
         <BreadCrumb
-          className="prose prose-a:my-0 prose-li:my-0  border-none"
+          className="prose prose-a:my-0 prose-li:my-0  border-none p-0"
           model={breadcrumbMenu}
           home={home}
         />

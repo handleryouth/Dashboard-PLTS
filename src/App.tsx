@@ -7,24 +7,32 @@ import "@fontsource/inter/700.css";
 import "@fontsource/inter/800.css";
 import { CookiesProvider } from "react-cookie";
 import { BrowserRouter } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { store } from "utils";
-import { Layout } from "./components";
-import { RouteStack } from "./routes";
 import { ResponseModalInterceptorProvider } from "context";
+import { queryClient } from "const";
+import { ErrorBoundary, Layout } from "./components";
+import { RouteStack } from "./routes";
 
 function App() {
   return (
     <CookiesProvider>
-      <Provider store={store}>
-        <ResponseModalInterceptorProvider>
-          <BrowserRouter>
-            <Layout>
-              <RouteStack />
-            </Layout>
-          </BrowserRouter>
-        </ResponseModalInterceptorProvider>
-      </Provider>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <ResponseModalInterceptorProvider>
+            <BrowserRouter>
+              <Layout>
+                <ErrorBoundary>
+                  <RouteStack />
+                </ErrorBoundary>
+              </Layout>
+            </BrowserRouter>
+          </ResponseModalInterceptorProvider>
+        </Provider>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </CookiesProvider>
   );
 }

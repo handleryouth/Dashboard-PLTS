@@ -8,6 +8,7 @@ module.exports = {
           css: {
             fontFamily: "Inter",
             color: "black",
+            maxWidth: "none",
           },
         },
       },
