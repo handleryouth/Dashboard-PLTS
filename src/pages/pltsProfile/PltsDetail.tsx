@@ -10,7 +10,7 @@ import {
   AverageDashbord,
   ClusterPowerDashboard,
   EnergyDashboard,
-  PLTSAnalyticValue,
+  PowerDashboard,
 } from "./components";
 import { MonitoringChart } from "../dashboard";
 
@@ -76,7 +76,9 @@ export default function PltsDetail() {
         style={{
           height: Math.max(340, containerWidth.height),
           width: "100%",
+          zIndex: 0,
         }}
+        className="mb-4 mediumDisplay:mb-0"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker
@@ -100,7 +102,6 @@ export default function PltsDetail() {
   return (
     <Container>
       <h1>PLTS Detail </h1>
-      <h3>{pltsDetailData?.pltsName ?? "-"}</h3>
 
       {isLoading ? (
         <ProgressSpinner className="h-14 w-full mx-auto" />
@@ -120,14 +121,9 @@ export default function PltsDetail() {
             <AverageDashbord pltsName={pltsDetailData?.pltsName ?? "-"} />
           </ErrorRefetch>
 
-          {pltsDetailData?.deviceType === "pvInverter" && (
-            <ErrorRefetch>
-              <PLTSAnalyticValue
-                pltsName={pltsDetailData?.pltsName}
-                deviceType={pltsDetailData?.deviceType}
-              />
-            </ErrorRefetch>
-          )}
+          <ErrorRefetch>
+            <PowerDashboard pltsName={pltsDetailData?.pltsName} />
+          </ErrorRefetch>
 
           <ErrorRefetch>
             <ClusterPowerDashboard />

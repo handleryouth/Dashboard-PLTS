@@ -28,7 +28,7 @@ export default function MonitoringDashboard() {
         onSubmitModal={handleAddGraphEvent}
       />
       <div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2 smallDisplay:flex-row items-center justify-between">
           <h3 className="my-0">Monitoring Dashboard</h3>
           <Button className="bg-blue-500" onClick={() => setShowModal(true)}>
             Show new graph

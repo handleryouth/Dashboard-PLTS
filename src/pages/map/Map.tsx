@@ -81,6 +81,7 @@ export default function Map() {
         <SideDetail data={selectedMapData} />
         <SmallSideDetail
           visible={Boolean(selectedMapData)}
+          toggleSideDetailClosed={() => setSelectedMapData(undefined)}
           data={selectedMapData}
         />
       </div>

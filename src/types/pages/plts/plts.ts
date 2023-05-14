@@ -6,6 +6,7 @@ export interface ModbusAddress {
   unit: string;
   signed: "unsigned" | "signed";
   valuePrecision: number;
+  includeInAverage: boolean;
 }
 
 export interface PLTSProfileBody {
@@ -15,7 +16,6 @@ export interface PLTSProfileBody {
   ipAddress: string;
   port: string;
   modbusAddress: ModbusAddress[];
-  installedPower: number;
   deviceType?: "pvInverter" | "batteryInverter";
   connectedTo?: string;
 }
@@ -66,7 +66,6 @@ export interface PLTSListResponse {
   port: string;
   smaDeviceName: string;
   globalHorizontalIrradiance: number;
-  installedPower: number;
   deviceType: "pvInverter" | "batteryInverter";
   connectedTo?: string;
   connectedWith?: string;
@@ -113,7 +112,6 @@ export interface PLTSProfileDetailResponse {
   port: string;
   smaDeviceName: string;
   globalHorizontalIrradiance: number;
-  installedPower: number;
   deviceType: DeviceType;
 }
 
@@ -244,6 +242,19 @@ export interface PLTSDetailPowerParams {
 }
 
 export interface PLTSDetailPowerResponse {
+  time: string;
+  power: number;
+}
+
+export type DataTimeType = "daily" | "monthly" | "yearly" | "hourly";
+
+export interface PLTSGetPowerParams {
+  pltsName: string;
+  dataTime: DataTimeType;
+}
+
+export interface PLTSGetPowerResponse {
+  _id: string;
   time: string;
   power: number;
 }

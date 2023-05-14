@@ -96,14 +96,6 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/plts-data-key",
   },
-  get_plts_comparing_data_key: {
-    method: "GET",
-    url: "/api/plts/comparing-value-dataKey",
-  },
-  get_plts_comparing_value: {
-    method: "GET",
-    url: "/api/plts/comparing-value",
-  },
   get_plts_cumulative_value: {
     method: "GET",
     url: "/api/plts/cumulative-value",
@@ -131,5 +123,9 @@ export const serviceMap: ServiceMapProps = {
   plts_auth_logout: {
     method: "POST",
     url: "/api/login/logout",
+  },
+  plts_get_power: {
+    method: "GET",
+    url: "/api/plts/plts-power",
   },
 };

@@ -4,11 +4,16 @@ import { SelectButton } from "primereact/selectbutton";
 import { Button, Dropdown, LineChart } from "components";
 import {
   AverageDashbordProps,
+  DataTimeType,
   FilterModalStateProps,
   GeneratorDataAverageProps,
   RenderedChartItem,
 } from "types";
-import { convertCamelCaseToPascalCase, requestHelper } from "utils";
+import {
+  convertCamelCaseToPascalCase,
+  getAverageData,
+  requestHelper,
+} from "utils";
 import {
   AVERAGE_DASHBOARD_STALE_TIME,
   BUTTON_LABEL_TIME_SELECTION,
@@ -21,17 +26,11 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [period, setPeriod] = useState("daily");
+  const [period, setPeriod] = useState<DataTimeType>("daily");
 
   const { data: generatorData, isLoading } = useQuery({
-    queryKey: ["averageData", pltsName, period],
-    queryFn: () =>
-      requestHelper("get_plts_profile_detail_average_value", {
-        params: {
-          pltsName,
-          dataTime: period,
-        },
-      }),
+    queryKey: ["generatorData", pltsName, period],
+    queryFn: async () => await getAverageData(pltsName, period),
     staleTime: AVERAGE_DASHBOARD_STALE_TIME,
     useErrorBoundary: true,
   });
@@ -49,7 +48,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
   );
 
   const handleRenderDropdownItem = useMemo(() => {
-    return generatorData?.data.data.dataKeyArray.map((item) => {
+    return generatorData?.dataKeyArray.map((item) => {
       return {
         label: convertCamelCaseToPascalCase(item),
         value: item,
@@ -93,9 +92,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
       <LineChart
         isLoading={isLoading}
         title="Average Graph"
-        singleChartData={
-          dropdownValue ? generatorData?.data.data.data ?? [] : []
-        }
+        singleChartData={dropdownValue ? generatorData?.data ?? [] : []}
         coordinate={{
           x: "time",
           y: dropdownValue,

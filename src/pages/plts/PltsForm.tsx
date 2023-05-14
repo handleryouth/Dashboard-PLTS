@@ -1,9 +1,16 @@
-import { useCallback, useState, useEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  Fragment,
+} from "react";
 import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SelectItem } from "primereact/selectitem";
-import { Input, Button, Container, Dropdown } from "components";
+import { Input, Button, Container, Dropdown, Checkbox } from "components";
 import {
   PLTSFormModalState,
   PLTSFormProps,
@@ -47,7 +54,6 @@ export default function PltsForm({ edit }: PLTSFormProps) {
           port: state.port,
           pltsName: state.pltsName,
           smaDeviceName: state.smaDeviceName,
-          installedPower: state.installedPower,
           deviceType: state.deviceType,
           connectedTo: state?.connectedTo ?? state.connectedWith,
         }
@@ -98,6 +104,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             dataKey: camelCase(item.dataName),
             signed: item.signed,
             valuePrecision: item.valuePrecision || 1,
+            includeInAverage: item.includeInAverage,
           })),
         },
       });
@@ -128,6 +135,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             dataKey: camelCase(item.dataName),
             signed: item.signed,
             valuePrecision: item.valuePrecision || 1,
+            includeInAverage: item.includeInAverage,
           })),
           id: state._id,
         },
@@ -221,7 +229,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       />
 
       <Container>
-        <form className="mx-auto w-3/4 flex flex-col gap-y-4">
+        <form className="mx-auto w-[90%] flex flex-col gap-y-4">
           <Controller
             name="pltsName"
             control={control}
@@ -277,7 +285,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             }}
           />
 
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-2  flex-col mediumDisplay:flex-row">
             <Controller
               name="connectedTo"
               control={control}
@@ -309,7 +317,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             </Button>
           </div>
 
-          <div className="flex items-end gap-x-2 justify-between">
+          <div className="flex items-end gap-2 justify-between flex-col mediumDisplay:flex-row">
             <Controller
               name="devicePosition"
               control={control}
@@ -370,22 +378,6 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             )}
           />
 
-          <Controller
-            name="installedPower"
-            rules={{
-              required: "Installed Power is required",
-            }}
-            control={control}
-            render={({ field, fieldState }) => (
-              <Input
-                id={field.name}
-                label="Installed Power (W)"
-                {...field}
-                errorMessage={fieldState.error?.message}
-              />
-            )}
-          />
-
           <div>
             <div className="flex items-center mt-4 justify-between">
               <h3 className="my-0">Modbus Address</h3>
@@ -398,6 +390,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                     unit: "",
                     signed: "unsigned",
                     valuePrecision: 1,
+                    includeInAverage: true,
                   })
                 }
               >
@@ -408,98 +401,107 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             <div>
               {fields.map((item, index) => {
                 return (
-                  <div
-                    key={item.id}
-                    className="flex items-end gap-4 mt-4 justify-between "
-                  >
-                    <Controller
-                      name={`modbusAddress.${index}.dataName`}
-                      control={control}
-                      rules={{
-                        required: "Data Name is required",
-                      }}
-                      render={({ field, fieldState }) => (
-                        <Input
-                          id={field.name}
-                          {...field}
-                          label="Data Name"
-                          errorMessage={fieldState.error?.message}
-                        />
-                      )}
-                    />
+                  <Fragment key={item.id}>
+                    <div className="flex flex-wrap items-center mediumDisplay:grid mediumDisplay:grid-cols-7 gap-x-4 gap-y-2  mediumDisplay:items-end">
+                      <Controller
+                        name={`modbusAddress.${index}.dataName`}
+                        control={control}
+                        rules={{
+                          required: "Data Name is required",
+                        }}
+                        render={({ field, fieldState }) => (
+                          <Input
+                            id={field.name}
+                            {...field}
+                            label="Data Name"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
 
-                    <Controller
-                      name={`modbusAddress.${index}.modbusAddress`}
-                      control={control}
-                      rules={{
-                        required: "Modbuss Address is required",
-                      }}
-                      render={({ field, fieldState }) => (
-                        <Input
-                          id={field.name}
-                          {...field}
-                          label="Modbus Address"
-                          errorMessage={fieldState.error?.message}
-                        />
-                      )}
-                    />
+                      <Controller
+                        name={`modbusAddress.${index}.modbusAddress`}
+                        control={control}
+                        rules={{
+                          required: "Modbuss Address is required",
+                        }}
+                        render={({ field, fieldState }) => (
+                          <Input
+                            id={field.name}
+                            {...field}
+                            label="Modbus Address"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
 
-                    <Controller
-                      name={`modbusAddress.${index}.unit`}
-                      control={control}
-                      rules={{
-                        required: "Value Unit is required",
-                      }}
-                      render={({ field, fieldState }) => (
-                        <Input
-                          id={field.name}
-                          {...field}
-                          label="Value Unit"
-                          errorMessage={fieldState.error?.message}
-                        />
-                      )}
-                    />
+                      <Controller
+                        name={`modbusAddress.${index}.unit`}
+                        control={control}
+                        rules={{
+                          required: "Value Unit is required",
+                        }}
+                        render={({ field, fieldState }) => (
+                          <Input
+                            id={field.name}
+                            {...field}
+                            label="Value Unit"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
 
-                    <Controller
-                      name={`modbusAddress.${index}.signed`}
-                      control={control}
-                      rules={{
-                        required: "Value signed format required",
-                      }}
-                      render={({ field, fieldState }) => (
-                        <Dropdown
-                          id={field.name}
-                          label="Signed or Unsigned"
-                          {...field}
-                          errorMessage={fieldState.error?.message}
-                          options={PLTS_SIGNED_VALUE_DROPDOWN}
-                        />
-                      )}
-                    />
+                      <Controller
+                        name={`modbusAddress.${index}.signed`}
+                        control={control}
+                        rules={{
+                          required: "Value signed format required",
+                        }}
+                        render={({ field, fieldState }) => (
+                          <Dropdown
+                            id={field.name}
+                            label="Signed or Unsigned"
+                            {...field}
+                            errorMessage={fieldState.error?.message}
+                            options={PLTS_SIGNED_VALUE_DROPDOWN}
+                          />
+                        )}
+                      />
 
-                    <Controller
-                      name={`modbusAddress.${index}.valuePrecision`}
-                      control={control}
-                      rules={{
-                        min: 1,
-                      }}
-                      render={({ field, fieldState }) => (
-                        <Input
-                          id={field.name}
-                          {...field}
-                          label="Value Precision"
-                          errorMessage={fieldState.error?.message}
-                        />
-                      )}
-                    />
+                      <Controller
+                        name={`modbusAddress.${index}.valuePrecision`}
+                        control={control}
+                        rules={{
+                          min: 1,
+                        }}
+                        render={({ field, fieldState }) => (
+                          <Input
+                            id={field.name}
+                            {...field}
+                            label="Value Precision"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
 
-                    <Button
-                      className="basis-2/4 bg-red-500"
-                      onClick={() => remove(index)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
+                      <Checkbox
+                        label="include in average"
+                        control={control}
+                        name={`modbusAddress.${index}.includeInAverage`}
+                      />
+
+                      <Button
+                        className="basis-2/4 bg-red-500"
+                        onClick={() => remove(index)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+
+                    {!(fields.length === index + 1) && (
+                      <div className="w-full h-1 bg-gray-200 my-4 mediumDisplay:hidden" />
+                    )}
+                  </Fragment>
                 );
               })}
             </div>

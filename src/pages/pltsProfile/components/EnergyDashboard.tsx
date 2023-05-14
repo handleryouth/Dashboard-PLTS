@@ -2,10 +2,14 @@ import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { BarChart } from "components";
+import { BarChart, LineChart } from "components";
 import { ENERGY_LABEL_TIME_SELECTION } from "const";
 import { PLTSClusterValueResponseDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
+
+export interface EnergyDashboardProps {
+  enableGridPower?: boolean;
+}
 
 export default function EnergyDashboard() {
   const [period, setPeriod] = useState("daily");
@@ -38,7 +42,7 @@ export default function EnergyDashboard() {
 
   return (
     <div>
-      <BarChart
+      <LineChart
         title="Cluster Energy Graph"
         isLoading={isLoading}
         multipleChartDataKey={energyData?.data.data.dataKey}
@@ -56,6 +60,18 @@ export default function EnergyDashboard() {
             unselectable={false}
           />
         }
+      />
+
+      <BarChart
+        isLoading={isLoading}
+        singleChartData={energyData?.data.data.data ?? []}
+        yUnit="Wh"
+        coordinate={{
+          x: "time",
+          y: "gridPower",
+        }}
+        title="Grid Power"
+        renderItem={renderChartItem}
       />
     </div>
   );

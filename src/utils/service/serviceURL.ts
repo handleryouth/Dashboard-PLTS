@@ -26,8 +26,6 @@ import {
   PLTSAnalyticValueParams,
   PLTSAnalyticValueResponse,
   PLTSDataKeyParams,
-  PLTSComparingValueParams,
-  PLTSComparingValueResponse,
   PLTSCumulativeValueResponse,
   PLTSCumulativeValueParams,
   PLTSProfileParams,
@@ -41,6 +39,8 @@ import {
   PLTSDetailPowerParams,
   SignupParams,
   PLTSPositionParams,
+  PLTSGetPowerParams,
+  PLTSGetPowerResponse,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -129,13 +129,6 @@ export interface ServiceURL {
     params: PLTSDataKeyParams;
     response: ServiceMessageResponse<string[]>;
   }>;
-  get_plts_comparing_data_key: ServiceStructure<{
-    response: ServiceMessageResponse<string[]>;
-  }>;
-  get_plts_comparing_value: ServiceStructure<{
-    params: PLTSComparingValueParams;
-    response: ServiceMessageResponse<PLTSComparingValueResponse>;
-  }>;
   get_plts_cumulative_value: ServiceStructure<{
     params: PLTSCumulativeValueParams;
     response: ServiceMessageResponse<PLTSCumulativeValueResponse>;
@@ -160,5 +153,9 @@ export interface ServiceURL {
   }>;
   plts_auth_logout: ServiceStructure<{
     response: ServiceMessageResponse;
+  }>;
+  plts_get_power: ServiceStructure<{
+    params: PLTSGetPowerParams;
+    response: ServiceMessageResponse<PLTSGetPowerResponse[]>;
   }>;
 }

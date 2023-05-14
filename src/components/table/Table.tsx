@@ -50,7 +50,7 @@ export default function Table<T extends Object>({
 
                   return (
                     <td
-                      className={`py-3 table-padding 
+                      className={`py-3 table-padding break-words
                       align-middle  ${
                         checkExclude ? "cursor-pointer" : "cursor-default"
                       }`}
@@ -59,7 +59,7 @@ export default function Table<T extends Object>({
                         checkExclude && onClickRowItem && onClickRowItem(item)
                       }
                     >
-                      {renderItem(item)[key as keyof T] ?? "-"}
+                      {renderItem(item)[key as keyof T]}
                     </td>
                   );
                 })}
@@ -74,7 +74,9 @@ export default function Table<T extends Object>({
   return (
     <div className="overflow-x-scroll w-full">
       {loading ? (
-        <ProgressSpinner className="w-14 h-14" />
+        <div className="text-center">
+          <ProgressSpinner className="w-14 h-14" />
+        </div>
       ) : (
         <table className="min-w-[960px] prose rounded-md overflow-hidden table-fixed">
           {handleRenderHeader}

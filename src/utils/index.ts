@@ -7,3 +7,4 @@ export * from "./image";
 export * from "./text";
 export * from "./redux";
 export * from "./date";
+export * from "./fetching";

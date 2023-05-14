@@ -10,5 +10,6 @@ export interface MapCoordinates {
 
 export interface SmallSideDetailProps {
   visible: boolean;
+  toggleSideDetailClosed: () => void;
   data?: PLTSMapListResponse;
 }

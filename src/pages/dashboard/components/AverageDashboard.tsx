@@ -3,11 +3,16 @@ import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
 import { Dropdown, LineChart } from "components";
 import {
+  DataTimeType,
   GeneratorDataPropsExcludeDeviceType,
   PLTSMapKey,
   RenderedChartItem,
 } from "types";
-import { convertCamelCaseToPascalCase, requestHelper } from "utils";
+import {
+  convertCamelCaseToPascalCase,
+  getAverageData,
+  getPositionList,
+} from "utils";
 import {
   AVERAGE_DASHBOARD_STALE_TIME,
   BUTTON_LABEL_TIME_SELECTION,
@@ -27,26 +32,22 @@ export default function AverageDashboard() {
   const [dropdownValue, setDropdownValue] =
     useState<keyof GeneratorDataPropsExcludeDeviceType>();
 
-  const [period, setPeriod] = useState("daily");
+  const [period, setPeriod] = useState<DataTimeType>("daily");
 
   const [positionDropdown, setPositionDropdown] = useState<string>();
 
   const { data: positionListData } = useQuery({
     queryKey: ["positionList"],
-    queryFn: () => requestHelper("get_plts_profile_list"),
+    queryFn: getPositionList,
     staleTime: 0,
     cacheTime: 0,
   });
 
   const { data: generatorData, isLoading: generatorDataLoading } = useQuery({
     queryKey: ["generatorData", positionDropdown, period],
-    queryFn: () =>
-      requestHelper("get_plts_profile_detail_average_value", {
-        params: {
-          pltsName: positionDropdown,
-          dataTime: period,
-        },
-      }),
+    queryFn: positionDropdown
+      ? async () => await getAverageData(positionDropdown, period)
+      : undefined,
     staleTime: AVERAGE_DASHBOARD_STALE_TIME,
     enabled: !!positionDropdown,
   });
@@ -64,7 +65,7 @@ export default function AverageDashboard() {
   );
 
   const getPositionDropdownItem = useMemo(() => {
-    return positionListData?.data.data.map((item) => {
+    return positionListData?.map((item) => {
       return {
         label: item.pltsName,
         value: item.pltsName,
@@ -73,7 +74,7 @@ export default function AverageDashboard() {
   }, [positionListData]);
 
   const getDataDropdownItem = useMemo(() => {
-    return generatorData?.data.data.dataKeyArray.map((item) => {
+    return generatorData?.dataKeyArray.map((item) => {
       return {
         label: convertCamelCaseToPascalCase(item),
         value: item,
@@ -82,7 +83,7 @@ export default function AverageDashboard() {
   }, [generatorData]);
 
   const getDataUnit = useMemo(() => {
-    const yUnit = generatorData?.data.data.unit.find(
+    const yUnit = generatorData?.unit.find(
       (item) => item.dataKey === dropdownValue
     )?.unit;
 
@@ -94,7 +95,7 @@ export default function AverageDashboard() {
   return (
     <LineChart
       isLoading={positionDropdown ? generatorDataLoading : false}
-      singleChartData={generatorData?.data.data.data ?? []}
+      singleChartData={generatorData?.data ?? []}
       coordinate={{
         x: "time",
         y: dropdownValue,

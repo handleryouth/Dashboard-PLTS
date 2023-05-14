@@ -84,7 +84,7 @@ export default function BarChart<T extends Object>({
       ref={graphRef}
     >
       <div className="flex items-center justify-between flex-col mediumToBigDisplay:flex-row  ">
-        <div className="basis-1/4">
+        <div className="basis-1/2">
           <h3 className="mb-4 mediumToBigDisplay:mb-0 font-bold">{title}</h3>
         </div>
 

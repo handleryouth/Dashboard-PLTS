@@ -37,7 +37,7 @@ export default function EnergyDashboard() {
         isLoading={isLoading}
         multipleChartDataKey={energyData?.data.data.dataKey}
         multipleChartData={energyData?.data.data.data}
-        yUnit="W"
+        yUnit="Wh"
         coordinate={{
           x: "time",
         }}
