@@ -112,10 +112,6 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/plts-energy",
   },
-  get_plts_hourly_power: {
-    method: "GET",
-    url: "/api/plts/plts-hourly-power",
-  },
   post_signup_data: {
     method: "POST",
     url: "/api/login/create",

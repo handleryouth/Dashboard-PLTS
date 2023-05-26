@@ -123,14 +123,20 @@ export default function BarChart<T extends Object>({
 
             {multipleChartData &&
               multipleChartDataKey &&
-              multipleChartDataKey.map((key, index) => (
-                <VictoryBar
-                  data={generatedMultipleData(key as keyof T)}
-                  key={index}
-                  labels={({ datum }) => datum.y}
-                  labelComponent={<VictoryLabel renderInPortal dy={-20} />}
-                />
-              ))}
+              multipleChartDataKey.map((key, index) => {
+                console.log(
+                  "generated multiple data",
+                  generatedMultipleData(key as keyof T)
+                );
+                return (
+                  <VictoryBar
+                    data={generatedMultipleData(key as keyof T)}
+                    key={index}
+                    labels={({ datum }) => datum.y}
+                    labelComponent={<VictoryLabel renderInPortal dy={-20} />}
+                  />
+                );
+              })}
           </VictoryGroup>
 
           <VictoryAxis

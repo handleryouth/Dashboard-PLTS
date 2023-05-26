@@ -101,11 +101,11 @@ export default function SignUp() {
           </div>
         </div>
 
-        <div className="hidden mediumDisplay:block overflow-hidden rounded-xl basis-1/2">
+        <div className="hidden mediumDisplay:block overflow-hidden rounded-xl mediumDisplay:basis-1/2">
           <img
             src="/solarpanel-700.jpg"
             alt="login-welcome"
-            className="my-0 w-[650px] h-[615px]"
+            className="my-0 aspect-4/3 w-full"
           />
         </div>
       </div>

@@ -36,7 +36,6 @@ import {
   PLTSTotalClusterResponse,
   PLTSDetailEnergyParams,
   PLTSDetailEnergyResponse,
-  PLTSDetailPowerParams,
   SignupParams,
   PLTSPositionParams,
   PLTSGetPowerParams,
@@ -144,9 +143,6 @@ export interface ServiceURL {
   get_plts_detail_energy: ServiceStructure<{
     params: PLTSDetailEnergyParams;
     response: ServiceMessageResponse<PLTSDetailEnergyResponse>;
-  }>;
-  get_plts_hourly_power: ServiceStructure<{
-    params: PLTSDetailPowerParams;
   }>;
   post_signup_data: ServiceStructure<{
     body: SignupParams;
