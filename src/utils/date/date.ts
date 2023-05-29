@@ -12,6 +12,7 @@ export const generateDateLocale = (dataTime: string, dateValue: string) => {
       });
     case "yearly":
       return new Date(dateValue).toLocaleString("id-ID", {
+        month: "long",
         year: "numeric",
       });
     default:
