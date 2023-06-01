@@ -14,7 +14,7 @@ export default function Map() {
 
   const handleClickEvent = useCallback(
     (value: PLTSMapListResponse) => {
-      if (value === selectedMapData) {
+      if (value.name === selectedMapData?.name) {
         setSelectedMapData(undefined);
       } else {
         setSelectedMapData(value);
@@ -34,6 +34,8 @@ export default function Map() {
   useEffect(() => {
     getPltsPositonList();
   }, [getPltsPositonList]);
+
+  console.log("selected", selectedMapData);
 
   return (
     <Container>
@@ -81,7 +83,8 @@ export default function Map() {
         <SideDetail data={selectedMapData} />
         <SmallSideDetail
           visible={Boolean(selectedMapData)}
-          toggleSideDetailClosed={() => setSelectedMapData(undefined)}
+          // toggleSideDetailClosed={() => setSelectedMapData(undefined)}
+          toggleSideDetailClosed={() => console.log("called sidebar closed")}
           data={selectedMapData}
         />
       </div>

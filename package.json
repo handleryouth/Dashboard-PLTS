@@ -41,6 +41,8 @@
   "scripts": {
     "dev": "react-scripts start",
     "build": "react-scripts build",
+    "start:config": "pm2 serve build/ 3000 --name B304ProductionWeb --spa",
+    "delete:config": "pm2 stop B304ProductionWeb",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

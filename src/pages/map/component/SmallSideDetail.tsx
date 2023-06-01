@@ -14,7 +14,8 @@ export default function SmallSideDetail({
     <Sidebar
       visible={visible}
       onHide={toggleSideDetailClosed}
-      className="mediumToBigDisplay:hidden prose overflow-y-scroll "
+      className="mediumToBigDisplay:hidden prose overflow-y-scroll"
+      maskClassName="mediumToBigDisplay:hidden"
       modal={false}
     >
       <h3>{data?.name}</h3>
