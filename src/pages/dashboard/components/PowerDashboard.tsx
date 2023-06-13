@@ -33,8 +33,6 @@ export default function PowerDashboard() {
   const { data: positionListData, isLoading: positionListLoading } = useQuery({
     queryKey: ["positionList", "power"],
     queryFn: getPositionList,
-    staleTime: 0,
-    cacheTime: 0,
   });
 
   console.log("positionListData", positionListData);

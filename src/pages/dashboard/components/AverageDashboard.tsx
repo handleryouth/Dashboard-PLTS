@@ -40,8 +40,6 @@ export default function AverageDashboard() {
   const { data: positionListData } = useQuery({
     queryKey: ["positionList"],
     queryFn: getPositionList,
-    staleTime: 0,
-    cacheTime: 0,
   });
 
   const { data: generatorData, isLoading: generatorDataLoading } = useQuery({
