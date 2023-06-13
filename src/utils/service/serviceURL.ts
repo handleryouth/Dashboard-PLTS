@@ -26,8 +26,6 @@ import {
   PLTSAnalyticValueParams,
   PLTSAnalyticValueResponse,
   PLTSDataKeyParams,
-  PLTSCumulativeValueResponse,
-  PLTSCumulativeValueParams,
   PLTSProfileParams,
   PLTSCSVDownloadFileParams,
   PLTSClusterValueParams,
@@ -128,10 +126,6 @@ export interface ServiceURL {
     params: PLTSDataKeyParams;
     response: ServiceMessageResponse<string[]>;
   }>;
-  get_plts_cumulative_value: ServiceStructure<{
-    params: PLTSCumulativeValueParams;
-    response: ServiceMessageResponse<PLTSCumulativeValueResponse>;
-  }>;
   get_plts_cluster_value: ServiceStructure<{
     params: PLTSClusterValueParams;
     response: ServiceMessageResponse<PLTSClusterValueResponse>;
@@ -139,10 +133,6 @@ export interface ServiceURL {
   get_plts_total_cluster: ServiceStructure<{
     params: PLTSTotalClusterParams;
     response: ServiceMessageResponse<PLTSTotalClusterResponse>;
-  }>;
-  get_plts_detail_energy: ServiceStructure<{
-    params: PLTSDetailEnergyParams;
-    response: ServiceMessageResponse<PLTSDetailEnergyResponse>;
   }>;
   post_signup_data: ServiceStructure<{
     body: SignupParams;

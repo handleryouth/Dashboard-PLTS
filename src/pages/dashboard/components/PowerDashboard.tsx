@@ -9,19 +9,35 @@ import {
   PLTSProfileList,
   RenderedChartItem,
 } from "types";
-import { generateDateLocale, getPositionList, requestHelper } from "utils";
+import { generateDateLocale, requestHelper } from "utils";
 
 export default function PowerDashboard() {
   const [dropdown, setDropdown] = useState<string>();
 
   const [period, setPeriod] = useState<DataTimeType>("daily");
 
+  const getPositionList = useCallback(async () => {
+    const response = await requestHelper("get_plts_profile_list", {
+      params: {
+        haveModbusData: "power",
+      },
+    });
+
+    if (response && response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("Error when fetching position list");
+    }
+  }, []);
+
   const { data: positionListData, isLoading: positionListLoading } = useQuery({
-    queryKey: ["positionList"],
+    queryKey: ["positionList", "power"],
     queryFn: getPositionList,
     staleTime: 0,
     cacheTime: 0,
   });
+
+  console.log("positionListData", positionListData);
 
   const getPowerData = useCallback(async () => {
     const response = await requestHelper("plts_get_power", {

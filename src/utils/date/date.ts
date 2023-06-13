@@ -3,6 +3,7 @@ export const generateDateLocale = (dataTime: string, dateValue: string) => {
     case "hourly":
       return new Date(dateValue).toLocaleTimeString("id-ID", {
         hour: "numeric",
+        minute: "numeric",
       });
     case "daily":
       return new Date(dateValue).toLocaleString("id-ID");

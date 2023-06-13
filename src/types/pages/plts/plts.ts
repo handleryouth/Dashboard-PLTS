@@ -91,6 +91,7 @@ export interface PLTSDataKeyParams {
 export interface PLTSProfileParams {
   id?: string;
   deviceType: "pvInverter" | "batteryInverter";
+  haveModbusData?: string;
 }
 
 export interface PLTSProfileList {

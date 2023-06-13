@@ -96,10 +96,6 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/plts-data-key",
   },
-  get_plts_cumulative_value: {
-    method: "GET",
-    url: "/api/plts/cumulative-value",
-  },
   get_plts_cluster_value: {
     method: "GET",
     url: "/api/plts/cluster-value-power",
@@ -107,10 +103,6 @@ export const serviceMap: ServiceMapProps = {
   get_plts_total_cluster: {
     method: "GET",
     url: "/api/plts/cluster-comparing-value",
-  },
-  get_plts_detail_energy: {
-    method: "GET",
-    url: "/api/plts/plts-energy",
   },
   post_signup_data: {
     method: "POST",

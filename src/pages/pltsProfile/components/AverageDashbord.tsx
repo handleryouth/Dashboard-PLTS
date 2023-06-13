@@ -11,6 +11,7 @@ import {
 } from "types";
 import {
   convertCamelCaseToPascalCase,
+  generateDateLocale,
   getAverageData,
   requestHelper,
 } from "utils";
@@ -40,11 +41,9 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
       item: GeneratorDataAverageProps
     ): RenderedChartItem<GeneratorDataAverageProps> => ({
       ...item,
-      time: item.time
-        ? new Date(item.time).toLocaleString("id-ID")
-        : new Date().toLocaleString("id-ID"),
+      time: generateDateLocale(period, item.time),
     }),
-    []
+    [period]
   );
 
   const handleRenderDropdownItem = useMemo(() => {
