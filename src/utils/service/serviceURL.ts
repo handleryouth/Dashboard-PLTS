@@ -32,8 +32,6 @@ import {
   PLTSClusterValueResponse,
   PLTSTotalClusterParams,
   PLTSTotalClusterResponse,
-  PLTSDetailEnergyParams,
-  PLTSDetailEnergyResponse,
   SignupParams,
   PLTSPositionParams,
   PLTSGetPowerParams,
