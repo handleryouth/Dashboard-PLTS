@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { Button, Dropdown, LineChart } from "components";
+import { Button, Dropdown, LineChart, NewRefetch } from "components";
 import {
   AverageDashbordProps,
   DataTimeType,
@@ -29,11 +29,15 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
 
   const [period, setPeriod] = useState<DataTimeType>("daily");
 
-  const { data: generatorData, isLoading } = useQuery({
+  const {
+    data: generatorData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["generatorData", pltsName, period],
     queryFn: async () => await getAverageData(pltsName, period),
     staleTime: AVERAGE_DASHBOARD_STALE_TIME,
-    useErrorBoundary: true,
   });
 
   const handleRenderItem = useCallback(
@@ -79,6 +83,10 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
     },
     [pltsName]
   );
+
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <>

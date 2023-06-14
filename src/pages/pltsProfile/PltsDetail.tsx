@@ -4,7 +4,7 @@ import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Container, Section, ErrorRefetch } from "components";
+import { Container, Section, NewRefetch } from "components";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
 import {
   AverageDashbord,
@@ -42,6 +42,7 @@ export default function PltsDetail() {
     isLoading,
     isError,
     data: pltsDetailData,
+    refetch,
   } = useQuery({
     queryKey: ["pltsDetail", id],
     queryFn: getDetailData,
@@ -96,7 +97,7 @@ export default function PltsDetail() {
   }, [containerWidth.height, pltsDetailData]);
 
   if (isError) {
-    return <ErrorRefetch />;
+    return <NewRefetch restart={refetch} />;
   }
 
   return (
@@ -112,26 +113,17 @@ export default function PltsDetail() {
             ref={containerRef}
           >
             {memoizedMapComponent}
-            <ErrorRefetch>
-              <MonitoringChart title={pltsDetailData?.pltsName ?? "-"} />
-            </ErrorRefetch>
+
+            <MonitoringChart title={pltsDetailData?.pltsName ?? "-"} />
           </div>
 
-          <ErrorRefetch>
-            <AverageDashbord pltsName={pltsDetailData?.pltsName ?? "-"} />
-          </ErrorRefetch>
+          <AverageDashbord pltsName={pltsDetailData?.pltsName ?? "-"} />
 
-          <ErrorRefetch>
-            <PowerDashboard pltsName={pltsDetailData?.pltsName} />
-          </ErrorRefetch>
+          <PowerDashboard pltsName={pltsDetailData?.pltsName} />
 
-          <ErrorRefetch>
-            <ClusterPowerDashboard />
-          </ErrorRefetch>
+          <ClusterPowerDashboard />
 
-          <ErrorRefetch>
-            <EnergyDashboard />
-          </ErrorRefetch>
+          <EnergyDashboard />
 
           <div>
             <h3 className="mt-0">About</h3>

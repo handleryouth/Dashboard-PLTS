@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { Dropdown, LineChart } from "components";
+import { Dropdown, LineChart, NewRefetch } from "components";
 import { BUTTON_LABEL_TIME_SELECTION } from "const";
 import {
   DataTimeType,
@@ -30,12 +30,15 @@ export default function PowerDashboard() {
     }
   }, []);
 
-  const { data: positionListData, isLoading: positionListLoading } = useQuery({
+  const {
+    data: positionListData,
+    isLoading: positionListLoading,
+    isError: positionListError,
+    refetch: positionListRefetch,
+  } = useQuery({
     queryKey: ["positionList", "power"],
     queryFn: getPositionList,
   });
-
-  console.log("positionListData", positionListData);
 
   const getPowerData = useCallback(async () => {
     const response = await requestHelper("plts_get_power", {
@@ -52,7 +55,12 @@ export default function PowerDashboard() {
     }
   }, [dropdown, period]);
 
-  const { data: powerData, isFetching: powerDataIsFetching } = useQuery({
+  const {
+    data: powerData,
+    isFetching: powerDataIsFetching,
+    isError: powerDataIsError,
+    refetch: powerDataRefetch,
+  } = useQuery({
     queryKey: ["powerData", dropdown, period],
     queryFn: getPowerData,
     enabled: !!dropdown,
@@ -74,6 +82,17 @@ export default function PowerDashboard() {
       };
     });
   }, [positionListData]);
+
+  if (powerDataIsError || positionListError) {
+    return (
+      <NewRefetch
+        restart={() => {
+          positionListRefetch();
+          powerDataRefetch();
+        }}
+      />
+    );
+  }
 
   return (
     <LineChart

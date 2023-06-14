@@ -20,15 +20,15 @@ function App() {
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <ResponseModalInterceptorProvider>
-            <BrowserRouter>
+          <BrowserRouter>
+            <ResponseModalInterceptorProvider>
               <Layout>
                 <ErrorBoundary>
                   <RouteStack />
                 </ErrorBoundary>
               </Layout>
-            </BrowserRouter>
-          </ResponseModalInterceptorProvider>
+            </ResponseModalInterceptorProvider>
+          </BrowserRouter>
         </Provider>
       </QueryClientProvider>
     </CookiesProvider>

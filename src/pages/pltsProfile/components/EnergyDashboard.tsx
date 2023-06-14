@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { BarChart, LineChart } from "components";
+import { BarChart, LineChart, NewRefetch } from "components";
 import { ENERGY_LABEL_TIME_SELECTION } from "const";
 import { PLTSClusterValueResponseDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
@@ -16,7 +16,12 @@ export default function EnergyDashboard() {
 
   const { id } = useParams<"id">();
 
-  const { data: energyData, isLoading } = useQuery({
+  const {
+    data: energyData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["clusterEnergyGraph", id, period],
     queryFn: () =>
       requestHelper("get_plts_cluster_value", {
@@ -39,6 +44,10 @@ export default function EnergyDashboard() {
     },
     [period]
   );
+
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <div>

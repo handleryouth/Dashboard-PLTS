@@ -2,11 +2,16 @@ import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { TotalClusterDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
-import { LineChart } from "components";
+import { LineChart, NewRefetch } from "components";
 import { AVERAGE_CLUSTER_STALE_TIME } from "const";
 
 export default function ClusterTotalDashboard() {
-  const { data: clusterTotalData, isLoading } = useQuery({
+  const {
+    data: clusterTotalData,
+    isLoading,
+    refetch,
+    isError,
+  } = useQuery({
     queryKey: ["clusterTotalData"],
     staleTime: AVERAGE_CLUSTER_STALE_TIME,
     queryFn: () =>
@@ -26,6 +31,10 @@ export default function ClusterTotalDashboard() {
     },
     []
   );
+
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <div>

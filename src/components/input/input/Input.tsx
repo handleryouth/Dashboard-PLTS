@@ -1,16 +1,19 @@
-import { useId } from "react";
+import { forwardRef, useId } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputProps } from "types";
 
-export default function Input({
-  errorMessage,
-  containerClassName,
-  label,
-  inputClassName,
-  onChange,
-  autoFocus,
-  ...props
-}: InputProps) {
+function Input(
+  {
+    errorMessage,
+    containerClassName,
+    label,
+    inputClassName,
+    onChange,
+    autoFocus,
+    ...props
+  }: InputProps,
+  ref: any
+) {
   const customId = useId();
   return (
     <div className={`prose field w-full ${containerClassName} relative`}>
@@ -19,6 +22,7 @@ export default function Input({
       </label>
       <InputText
         {...props}
+        ref={ref}
         onChange={(e) => onChange(e.target.value)}
         id={props.id ?? customId}
         autoFocus={autoFocus}
@@ -32,3 +36,5 @@ export default function Input({
     </div>
   );
 }
+
+export default forwardRef(Input);

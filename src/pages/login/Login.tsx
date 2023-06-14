@@ -2,9 +2,8 @@ import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
-import { useDispatch } from "react-redux";
 import { Button, Input, Password, MemoizedSeo } from "components";
-import { requestHelper, showModal } from "utils";
+import { requestHelper } from "utils";
 import { LoginFormProps, SetTokenFunctionProps } from "types";
 import { LOGIN_FORM_INITIAL_VALUES } from "const";
 
@@ -12,8 +11,6 @@ export default function Login() {
   const { control, handleSubmit, setError } = useForm<LoginFormProps>({
     defaultValues: LOGIN_FORM_INITIAL_VALUES,
   });
-
-  const dispatch = useDispatch();
 
   const [, setCookies] = useCookies([
     "accessToken",
@@ -26,18 +23,6 @@ export default function Login() {
 
   const handleSetTokenCookies = useCallback(
     ({ staffData }: SetTokenFunctionProps) => {
-      // setCookies("accessToken", accessToken, {
-      //   path: "/",
-      //   sameSite: "strict",
-      //   httpOnly: true,
-      // });
-
-      // setCookies("refreshToken", refreshToken, {
-      //   path: "/",
-      //   sameSite: "strict",
-      //   httpOnly: true,
-      // });
-
       setCookies("isLogin", true, {
         path: "/",
         sameSite: "lax",
@@ -75,13 +60,10 @@ export default function Login() {
           email: response.data.data.email,
           staffData: response.data.data.staffData,
         });
-      } else if (response.response?.status === 401) {
-        dispatch(
-          showModal({
-            message: response.response.data.message,
-            title: "Login Failed",
-          })
-        );
+      } else if (
+        response.response?.status === 404 ||
+        response.response.status === 401
+      ) {
         setError("email", {
           message: response.response.data.message,
         });
@@ -90,7 +72,7 @@ export default function Login() {
         });
       }
     },
-    [dispatch, handleSetTokenCookies, setCookies, setError]
+    [handleSetTokenCookies, setCookies, setError]
   );
 
   const handleSubmitEvent = useCallback(

@@ -1,19 +1,19 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { Sidebar as PrimereactSidebar } from "primereact/sidebar";
-import { requestHelper, showModal, sidebarItems } from "utils";
+import { logout, sidebarItems } from "utils";
 import { SidebarChildren } from "./components";
 import { useSidebar } from "./context";
 import { Button } from "../button";
+import { Modal } from "components/modal";
 
 export default function Sidebar() {
   const { showDashboard, toggleDashboardInactive } = useSidebar();
 
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [cookies, , removeCookie] = useCookies([
     "staffData",
@@ -26,60 +26,65 @@ export default function Sidebar() {
     useMemo(() => sidebarItems(), []);
 
   const signOut = useCallback(async () => {
-    const response = await requestHelper("plts_auth_logout");
-
-    if (response.status === 200) {
-      removeCookie("staffData");
-      removeCookie("isLogin");
-      navigate("/");
-      toggleDashboardInactive();
-    } else {
-      dispatch(
-        showModal({
-          message: response.data.message,
-          title: "Error",
-        })
-      );
-    }
-  }, [dispatch, navigate, removeCookie, toggleDashboardInactive]);
+    await logout({
+      onLogoutFailure() {
+        setShowModal(true);
+      },
+      onLogoutSuccess() {
+        removeCookie("staffData");
+        removeCookie("isLogin");
+        navigate("/");
+        toggleDashboardInactive();
+        setShowModal(false);
+      },
+    });
+  }, [navigate, removeCookie, toggleDashboardInactive]);
 
   return (
-    <PrimereactSidebar
-      visible={showDashboard}
-      position="left"
-      onHide={() => toggleDashboardInactive()}
-      modal={false}
-      showCloseIcon={false}
-      dismissable
-    >
-      <div className="flex justify-between flex-col h-full prose">
-        <div>
+    <>
+      <Modal
+        header="Error Logout"
+        onHide={() => setShowModal(false)}
+        visible={showModal}
+      >
+        <p>Failed to logout. Please try again</p>
+      </Modal>
+      <PrimereactSidebar
+        visible={showDashboard}
+        position="left"
+        onHide={toggleDashboardInactive}
+        modal={false}
+        showCloseIcon={false}
+      >
+        <div className="flex justify-between flex-col h-full prose">
           <div>
-            <h3 className="mt-0">{cookies?.staffData?.name ?? "-"}</h3>
-            <p>{cookies?.staffData?.email ?? "-"}</p>
+            <div>
+              <h3 className="mt-0">{cookies?.staffData?.name ?? "-"}</h3>
+              <p>{cookies?.staffData?.email ?? "-"}</p>
+            </div>
+
+            <SidebarChildren groupLinks={dashboardLinks} />
+
+            <SidebarChildren groupLinks={pltsLinks} />
+
+            <SidebarChildren groupLinks={mapLinks} />
+
+            {cookies.staffData?.role === "admin" && (
+              <>
+                <SidebarChildren groupLinks={positionLinks} />
+                <SidebarChildren groupLinks={aclLinks} />
+              </>
+            )}
           </div>
 
-          <SidebarChildren groupLinks={dashboardLinks} />
-
-          <SidebarChildren groupLinks={pltsLinks} />
-
-          <SidebarChildren groupLinks={mapLinks} />
-
-          {cookies.staffData?.role === "admin" && (
-            <>
-              <SidebarChildren groupLinks={positionLinks} />
-              <SidebarChildren groupLinks={aclLinks} />
-            </>
-          )}
+          <Button
+            onClick={signOut}
+            className="bg-red-500/40 text-red-500 hover:!bg-red-500 hover:!text-white transition-colors"
+          >
+            Log out
+          </Button>
         </div>
-
-        <Button
-          onClick={signOut}
-          className="bg-red-500/40 text-red-500 hover:!bg-red-500 hover:!text-white transition-colors"
-        >
-          Log out
-        </Button>
-      </div>
-    </PrimereactSidebar>
+      </PrimereactSidebar>
+    </>
   );
 }

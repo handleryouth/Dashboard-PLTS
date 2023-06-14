@@ -58,11 +58,11 @@ requestInstance.interceptors.response.use(
           if (err.response.status === 401) {
             store.dispatch(
               showModal({
-                message: "Your session has expired. Please login again.",
-                title: "Session Expired",
+                type: "logout",
               })
             );
           }
+          return;
         });
     } else if (error.response.status === 500) {
       store.dispatch(
@@ -71,6 +71,7 @@ requestInstance.interceptors.response.use(
           title: "Internal Server Error",
         })
       );
+      return;
     }
 
     return error;

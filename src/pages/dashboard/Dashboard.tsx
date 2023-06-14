@@ -1,4 +1,4 @@
-import { Container, ErrorRefetch } from "components";
+import { Container } from "components";
 import {
   AverageDashboard,
   ClusterTotalDashboard,
@@ -12,33 +12,23 @@ export default function MainDashboard() {
     <>
       <div className="flex flex-col gap-y-4">
         <Container>
-          <ErrorRefetch>
-            <MonitoringDashboard />
-          </ErrorRefetch>
+          <MonitoringDashboard />
         </Container>
 
         <Container>
-          <ErrorRefetch>
-            <AverageDashboard />
-          </ErrorRefetch>
+          <AverageDashboard />
         </Container>
 
         <Container>
-          <ErrorRefetch>
-            <PowerDashboard />
-          </ErrorRefetch>
+          <PowerDashboard />
         </Container>
 
         <Container>
-          <ErrorRefetch>
-            <ClusterTotalDashboard />
-          </ErrorRefetch>
+          <ClusterTotalDashboard />
         </Container>
 
         <Container>
-          <ErrorRefetch>
-            <EnergyDashboard />
-          </ErrorRefetch>
+          <EnergyDashboard />
         </Container>
       </div>
     </>

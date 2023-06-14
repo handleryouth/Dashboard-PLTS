@@ -8,3 +8,4 @@ export * from "./text";
 export * from "./redux";
 export * from "./date";
 export * from "./fetching";
+export * from "./auth";

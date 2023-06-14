@@ -6,7 +6,7 @@ import { MenuItem } from "primereact/menuitem";
 import { useQuery } from "@tanstack/react-query";
 import {
   Container,
-  ErrorComponent,
+  NewRefetch,
   Pagination,
   Table,
   TableAction,
@@ -50,7 +50,6 @@ export default function StaffManagement() {
     ],
     staleTime: 0,
     cacheTime: 0,
-    useErrorBoundary: false,
   });
 
   const [cookies] = useCookies(["staffData"]);
@@ -183,6 +182,10 @@ export default function StaffManagement() {
     [handleConstructParams]
   );
 
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
+
   return (
     <Container>
       <TableAction
@@ -199,17 +202,13 @@ export default function StaffManagement() {
         page={Number(searchParams.get("page")) || 1}
         resultsLength={staffData?.total ?? 0}
       />
-      {isError ? (
-        <ErrorComponent refetch={refetch} />
-      ) : (
-        <Table
-          loading={isLoading}
-          columns={getHeaderTable}
-          data={staffData?.data ?? []}
-          keyItem={getKeyItem}
-          renderItem={getRenderedItem}
-        />
-      )}
+      <Table
+        loading={isLoading}
+        columns={getHeaderTable}
+        data={staffData?.data ?? []}
+        keyItem={getKeyItem}
+        renderItem={getRenderedItem}
+      />
     </Container>
   );
 }

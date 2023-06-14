@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { Dropdown, LineChart } from "components";
+import { Dropdown, LineChart, NewRefetch } from "components";
 import {
   DataTimeType,
   GeneratorDataPropsExcludeDeviceType,
@@ -37,12 +37,21 @@ export default function AverageDashboard() {
 
   const [positionDropdown, setPositionDropdown] = useState<string>();
 
-  const { data: positionListData } = useQuery({
+  const {
+    data: positionListData,
+    isError: positionListIsError,
+    refetch: positionListRefetch,
+  } = useQuery({
     queryKey: ["positionList"],
     queryFn: getPositionList,
   });
 
-  const { data: generatorData, isLoading: generatorDataLoading } = useQuery({
+  const {
+    data: generatorData,
+    isError: generatorDataIsError,
+    isLoading: generatorDataLoading,
+    refetch: generatorDataRefetch,
+  } = useQuery({
     queryKey: ["generatorData", positionDropdown, period],
     queryFn: positionDropdown
       ? async () => await getAverageData(positionDropdown, period)
@@ -88,6 +97,17 @@ export default function AverageDashboard() {
       y: yUnit ?? "",
     };
   }, [dropdownValue, generatorData]);
+
+  if (positionListIsError || generatorDataIsError) {
+    return (
+      <NewRefetch
+        restart={() => {
+          positionListRefetch();
+          generatorDataRefetch();
+        }}
+      />
+    );
+  }
 
   return (
     <LineChart

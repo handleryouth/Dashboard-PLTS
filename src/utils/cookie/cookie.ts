@@ -1,12 +1,16 @@
 import Cookies, { CookieSetOptions } from "universal-cookie";
 
+export type CookieType =
+  | "accessToken"
+  | "refreshToken"
+  | "staffData"
+  | "isLogin";
+
 export interface SetCookieProps {
-  cookieKey: string;
-  cookieValue: string;
+  cookieKey: CookieType;
+  cookieValue: string | undefined;
   cookieOptions?: CookieSetOptions;
 }
-
-export type CookieType = "accessToken" | "refreshToken" | "staffData";
 
 export function setCookie({
   cookieKey,
@@ -22,4 +26,10 @@ export function getCookie(cookie: CookieType) {
   const cookies = new Cookies();
 
   return cookies.get(cookie);
+}
+
+export function removeCookie(cookie: CookieType) {
+  const cookies = new Cookies();
+
+  return cookies.remove(cookie);
 }

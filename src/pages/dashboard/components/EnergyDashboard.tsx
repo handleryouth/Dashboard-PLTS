@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { BarChart } from "components";
+import { BarChart, NewRefetch } from "components";
 import { ENERGY_LABEL_TIME_SELECTION } from "const";
 import { TotalClusterDataProps } from "types";
 import { generateDateLocale, requestHelper } from "utils";
@@ -9,7 +9,12 @@ import { generateDateLocale, requestHelper } from "utils";
 export default function EnergyDashboard() {
   const [period, setPeriod] = useState("daily");
 
-  const { data: energyData, isLoading } = useQuery({
+  const {
+    data: energyData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["clusterTotalEnergyGraph", period],
     queryFn: () =>
       requestHelper("get_plts_total_cluster", {
@@ -29,6 +34,10 @@ export default function EnergyDashboard() {
     },
     [period]
   );
+
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <div>

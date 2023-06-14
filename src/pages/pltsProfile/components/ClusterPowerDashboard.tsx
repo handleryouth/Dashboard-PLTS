@@ -2,14 +2,19 @@ import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { PLTSClusterValueResponseDataProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
-import { LineChart } from "components";
+import { LineChart, NewRefetch } from "components";
 import { useQuery } from "@tanstack/react-query";
 
 export default function ClusterDashboard() {
   const { id } = useParams<"id">();
 
-  const { data: clusterData, isLoading } = useQuery({
-    queryKey: ["clusterPowerGraph"],
+  const {
+    data: clusterData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["clusterPowerGraph", id],
     queryFn: () =>
       requestHelper("get_plts_cluster_value", {
         params: {
@@ -17,6 +22,7 @@ export default function ClusterDashboard() {
           dataTime: "hourly",
         },
       }),
+    enabled: !!id,
   });
 
   const renderChartItem = useCallback(
@@ -30,6 +36,10 @@ export default function ClusterDashboard() {
     },
     []
   );
+
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <div>

@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
-import { LineChart } from "components";
+import { LineChart, NewRefetch } from "components";
 import { BUTTON_LABEL_TIME_SELECTION } from "const";
 import { DataTimeType, PLTSGetPowerResponse, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
@@ -28,7 +28,12 @@ export default function PowerDashboard({ pltsName }: PowerDashboardProps) {
     }
   }, [period, pltsName]);
 
-  const { data: powerData, isFetching: powerDataIsFetching } = useQuery({
+  const {
+    data: powerData,
+    isFetching: powerDataIsFetching,
+    isError,
+    refetch,
+  } = useQuery({
     queryKey: ["powerData", pltsName, period],
     queryFn: getPowerData,
     enabled: !!pltsName,
@@ -41,6 +46,10 @@ export default function PowerDashboard({ pltsName }: PowerDashboardProps) {
     }),
     [period]
   );
+
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <LineChart

@@ -1,16 +1,29 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { Container, MemoizedMarkerDetail } from "components";
-import { InvalidateSizeMap, requestHelper } from "utils";
+import { Container, MemoizedMarkerDetail, NewRefetch } from "components";
+import { requestHelper } from "utils";
 import { PLTSMapListResponse } from "types";
+import { useQuery } from "@tanstack/react-query";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { SideDetail, SmallSideDetail } from "./component";
 
 export default function Map() {
-  const [forceUpdate, setForceUpdate] = useState(false);
-
   const [selectedMapData, setSelectedMapData] = useState<PLTSMapListResponse>();
 
-  const [mapList, setMapList] = useState<PLTSMapListResponse[]>([]);
+  const getPltsPositonList = useCallback(async () => {
+    const response = await requestHelper("get_plts_map");
+
+    if (response && response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("Failed to fetch map list");
+    }
+  }, []);
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["pltsMapList"],
+    queryFn: getPltsPositonList,
+  });
 
   const handleClickEvent = useCallback(
     (value: PLTSMapListResponse) => {
@@ -23,71 +36,60 @@ export default function Map() {
     [selectedMapData]
   );
 
-  const getPltsPositonList = useCallback(async () => {
-    const response = await requestHelper("get_plts_map");
-
-    if (response && response.status === 200) {
-      setMapList(response.data.data);
-    }
-  }, []);
-
-  useEffect(() => {
-    getPltsPositonList();
-  }, [getPltsPositonList]);
-
-  console.log("selected", selectedMapData);
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
 
   return (
     <Container>
       <h1 className="mt-4">Plants Location</h1>
 
-      <div className="flex">
-        <div className="w-full">
-          <MapContainer
-            center={[-7.284, 112.796]}
-            zoom={17}
-            scrollWheelZoom={false}
-            style={{
-              minHeight: "100vh",
-              width: "100%",
-              zIndex: 0,
-            }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-            {mapList.map((item) => (
-              <Marker
-                key={item._id}
-                position={[item.lat, item.lng]}
-                eventHandlers={{
-                  click: () => handleClickEvent(item),
-                }}
-              >
-                <MemoizedMarkerDetail
-                  lat={item.lat}
-                  lng={item.lng}
-                  description={item.address}
-                  title={item.name}
-                />
-              </Marker>
-            ))}
-
-            {/* <AnimatedSlideMap /> */}
-            <InvalidateSizeMap
-              updateMap={forceUpdate}
-              afterUpdate={() => setForceUpdate(false)}
-            />
-          </MapContainer>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full min-h-[10rem]">
+          <ProgressSpinner className="w-14 h-14" />
         </div>
+      ) : (
+        <div className="flex">
+          <div className="w-full">
+            <MapContainer
+              center={[-7.284, 112.796]}
+              zoom={17}
+              scrollWheelZoom={false}
+              style={{
+                minHeight: "100vh",
+                width: "100%",
+                zIndex: 0,
+              }}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-        <SideDetail data={selectedMapData} />
-        <SmallSideDetail
-          visible={Boolean(selectedMapData)}
-          // toggleSideDetailClosed={() => setSelectedMapData(undefined)}
-          toggleSideDetailClosed={() => console.log("called sidebar closed")}
-          data={selectedMapData}
-        />
-      </div>
+              {data?.map((item) => (
+                <Marker
+                  key={item._id}
+                  position={[item.lat, item.lng]}
+                  eventHandlers={{
+                    click: () => handleClickEvent(item),
+                  }}
+                >
+                  <MemoizedMarkerDetail
+                    lat={item.lat}
+                    lng={item.lng}
+                    description={item.address}
+                    title={item.name}
+                  />
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
+
+          <SideDetail data={selectedMapData} />
+          <SmallSideDetail
+            visible={!!selectedMapData}
+            toggleSideDetailClosed={() => setSelectedMapData(undefined)}
+            data={selectedMapData}
+          />
+        </div>
+      )}
     </Container>
   );
 }

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Button,
   Container,
-  ErrorComponent,
+  NewRefetch,
   Pagination,
   Table,
   TableAction,
@@ -148,6 +148,10 @@ export default function Plts() {
     [handleConstructParams]
   );
 
+  if (isError) {
+    return <NewRefetch restart={refetch} />;
+  }
+
   return (
     <Container>
       <TableAction
@@ -167,23 +171,19 @@ export default function Plts() {
         resultsLength={pltsList?.total ?? 0}
       />
 
-      {isError ? (
-        <ErrorComponent refetch={refetch} />
-      ) : (
-        <Table
-          columns={getHeaderTable}
-          loading={isLoading}
-          data={pltsList?.data ?? []}
-          keyItem={getKeyItem}
-          renderItem={renderItem}
-          onClickRowItem={({ _id }) => navigate(`/inverter/${_id}`)}
-          excludeOnClickRowItem={
-            {
-              actionbutton: false,
-            } as Partial<Record<PLTSTableHeader, boolean>>
-          }
-        />
-      )}
+      <Table
+        columns={getHeaderTable}
+        loading={isLoading}
+        data={pltsList?.data ?? []}
+        keyItem={getKeyItem}
+        renderItem={renderItem}
+        onClickRowItem={({ _id }) => navigate(`/inverter/${_id}`)}
+        excludeOnClickRowItem={
+          {
+            actionbutton: false,
+          } as Partial<Record<PLTSTableHeader, boolean>>
+        }
+      />
     </Container>
   );
 }

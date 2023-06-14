@@ -1,10 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+export interface InterceptorModalButtonProps {
+  text: string;
+  onClick: () => void;
+}
+
 interface ModalState {
+  type?: "logout";
   openModal: boolean;
-  message: string;
-  title: string;
+  message?: string;
+  title?: string;
 }
 
 const initialState: ModalState = {
@@ -18,15 +24,17 @@ const modalSlice = createSlice({
   initialState,
   reducers: {
     showModal(state, action: PayloadAction<Omit<ModalState, "openModal">>) {
-      const { message, title } = action.payload;
+      const { message, title, type } = action.payload;
       state.openModal = true;
       state.message = message;
       state.title = title;
+      state.type = type;
     },
     hideModal(state) {
-      state.message = "";
       state.openModal = false;
+      state.message = "";
       state.title = "";
+      state.type = undefined;
     },
   },
 });

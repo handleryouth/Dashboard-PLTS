@@ -5,8 +5,6 @@ import { SideDetailProps } from "types";
 export default function SideDetail({ data }: SideDetailProps) {
   const navigate = useNavigate();
 
-  console.log("side detail data", data);
-
   return (
     <div
       className={`hidden mediumToBigDisplay:block prose !max-w-none transition-widthPaddingMargin  duration-300  bg-gradient-to-br from-[#F8EDE3] to-[#F1F6F5] rounded-md max-h-screen overflow-scroll  ${

@@ -1,3 +1,3 @@
-export * from "./Refetch";
+export * from "./NewRefetch";
 
-export { default as ErrorRefetch } from "./Refetch";
+export { default as NewRefetch } from "./NewRefetch";

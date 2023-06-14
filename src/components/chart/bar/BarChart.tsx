@@ -124,10 +124,6 @@ export default function BarChart<T extends Object>({
             {multipleChartData &&
               multipleChartDataKey &&
               multipleChartDataKey.map((key, index) => {
-                console.log(
-                  "generated multiple data",
-                  generatedMultipleData(key as keyof T)
-                );
                 return (
                   <VictoryBar
                     data={generatedMultipleData(key as keyof T)}

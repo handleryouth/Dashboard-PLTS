@@ -18,7 +18,7 @@ export default function Table<T extends Object>({
       <thead className="bg-gray-200 ">
         <tr className="text-lg ">
           {entries.map(([key, value]) => (
-            <th className="table-padding  align-middle" key={key}>
+            <th className="table-padding  align-middle w-full" key={key}>
               {value}
             </th>
           ))}

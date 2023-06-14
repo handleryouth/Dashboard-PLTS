@@ -13,7 +13,6 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: GLOBAL_STALE_TIME,
       cacheTime: GLOBAL_CACHE_TIME,
-      useErrorBoundary: true,
     },
   },
 });
