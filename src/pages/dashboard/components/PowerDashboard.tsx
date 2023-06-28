@@ -102,7 +102,7 @@ export default function PowerDashboard() {
         x: "time",
         y: "power",
       }}
-      yUnit="W"
+      yUnit={period === "hourly" ? "W" : "Wh"}
       title="Power Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={
