@@ -14,7 +14,7 @@ export interface PLTSProfileBody {
   smaDeviceName: string;
   devicePosition: string;
   ipAddress: string;
-  port: string;
+  port: number;
   modbusAddress: ModbusAddress[];
   deviceType?: "pvInverter" | "batteryInverter";
   connectedTo?: string;
@@ -63,7 +63,7 @@ export interface PLTSListResponse {
   ipAddress: string;
   modbusAddress: ModbusAddress[];
   pltsName: string;
-  port: string;
+  port: number;
   smaDeviceName: string;
   globalHorizontalIrradiance: number;
   deviceType: "pvInverter" | "batteryInverter";

@@ -7,22 +7,33 @@ import {
 export interface InputNumberProps extends NativeInputNumberProps {
   label?: string;
   inputClassName?: string;
+  errorMessage?: string;
+  containerClassName?: string;
 }
 
 export default function InputNumber({
   inputClassName,
   label,
+  errorMessage,
+  containerClassName,
   ...props
 }: InputNumberProps) {
-  const id = useId();
+  const customId = useId();
   return (
-    <div className="w-full">
-      <label htmlFor={id}>{label}</label>
+    <div className={`prose field w-full ${containerClassName} relative`}>
+      <label htmlFor={props.id ?? customId} className="block">
+        {label}
+      </label>
       <NativeInputNumber
-        id={id}
         {...props}
-        className={`${inputClassName} w-full`}
+        id={props.id ?? customId}
+        className={`${errorMessage && "p-invalid"} block ${inputClassName} `}
+        inputClassName="w-full"
+        useGrouping={false}
       />
+      <small id={props.id ?? customId} className="p-error block absolute">
+        {errorMessage}
+      </small>
     </div>
   );
 }

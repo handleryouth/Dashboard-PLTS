@@ -37,7 +37,8 @@ export const PLTS_FORM_INITIAL_STATE: PLTSProfileBody = {
   smaDeviceName: "",
   devicePosition: "",
   ipAddress: "",
-  port: "",
+  port: 0,
   modbusAddress: [],
   deviceType: "pvInverter",
+  connectedTo: "",
 };

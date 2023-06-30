@@ -102,7 +102,7 @@ export default function Plts() {
       ),
       ipAddress: ipAddress,
       pltsName: pltsName,
-      port,
+      port: port?.toString(),
       smaDeviceName,
       actionbutton:
         cookies.staffData?.role === "admin" ? (

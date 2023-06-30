@@ -31,7 +31,7 @@ export default function Dropdown({
         id={id}
         className={`w-full  ${props.className} ${errorMessage && "p-invalid"}`}
       />
-      <small id={id} className="prose p-error block absolute">
+      <small id={id} className=" p-error block absolute">
         {errorMessage}
       </small>
     </span>

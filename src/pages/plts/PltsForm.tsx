@@ -10,7 +10,14 @@ import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { SelectItem } from "primereact/selectitem";
-import { Input, Button, Container, Dropdown, Checkbox } from "components";
+import {
+  Input,
+  Button,
+  Container,
+  Dropdown,
+  Checkbox,
+  InputNumber,
+} from "components";
 import {
   PLTSFormModalState,
   PLTSFormProps,
@@ -45,20 +52,30 @@ export default function PltsForm({ edit }: PLTSFormProps) {
     edit ? state.deviceType : "deviceType"
   );
 
-  const { control, handleSubmit, reset } = useForm<PLTSProfileBody>({
-    defaultValues: edit
-      ? {
-          devicePosition: state.devicePosition?._id ?? "-",
-          ipAddress: state.ipAddress,
-          modbusAddress: state.modbusAddress,
-          port: state.port,
-          pltsName: state.pltsName,
-          smaDeviceName: state.smaDeviceName,
-          deviceType: state.deviceType,
-          connectedTo: state?.connectedTo ?? state.connectedWith,
-        }
-      : PLTS_FORM_INITIAL_STATE,
-  });
+  const { control, handleSubmit, trigger, resetField, setValue } =
+    useForm<PLTSProfileBody>({
+      defaultValues: edit
+        ? {
+            devicePosition: state.devicePosition?._id ?? "-",
+            ipAddress: state.ipAddress,
+            modbusAddress: state.modbusAddress,
+            port: state.port,
+            pltsName: state.pltsName,
+            smaDeviceName: state.smaDeviceName,
+            deviceType: state.deviceType,
+            connectedTo: state?.connectedTo ?? state.connectedWith ?? "",
+          }
+        : PLTS_FORM_INITIAL_STATE,
+      shouldUnregister: true,
+    });
+
+  const onSubmitButton = useCallback(() => {
+    trigger().then((isValid) => {
+      if (isValid) {
+        setShowModal("confirmation");
+      }
+    });
+  }, [trigger]);
 
   const deviceType = useWatch({
     control,
@@ -77,15 +94,14 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       setPltsProfile(response.data.data);
 
       if (deviceType !== previousDeviceType.current) {
-        reset((formValues) => ({
-          ...formValues,
-          connectedTo: "",
-        }));
+        resetField("connectedTo", {
+          defaultValue: "",
+        });
 
         previousDeviceType.current = deviceType;
       }
     }
-  }, [edit, state?._id, deviceType, reset]);
+  }, [edit, state._id, deviceType, resetField]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -97,6 +113,10 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       const response = await requestHelper("create_plts_profile", {
         body: {
           ...data,
+          connectedTo:
+            data?.connectedTo === "" || data?.connectedTo === undefined
+              ? undefined
+              : data.connectedTo,
           modbusAddress: data.modbusAddress.map((item) => ({
             dataName: item.dataName,
             unit: item.unit,
@@ -125,9 +145,14 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
   const handleEditData = useCallback(
     async (data: PLTSProfileBody) => {
+      console.log("data for edit", data);
       const response = await requestHelper("patch_plts_profile", {
         body: {
           ...data,
+          connectedTo:
+            data?.connectedTo === "" || data?.connectedTo === undefined
+              ? undefined
+              : data.connectedTo,
           modbusAddress: data.modbusAddress.map((item) => ({
             dataName: item.dataName,
             unit: item.unit,
@@ -229,7 +254,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       />
 
       <Container>
-        <form className="mx-auto w-[90%] flex flex-col gap-y-4">
+        <form className="mx-auto w-[90%] flex flex-col gap-y-5">
           <Controller
             name="pltsName"
             control={control}
@@ -276,6 +301,10 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               return (
                 <Dropdown
                   {...field}
+                  onChange={(e) => {
+                    setValue("connectedTo", "");
+                    return field.onChange(e);
+                  }}
                   id={field.name}
                   label="Device Type"
                   errorMessage={fieldState.error?.message}
@@ -305,11 +334,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             <Button
               className="basis-2/5 h-[54px]"
               onClick={() => {
-                reset((formValues) => {
-                  return {
-                    ...formValues,
-                    connectedTo: "",
-                  };
+                resetField("connectedTo", {
+                  defaultValue: "",
                 });
               }}
             >
@@ -369,10 +395,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             }}
             control={control}
             render={({ field, fieldState }) => (
-              <Input
+              <InputNumber
                 id={field.name}
+                inputRef={field.ref}
+                value={field.value}
+                onBlur={field.onBlur}
+                onValueChange={(e) => field.onChange(e)}
                 label="Port"
-                {...field}
                 errorMessage={fieldState.error?.message}
               />
             )}
@@ -398,7 +427,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
               </Button>
             </div>
 
-            <div>
+            <div className="flex flex-col gap-y-8">
               {fields.map((item, index) => {
                 return (
                   <Fragment key={item.id}>
@@ -426,9 +455,12 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                           required: "Modbuss Address is required",
                         }}
                         render={({ field, fieldState }) => (
-                          <Input
+                          <InputNumber
                             id={field.name}
-                            {...field}
+                            inputRef={field.ref}
+                            value={field.value}
+                            onBlur={field.onBlur}
+                            onValueChange={(e) => field.onChange(e)}
                             label="Modbus Address"
                             errorMessage={fieldState.error?.message}
                           />
@@ -443,8 +475,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                         }}
                         render={({ field, fieldState }) => (
                           <Input
-                            id={field.name}
                             {...field}
+                            id={field.name}
                             label="Value Unit"
                             errorMessage={fieldState.error?.message}
                           />
@@ -475,9 +507,12 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                           min: 1,
                         }}
                         render={({ field, fieldState }) => (
-                          <Input
+                          <InputNumber
                             id={field.name}
-                            {...field}
+                            inputRef={field.ref}
+                            value={field.value}
+                            onBlur={field.onBlur}
+                            onValueChange={(e) => field.onChange(e)}
                             label="Value Precision"
                             errorMessage={fieldState.error?.message}
                           />
@@ -507,10 +542,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             </div>
 
             <div className="flex items-center justify-center gap-8 mt-8">
-              <Button
-                onClick={() => setShowModal("confirmation")}
-                className="bg-blue-500 w-full"
-              >
+              <Button onClick={onSubmitButton} className="bg-blue-500 w-full">
                 Save
               </Button>
               <Button
