@@ -101,7 +101,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
         previousDeviceType.current = deviceType;
       }
     }
-  }, [edit, state._id, deviceType, resetField]);
+  }, [edit, state?._id, deviceType, resetField]);
 
   const { fields, append, remove } = useFieldArray({
     control,
