@@ -9,6 +9,7 @@ import {
   RenderedChartItem,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
+import { Toast } from "primereact/toast";
 
 export default function MonitoringChart({
   title,
@@ -17,6 +18,8 @@ export default function MonitoringChart({
   buttonTitle,
 }: MonitoringChartProps) {
   const [generatorData, setGeneratorData] = useState<GeneratorDataProps[]>([]);
+
+  const toast = useRef<Toast>(null);
 
   const [dataUnit, setDataUnit] = useState<DataUnitProps[]>([]);
 
@@ -74,6 +77,11 @@ export default function MonitoringChart({
 
     sseSource.onerror = () => {
       sseSource.close();
+      setIsLoading(false);
+      toast.current?.show({
+        severity: "error",
+        detail: "Failed to connect to server",
+      });
     };
 
     return () => {
@@ -117,39 +125,42 @@ export default function MonitoringChart({
   }, [dataKey]);
 
   return (
-    <LineChart
-      containerClassName={customClassname}
-      title={title}
-      isLoading={isLoading}
-      yUnit={getDataUnit.y}
-      singleChartData={dropdownValue ? generatorData : []}
-      coordinate={{
-        x: "time",
-        y: dropdownValue,
-      }}
-      renderItem={handleRenderItem}
-      customDropdownComponent={
-        <div className="flex items-center gap-x-4 w-full">
-          {buttonTitle && (
-            <Button
+    <>
+      <Toast ref={toast} />
+      <LineChart
+        containerClassName={customClassname}
+        title={title}
+        isLoading={isLoading}
+        yUnit={getDataUnit.y}
+        singleChartData={dropdownValue ? generatorData : []}
+        coordinate={{
+          x: "time",
+          y: dropdownValue,
+        }}
+        renderItem={handleRenderItem}
+        customDropdownComponent={
+          <div className="flex items-center gap-x-4 w-full">
+            {buttonTitle && (
+              <Button
+                className="w-full"
+                onClick={() => onButtonClicked && onButtonClicked()}
+              >
+                {buttonTitle}
+              </Button>
+            )}
+            <Dropdown
+              value={dropdownValue}
+              options={handleRenderDropdownItem}
+              placeholder="Select Data"
+              filter
+              onChange={(e) => {
+                setDropdownValue(e.target.value);
+              }}
               className="w-full"
-              onClick={() => onButtonClicked && onButtonClicked()}
-            >
-              {buttonTitle}
-            </Button>
-          )}
-          <Dropdown
-            value={dropdownValue}
-            options={handleRenderDropdownItem}
-            placeholder="Select Data"
-            filter
-            onChange={(e) => {
-              setDropdownValue(e.target.value);
-            }}
-            className="w-full"
-          />
-        </div>
-      }
-    />
+            />
+          </div>
+        }
+      />
+    </>
   );
 }

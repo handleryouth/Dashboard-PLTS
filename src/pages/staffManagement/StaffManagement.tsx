@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { Toast } from "primereact/toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { SplitButton } from "primereact/splitbutton";
@@ -22,6 +23,7 @@ import { requestHelper } from "utils";
 
 export default function StaffManagement() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const toast = useRef<Toast>(null);
 
   const getStaffData = useCallback(async () => {
     const response = await requestHelper("get_staff_list", {
@@ -33,6 +35,8 @@ export default function StaffManagement() {
     });
     if (response && response.status === 200) {
       return response.data;
+    } else {
+      throw new Error("Failed to fetch data");
     }
   }, [searchParams]);
 
@@ -49,7 +53,6 @@ export default function StaffManagement() {
       searchParams.get("page") || 1,
     ],
     staleTime: 0,
-    cacheTime: 0,
   });
 
   const [cookies] = useCookies(["staffData"]);
@@ -66,6 +69,12 @@ export default function StaffManagement() {
 
       if (response && response.status === 200) {
         getStaffData();
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Failed to activate staff",
+          life: 3000,
+        });
       }
     },
     [getStaffData]
@@ -81,6 +90,12 @@ export default function StaffManagement() {
 
       if (response && response.status === 200) {
         getStaffData();
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Failed to deactivate staff",
+          life: 3000,
+        });
       }
     },
     [getStaffData]
@@ -188,17 +203,18 @@ export default function StaffManagement() {
 
   return (
     <Container>
+      <Toast ref={toast} />
       <TableAction
         onSubmit={handleSearchData}
         enableButton={false}
         inputPlaceholder="Search by name"
       />
       <Pagination
-        handlePageChange={(event) =>
+        handlePageChange={(page) => {
           handleConstructParams({
-            page: event.first + 1,
-          })
-        }
+            page,
+          });
+        }}
         page={Number(searchParams.get("page")) || 1}
         resultsLength={staffData?.total ?? 0}
       />

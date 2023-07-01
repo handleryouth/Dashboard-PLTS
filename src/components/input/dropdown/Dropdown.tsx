@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { forwardRef, useId } from "react";
 import {
   DropdownProps as BaseDropdownProps,
   Dropdown as BaseDropdown,
@@ -12,12 +12,10 @@ export interface DropdownProps extends BaseDropdownProps {
   errorMessage?: string;
 }
 
-export default function Dropdown({
-  label,
-  containerClassName,
-  errorMessage,
-  ...props
-}: DropdownProps) {
+function Dropdown(
+  { label, containerClassName, errorMessage, ...props }: DropdownProps,
+  ref: any
+) {
   const id = useId();
   return (
     <span className={`prose w-full ${containerClassName}`}>
@@ -28,6 +26,7 @@ export default function Dropdown({
       )}
       <BaseDropdown
         {...props}
+        ref={ref}
         id={id}
         className={`w-full  ${props.className} ${errorMessage && "p-invalid"}`}
       />
@@ -37,3 +36,5 @@ export default function Dropdown({
     </span>
   );
 }
+
+export default forwardRef(Dropdown);

@@ -36,6 +36,8 @@ export default function Plts() {
 
     if (response && response.status === 200) {
       return response.data;
+    } else {
+      throw new Error("Failed to fetch data");
     }
   }, [searchParams]);
 
@@ -162,9 +164,9 @@ export default function Plts() {
         inputPlaceholder="Search by PLTS Name"
       />
       <Pagination
-        handlePageChange={(event) => {
+        handlePageChange={(page) => {
           handleConstructParams({
-            page: event.first + 1,
+            page,
           });
         }}
         page={Number(searchParams.get("page")) || 1}

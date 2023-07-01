@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { forwardRef, useId } from "react";
 import {
   InputNumberProps as NativeInputNumberProps,
   InputNumber as NativeInputNumber,
@@ -11,13 +11,16 @@ export interface InputNumberProps extends NativeInputNumberProps {
   containerClassName?: string;
 }
 
-export default function InputNumber({
-  inputClassName,
-  label,
-  errorMessage,
-  containerClassName,
-  ...props
-}: InputNumberProps) {
+function InputNumber(
+  {
+    inputClassName,
+    label,
+    errorMessage,
+    containerClassName,
+    ...props
+  }: InputNumberProps,
+  ref: any
+) {
   const customId = useId();
   return (
     <div className={`prose field w-full ${containerClassName} relative`}>
@@ -26,6 +29,7 @@ export default function InputNumber({
       </label>
       <NativeInputNumber
         {...props}
+        ref={ref}
         id={props.id ?? customId}
         className={`${errorMessage && "p-invalid"} block ${inputClassName} `}
         inputClassName="w-full"
@@ -37,3 +41,5 @@ export default function InputNumber({
     </div>
   );
 }
+
+export default forwardRef(InputNumber);

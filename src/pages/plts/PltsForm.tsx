@@ -8,8 +8,8 @@ import {
 } from "react";
 import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { SelectItem } from "primereact/selectitem";
+import { Toast } from "primereact/toast";
 import {
   Input,
   Button,
@@ -17,6 +17,7 @@ import {
   Dropdown,
   Checkbox,
   InputNumber,
+  NotificationModal,
 } from "components";
 import {
   PLTSFormModalState,
@@ -25,7 +26,7 @@ import {
   PLTSProfileBody,
   PLTSProfileList,
 } from "types";
-import { camelCase, requestHelper, showModal as dispatchModal } from "utils";
+import { camelCase, requestHelper } from "utils";
 import {
   PLTS_DEVICE_TYPE_DROPDOWN,
   PLTS_FORM_INITIAL_STATE,
@@ -33,14 +34,29 @@ import {
 } from "const";
 import { DeleteModal, FormConfirmationModal, PositionModal } from "./modals";
 
+export interface PltsFormNotificationModalProps {
+  visible: boolean;
+  message: string;
+}
+
+export const PLTS_FORM_NOTIFICATION_MODAL_INITIAL_STATES: PltsFormNotificationModalProps =
+  {
+    message: "",
+    visible: false,
+  };
+
 export default function PltsForm({ edit }: PLTSFormProps) {
   const [showModal, setShowModal] = useState<PLTSFormModalState>();
 
+  const [notificationModal, setNotificationModal] = useState(
+    PLTS_FORM_NOTIFICATION_MODAL_INITIAL_STATES
+  );
+
   const { state } = useLocation();
 
-  const navigate = useNavigate();
+  const toast = useRef<Toast>(null);
 
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [pltsLocation, setPltsLocation] = useState<PLTSPositionDataResponse[]>(
     []
@@ -100,6 +116,11 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
         previousDeviceType.current = deviceType;
       }
+    } else {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error fetch profile list",
+      });
     }
   }, [edit, state?._id, deviceType, resetField]);
 
@@ -132,20 +153,17 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       if (response && response.status === 201) {
         navigate(-1);
       } else {
-        dispatch(
-          dispatchModal({
-            message: response.response.data.message,
-            title: "Error",
-          })
-        );
+        setNotificationModal({
+          message: response.response.data.message,
+          visible: true,
+        });
       }
     },
-    [dispatch, navigate]
+    [navigate]
   );
 
   const handleEditData = useCallback(
     async (data: PLTSProfileBody) => {
-      console.log("data for edit", data);
       const response = await requestHelper("patch_plts_profile", {
         body: {
           ...data,
@@ -169,15 +187,13 @@ export default function PltsForm({ edit }: PLTSFormProps) {
       if (response.status === 200) {
         navigate(-1);
       } else {
-        dispatch(
-          dispatchModal({
-            message: response.response.data.message,
-            title: "Error",
-          })
-        );
+        setNotificationModal({
+          message: response.response.data.message,
+          visible: true,
+        });
       }
     },
-    [dispatch, navigate, state?._id]
+    [navigate, state?._id]
   );
 
   const onSubmit = useCallback(
@@ -192,6 +208,11 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
     if (response && response.status === 200) {
       setPltsLocation(response.data?.data!);
+    } else {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error fetch plts location",
+      });
     }
   }, []);
 
@@ -223,6 +244,11 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
     if (response && response.status === 202) {
       navigate(-1);
+    } else {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error delete plts profile",
+      });
     }
   }, [navigate, state]);
 
@@ -236,6 +262,15 @@ export default function PltsForm({ edit }: PLTSFormProps) {
 
   return (
     <>
+      <Toast ref={toast} />
+
+      <NotificationModal
+        message={notificationModal.message}
+        visible={notificationModal.visible}
+        onButtonClicked={() =>
+          setNotificationModal(PLTS_FORM_NOTIFICATION_MODAL_INITIAL_STATES)
+        }
+      />
       <DeleteModal
         onCancel={() => setShowModal(undefined)}
         onConfirm={handleDeletePLTS}
@@ -440,8 +475,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                         }}
                         render={({ field, fieldState }) => (
                           <Input
-                            id={field.name}
                             {...field}
+                            id={field.name}
                             label="Data Name"
                             errorMessage={fieldState.error?.message}
                           />

@@ -6,7 +6,7 @@ import { logout, sidebarItems } from "utils";
 import { SidebarChildren } from "./components";
 import { useSidebar } from "./context";
 import { Button } from "../button";
-import { Modal } from "components/modal";
+import { BaseModal } from "../modal";
 
 export default function Sidebar() {
   const { showDashboard, toggleDashboardInactive } = useSidebar();
@@ -42,13 +42,13 @@ export default function Sidebar() {
 
   return (
     <>
-      <Modal
+      <BaseModal
         header="Error Logout"
         onHide={() => setShowModal(false)}
         visible={showModal}
       >
         <p>Failed to logout. Please try again</p>
-      </Modal>
+      </BaseModal>
       <PrimereactSidebar
         visible={showDashboard}
         position="left"

@@ -1,24 +1,15 @@
-import {
-  Paginator,
-  PaginatorPageState,
-  PaginatorTemplate,
-} from "primereact/paginator";
-
-export interface PaginationProps {
-  page: number;
-  handlePageChange: (event: PaginatorPageState) => void;
-  resultsLength: number;
-  rows?: number;
-  className?: string;
-}
+import { useState } from "react";
+import { Paginator, PaginatorTemplate } from "primereact/paginator";
+import { PaginationProps } from "types";
 
 export default function Pagination({
   handlePageChange,
   page,
   resultsLength,
-  rows = 10,
   className,
 }: PaginationProps) {
+  const [pageState, setPageState] = useState(page - 1);
+
   const template: PaginatorTemplate = {
     layout:
       "PrevPageLink PageLinks NextPageLink  RowsPerPageDropdown CurrentPageReport", // The above keys can be set in the desired order.
@@ -27,10 +18,13 @@ export default function Pagination({
   return (
     <Paginator
       template={template}
-      first={page}
-      rows={rows}
+      first={pageState}
+      rows={10}
       totalRecords={resultsLength}
-      onPageChange={handlePageChange}
+      onPageChange={(e) => {
+        setPageState(e.first);
+        handlePageChange(e.page + 1);
+      }}
       className={className}
       currentPageReportTemplate="({last} of {totalRecords})"
     />

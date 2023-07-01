@@ -12,3 +12,4 @@ export * from "./calendar";
 export * from "./button";
 export * from "./password";
 export * from "./chart";
+export * from "./pagination";

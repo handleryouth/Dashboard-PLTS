@@ -12,6 +12,7 @@ export interface LoginResponse {
   refreshToken: string;
   email: string;
   staffData: StaffDataProps;
+  role: string;
 }
 
 export interface LoginRequestBody {

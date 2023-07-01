@@ -23,6 +23,7 @@ export default function Map() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["pltsMapList"],
     queryFn: getPltsPositonList,
+    staleTime: 0,
   });
 
   const handleClickEvent = useCallback(

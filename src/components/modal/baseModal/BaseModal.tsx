@@ -1,13 +1,17 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { Dialog, DialogProps } from "primereact/dialog";
 
-export interface ModalProps extends DialogProps {
+export interface BaseModalProps extends DialogProps {
   visible: boolean;
   text?: string;
   children?: ReactNode;
 }
 
-export default function Modal({ text, children, ...props }: ModalProps) {
+export default function BaseModal({
+  text,
+  children,
+  ...props
+}: BaseModalProps) {
   return (
     <Dialog {...props} draggable={false}>
       {text ?? children}

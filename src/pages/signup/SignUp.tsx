@@ -1,17 +1,26 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { Button, Input, Password, Seo } from "components";
-import { requestHelper, showModal } from "utils";
+import { Button, Input, NotificationModal, Password, Seo } from "components";
+import { requestHelper } from "utils";
 import { SignupParams } from "types";
+
+export interface SignUpProps {
+  visible: boolean;
+  message: string;
+}
+
+export const SIGN_UP_MODAL_INITIAL_STATES: SignUpProps = {
+  message: "",
+  visible: false,
+};
 
 export default function SignUp() {
   const { control, handleSubmit, setError } = useForm<SignupParams>();
 
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(SIGN_UP_MODAL_INITIAL_STATES);
 
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const sendSignupData = useCallback(
     async (data: SignupParams) => {
@@ -22,23 +31,26 @@ export default function SignUp() {
       if (response.status === 201) {
         navigate("/login");
       } else if (response.response?.status === 409) {
-        dispatch(
-          showModal({
-            message: response.response.data.message,
-            title: "Signup Error",
-          })
-        );
+        setShowModal({
+          message: response.response.data.message,
+          visible: true,
+        });
 
         setError("email", {
           message: response.response.data.message,
         });
       }
     },
-    [dispatch, navigate, setError]
+    [navigate, setError]
   );
 
   return (
     <>
+      <NotificationModal
+        message={showModal.message}
+        visible={showModal.visible}
+        onButtonClicked={() => setShowModal(SIGN_UP_MODAL_INITIAL_STATES)}
+      />
       <Seo title="Signup Page" description="Sign up for PLTS Dashboard" />
       <div className="flex items-center gap-[172px] overflow-hidden min-h-screen  p-6">
         <div className="flex w-full mediumDisplay:w-auto mediumDisplay:justify-end mediumDisplay:basis-1/2">

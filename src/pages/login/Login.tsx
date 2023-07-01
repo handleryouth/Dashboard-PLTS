@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useCookies } from "react-cookie";
 import { Button, Input, Password, MemoizedSeo } from "components";
 import { requestHelper } from "utils";
-import { LoginFormProps, SetTokenFunctionProps } from "types";
+import { LoginFormProps } from "types";
 import { LOGIN_FORM_INITIAL_VALUES } from "const";
 
 export default function Login() {
@@ -20,23 +20,6 @@ export default function Login() {
   ]);
 
   const navigate = useNavigate();
-
-  const handleSetTokenCookies = useCallback(
-    ({ staffData }: SetTokenFunctionProps) => {
-      setCookies("isLogin", true, {
-        path: "/",
-        sameSite: "lax",
-      });
-
-      setCookies("staffData", JSON.stringify(staffData), {
-        path: "/",
-        sameSite: "lax",
-      });
-
-      navigate("/dashboard");
-    },
-    [navigate, setCookies]
-  );
 
   const sendLoginData = useCallback(
     async ({ email, password }: LoginFormProps) => {
@@ -54,12 +37,12 @@ export default function Login() {
           sameSite: "lax",
         });
 
-        handleSetTokenCookies({
-          accessToken: response.data.data.accessToken,
-          refreshToken: response.data.data.refreshToken,
-          email: response.data.data.email,
-          staffData: response.data.data.staffData,
+        setCookies("staffData", JSON.stringify(response.data.data.staffData), {
+          path: "/",
+          sameSite: "lax",
         });
+
+        navigate("/dashboard");
       } else if (
         response.response?.status === 404 ||
         response.response.status === 401
@@ -70,9 +53,16 @@ export default function Login() {
         setError("password", {
           message: response.response.data.message,
         });
+      } else {
+        setError("email", {
+          message: "Something went wrong, please try again later",
+        });
+        setError("password", {
+          message: "Something went wrong, please try again later",
+        });
       }
     },
-    [handleSetTokenCookies, setCookies, setError]
+    [navigate, setCookies, setError]
   );
 
   const handleSubmitEvent = useCallback(

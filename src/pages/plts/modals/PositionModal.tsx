@@ -9,6 +9,7 @@ import {
   PositionModalFormType,
   PositionModalProps,
 } from "types";
+import { Toast } from "primereact/toast";
 
 export default function PositionModal({
   toggleModalClosed,
@@ -16,6 +17,8 @@ export default function PositionModal({
   onRequestCompleted,
 }: PositionModalProps) {
   const markerRef = useRef<any>(null);
+
+  const toast = useRef<Toast>(null);
 
   const [latitudeLongitude, setLatitudeLongitude] = useState<EarthPosition>();
 
@@ -38,6 +41,11 @@ export default function PositionModal({
       if (response.status === 201) {
         toggleModalClosed();
         onRequestCompleted();
+      } else {
+        toast.current?.show({
+          severity: "error",
+          detail: "Failed to add position",
+        });
       }
     },
     [
@@ -80,58 +88,64 @@ export default function PositionModal({
   }, [eventHandlers]);
 
   return (
-    <Dialog
-      header={<h1 className="text-center">Add Position</h1>}
-      onHide={toggleModalClosed}
-      visible={visible}
-      dismissableMask
-      closable={false}
-      className="w-2/5"
-    >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
-        <Controller
-          name="name"
-          control={control}
-          rules={{
-            required: "Position Name is required",
-          }}
-          render={({ field, fieldState }) => (
-            <Input
-              id={field.name}
-              {...field}
-              label="Name"
-              errorMessage={fieldState.error?.message}
-            />
-          )}
-        />
+    <>
+      <Toast ref={toast} />
+      <Dialog
+        header={<h1 className="text-center">Add Position</h1>}
+        onHide={toggleModalClosed}
+        visible={visible}
+        dismissableMask
+        closable={false}
+        className="w-2/5"
+      >
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-y-4"
+        >
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: "Position Name is required",
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                {...field}
+                label="Name"
+                errorMessage={fieldState.error?.message}
+              />
+            )}
+          />
 
-        <Controller
-          name="address"
-          control={control}
-          rules={{
-            required: "Address is required",
-          }}
-          render={({ field, fieldState }) => (
-            <Input
-              id={field.name}
-              {...field}
-              label="Address"
-              errorMessage={fieldState.error?.message}
-            />
-          )}
-        />
+          <Controller
+            name="address"
+            control={control}
+            rules={{
+              required: "Address is required",
+            }}
+            render={({ field, fieldState }) => (
+              <Input
+                id={field.name}
+                {...field}
+                label="Address"
+                errorMessage={fieldState.error?.message}
+              />
+            )}
+          />
 
-        {memoizedMapContainer}
+          {memoizedMapContainer}
 
-        <div className="flex items-center gap-x-4 mt-4">
-          <Button className="w-full" type="submit">
-            Add
-          </Button>
-          <Button className="w-full" onClick={toggleModalClosed}>
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </Dialog>
+          <div className="flex items-center gap-x-4 mt-4">
+            <Button className="w-full" type="submit">
+              Add
+            </Button>
+            <Button className="w-full" onClick={toggleModalClosed}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </Dialog>
+    </>
   );
 }

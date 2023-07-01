@@ -196,12 +196,12 @@ export default function Position() {
         />
 
         <Pagination
-          handlePageChange={(event) =>
+          handlePageChange={(page) =>
             handleConstructParams({
-              page: event.first + 1,
+              page,
             })
           }
-          page={1}
+          page={Number(searchParams.get("page")) || 1}
           resultsLength={positionData?.total ?? 0}
         />
 
