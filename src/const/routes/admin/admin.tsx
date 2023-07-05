@@ -8,6 +8,7 @@ import {
   Plts,
   Position,
   PositionForm,
+  Settings,
 } from "pages";
 import { RouteListProps } from "types";
 
@@ -66,6 +67,11 @@ export const ADMIN_ROUTES: RouteListProps[] = [
     name: "positionEdit",
     path: "/position/edit",
     element: <PositionForm edit />,
+  },
+  {
+    name: "settings",
+    path: "/settings",
+    element: <Settings />,
   },
   {
     name: "allPage",

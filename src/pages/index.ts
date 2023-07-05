@@ -6,3 +6,4 @@ export * from "./staffManagement";
 export * from "./pltsProfile";
 export * from "./plts";
 export * from "./position";
+export * from "./settings";

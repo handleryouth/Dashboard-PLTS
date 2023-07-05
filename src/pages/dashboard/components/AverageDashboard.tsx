@@ -91,10 +91,11 @@ export default function AverageDashboard() {
   const getDataUnit = useMemo(() => {
     const yUnit = generatorData?.unit.find(
       (item) => item.dataKey === dropdownValue
-    )?.unit;
+    );
 
     return {
-      y: yUnit ?? "",
+      y: yUnit?.unit ?? "",
+      maxValue: yUnit?.maximumValue,
     };
   }, [dropdownValue, generatorData]);
 
@@ -119,6 +120,7 @@ export default function AverageDashboard() {
       }}
       title="Average Graph"
       yUnit={getDataUnit.y}
+      maxValue={getDataUnit.maxValue}
       renderItem={handleRenderItem}
       customDropdownComponent={
         <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">

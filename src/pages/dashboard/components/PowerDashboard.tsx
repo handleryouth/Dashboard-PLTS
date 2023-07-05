@@ -5,7 +5,7 @@ import { Dropdown, LineChart, NewRefetch } from "components";
 import { BUTTON_LABEL_TIME_SELECTION } from "const";
 import {
   DataTimeType,
-  PLTSGetPowerResponse,
+  PLTSGetPowerProps,
   PLTSProfileList,
   RenderedChartItem,
 } from "types";
@@ -67,7 +67,7 @@ export default function PowerDashboard() {
   });
 
   const handleRenderItem = useCallback(
-    (item: PLTSGetPowerResponse): RenderedChartItem<PLTSGetPowerResponse> => ({
+    (item: PLTSGetPowerProps): RenderedChartItem<PLTSGetPowerProps> => ({
       ...item,
       time: generateDateLocale(period, item.time),
     }),
@@ -83,6 +83,16 @@ export default function PowerDashboard() {
     });
   }, [positionListData]);
 
+  const getDataUnit = useMemo(() => {
+    const maximumValue = powerData?.unit.find(
+      (item) => item.dataKey === "power"
+    )?.maximumValue;
+
+    return {
+      maximumValue,
+    };
+  }, [powerData?.unit]);
+
   if (powerDataIsError || positionListError) {
     return (
       <NewRefetch
@@ -97,13 +107,14 @@ export default function PowerDashboard() {
   return (
     <LineChart
       isLoading={positionListLoading || powerDataIsFetching}
-      singleChartData={powerData ?? []}
+      singleChartData={powerData?.data ?? []}
       coordinate={{
         x: "time",
         y: "power",
       }}
+      maxValue={getDataUnit?.maximumValue}
       yUnit={period === "hourly" ? "W" : "Wh"}
-      title="Power Graph"
+      title="Power/Energy Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={
         <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">

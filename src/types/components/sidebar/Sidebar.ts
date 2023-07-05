@@ -7,7 +7,7 @@ export interface LinkPathProps {
 }
 
 export interface SidebarChildrenProps {
-  groupLinks?: MenuItem[];
+  groupLinks: MenuItem[];
 }
 
 export interface SidebarContextProps {

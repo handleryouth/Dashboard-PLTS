@@ -29,6 +29,7 @@ export interface BarChartProps<T extends Object> {
   isLoading?: boolean;
   xUnit?: string;
   yUnit?: string;
+  maxValue?: number;
 }
 
 export default function BarChart<T extends Object>({
@@ -44,6 +45,7 @@ export default function BarChart<T extends Object>({
   title,
   xUnit = "",
   yUnit = "",
+  maxValue,
 }: BarChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -148,6 +150,7 @@ export default function BarChart<T extends Object>({
           />
           <VictoryAxis
             dependentAxis
+            domain={maxValue ? [0, maxValue] : undefined}
             standalone={false}
             gridComponent={<LineSegment />}
             tickFormat={(tick) => `${tick} ${yUnit}`}

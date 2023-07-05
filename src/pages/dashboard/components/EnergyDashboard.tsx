@@ -9,6 +9,21 @@ import { generateDateLocale, requestHelper } from "utils";
 export default function EnergyDashboard() {
   const [period, setPeriod] = useState("daily");
 
+  const getClusterTotalData = useCallback(async () => {
+    const response = await requestHelper("get_plts_total_cluster", {
+      params: {
+        dataTime: period,
+        dataType: "energy",
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("failed to get cluster data");
+    }
+  }, [period]);
+
   const {
     data: energyData,
     isLoading,
@@ -16,13 +31,7 @@ export default function EnergyDashboard() {
     refetch,
   } = useQuery({
     queryKey: ["clusterTotalEnergyGraph", period],
-    queryFn: () =>
-      requestHelper("get_plts_total_cluster", {
-        params: {
-          dataTime: period,
-          dataType: "energy",
-        },
-      }),
+    queryFn: getClusterTotalData,
   });
 
   const renderChartItem = useCallback(
@@ -44,8 +53,9 @@ export default function EnergyDashboard() {
       <BarChart
         title="Cluster Total Energy Graph"
         isLoading={isLoading}
-        multipleChartDataKey={energyData?.data.data.dataKey}
-        multipleChartData={energyData?.data.data.data}
+        maxValue={energyData?.maximumValue}
+        multipleChartDataKey={energyData?.dataKey}
+        multipleChartData={energyData?.data}
         yUnit="Wh"
         coordinate={{
           x: "time",

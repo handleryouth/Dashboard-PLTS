@@ -6,6 +6,20 @@ import { LineChart, NewRefetch } from "components";
 import { AVERAGE_CLUSTER_STALE_TIME } from "const";
 
 export default function ClusterTotalDashboard() {
+  const getClusterTotalData = useCallback(async () => {
+    const response = await requestHelper("get_plts_total_cluster", {
+      params: {
+        dataTime: "hourly",
+      },
+    });
+
+    if (response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("failed to get cluster data");
+    }
+  }, []);
+
   const {
     data: clusterTotalData,
     isLoading,
@@ -14,12 +28,7 @@ export default function ClusterTotalDashboard() {
   } = useQuery({
     queryKey: ["clusterTotalData"],
     staleTime: AVERAGE_CLUSTER_STALE_TIME,
-    queryFn: () =>
-      requestHelper("get_plts_total_cluster", {
-        params: {
-          dataTime: "hourly",
-        },
-      }),
+    queryFn: getClusterTotalData,
   });
 
   const renderChartItem = useCallback(
@@ -42,8 +51,9 @@ export default function ClusterTotalDashboard() {
         title="Cluster Total Power Graph"
         yUnit="W"
         isLoading={isLoading}
-        multipleChartDataKey={clusterTotalData?.data.data.dataKey}
-        multipleChartData={clusterTotalData?.data.data.data}
+        maxValue={clusterTotalData?.maximumValue}
+        multipleChartDataKey={clusterTotalData?.dataKey}
+        multipleChartData={clusterTotalData?.data}
         coordinate={{
           x: "time",
         }}

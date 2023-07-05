@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
 import { LineChart, NewRefetch } from "components";
 import { BUTTON_LABEL_TIME_SELECTION } from "const";
-import { DataTimeType, PLTSGetPowerResponse, RenderedChartItem } from "types";
+import { DataTimeType, PLTSGetPowerProps, RenderedChartItem } from "types";
 import { generateDateLocale, requestHelper } from "utils";
 
 export interface PowerDashboardProps {
@@ -39,8 +39,18 @@ export default function PowerDashboard({ pltsName }: PowerDashboardProps) {
     enabled: !!pltsName,
   });
 
+  const getDataUnit = useMemo(() => {
+    const maximumValue = powerData?.unit.find(
+      (item) => item.dataKey === "power"
+    )?.maximumValue;
+
+    return {
+      maximumValue,
+    };
+  }, [powerData?.unit]);
+
   const handleRenderItem = useCallback(
-    (item: PLTSGetPowerResponse): RenderedChartItem<PLTSGetPowerResponse> => ({
+    (item: PLTSGetPowerProps): RenderedChartItem<PLTSGetPowerProps> => ({
       ...item,
       time: generateDateLocale(period, item.time),
     }),
@@ -54,13 +64,14 @@ export default function PowerDashboard({ pltsName }: PowerDashboardProps) {
   return (
     <LineChart
       isLoading={powerDataIsFetching}
-      singleChartData={powerData ?? []}
+      singleChartData={powerData?.data ?? []}
       coordinate={{
         x: "time",
         y: "power",
       }}
+      maxValue={getDataUnit?.maximumValue}
       yUnit={period === "hourly" ? "W" : "Wh"}
-      title="Power Graph"
+      title="Power/Energy Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={
         <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">

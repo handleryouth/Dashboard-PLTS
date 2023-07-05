@@ -22,8 +22,14 @@ export default function Sidebar() {
     "accessToken",
   ]);
 
-  const { dashboardLinks, mapLinks, pltsLinks, aclLinks, positionLinks } =
-    useMemo(() => sidebarItems(), []);
+  const {
+    dashboardLinks,
+    mapLinks,
+    pltsLinks,
+    aclLinks,
+    positionLinks,
+    settingsLinks,
+  } = useMemo(() => sidebarItems(), []);
 
   const signOut = useCallback(async () => {
     await logout({
@@ -73,6 +79,7 @@ export default function Sidebar() {
               <>
                 <SidebarChildren groupLinks={positionLinks} />
                 <SidebarChildren groupLinks={aclLinks} />
+                <SidebarChildren groupLinks={settingsLinks} />
               </>
             )}
           </div>

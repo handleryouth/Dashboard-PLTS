@@ -26,6 +26,7 @@ export default function LineChart<T extends Object>({
   multipleChartDataKey,
   xUnit = "",
   yUnit = "",
+  maxValue,
 }: LineChartProps<T>) {
   const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
 
@@ -128,6 +129,7 @@ export default function LineChart<T extends Object>({
           />
           <VictoryAxis
             dependentAxis
+            domain={maxValue ? [0, maxValue] : undefined}
             standalone={false}
             gridComponent={<LineSegment />}
             tickFormat={(tick) => `${tick} ${yUnit}`}

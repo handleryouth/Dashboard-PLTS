@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { Dropdown } from "primereact/dropdown";
+import { Toast } from "primereact/toast";
 import { Button, LineChart } from "components";
 import {
   DataUnitProps,
@@ -9,7 +10,6 @@ import {
   RenderedChartItem,
 } from "types";
 import { convertCamelCaseToPascalCase, requestHelper } from "utils";
-import { Toast } from "primereact/toast";
 
 export default function MonitoringChart({
   title,

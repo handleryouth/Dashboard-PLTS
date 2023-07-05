@@ -36,6 +36,8 @@ import {
   PLTSPositionParams,
   PLTSGetPowerParams,
   PLTSGetPowerResponse,
+  SettingsBodyProps,
+  SettingsGetResponse,
 } from "types";
 import { ServiceStructure } from "./service";
 
@@ -140,6 +142,13 @@ export interface ServiceURL {
   }>;
   plts_get_power: ServiceStructure<{
     params: PLTSGetPowerParams;
-    response: ServiceMessageResponse<PLTSGetPowerResponse[]>;
+    response: ServiceMessageResponse<PLTSGetPowerResponse>;
+  }>;
+  plts_post_settings: ServiceStructure<{
+    body: SettingsBodyProps;
+    response: ServiceMessageResponse;
+  }>;
+  plts_get_settings: ServiceStructure<{
+    response: ServiceMessageResponse<SettingsGetResponse>;
   }>;
 }

@@ -20,4 +20,5 @@ export interface LineChartProps<T extends Object> {
   isLoading?: boolean;
   xUnit?: string;
   yUnit?: string;
+  maxValue?: number;
 }

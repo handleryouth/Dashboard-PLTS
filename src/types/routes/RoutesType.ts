@@ -14,7 +14,8 @@ export type RouteName =
   | "position"
   | "positionCreate"
   | "positionEdit"
-  | "allPage";
+  | "allPage"
+  | "settings";
 
 export interface RouteListProps extends Omit<RouteObject, "name"> {
   name: RouteName;

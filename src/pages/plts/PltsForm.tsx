@@ -79,6 +79,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             pltsName: state.pltsName,
             smaDeviceName: state.smaDeviceName,
             deviceType: state.deviceType,
+            capacity: state.capacity,
             connectedTo: state?.connectedTo ?? state.connectedWith ?? "",
           }
         : PLTS_FORM_INITIAL_STATE,
@@ -146,6 +147,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             signed: item.signed,
             valuePrecision: item.valuePrecision || 1,
             includeInAverage: item.includeInAverage,
+            maximumValue: item.maximumValue,
           })),
         },
       });
@@ -179,6 +181,7 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             signed: item.signed,
             valuePrecision: item.valuePrecision || 1,
             includeInAverage: item.includeInAverage,
+            maximumValue: item.maximumValue,
           })),
           id: state._id,
         },
@@ -347,6 +350,22 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                 />
               );
             }}
+          />
+
+          <Controller
+            name="capacity"
+            control={control}
+            render={({ field, fieldState }) => (
+              <InputNumber
+                id={field.name}
+                inputRef={field.ref}
+                value={field.value}
+                onBlur={field.onBlur}
+                onValueChange={(e) => field.onChange(e)}
+                label="Plant Capacity (Wp)"
+                errorMessage={fieldState.error?.message}
+              />
+            )}
           />
 
           <div className="flex items-end gap-2  flex-col mediumDisplay:flex-row">
@@ -549,6 +568,22 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                             onBlur={field.onBlur}
                             onValueChange={(e) => field.onChange(e)}
                             label="Value Precision"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`modbusAddress.${index}.maximumValue`}
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <InputNumber
+                            id={field.name}
+                            inputRef={field.ref}
+                            value={field.value}
+                            onBlur={field.onBlur}
+                            onValueChange={(e) => field.onChange(e)}
+                            label="Maximum Value"
                             errorMessage={fieldState.error?.message}
                           />
                         )}

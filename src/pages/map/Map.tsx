@@ -78,7 +78,7 @@ export default function Map() {
                     description={item.address}
                     title={item.name}
                   />
-                </Marker>
+                </Marker> 
               ))}
             </MapContainer>
           </div>

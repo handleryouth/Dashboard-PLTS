@@ -52,5 +52,22 @@ export function sidebarItems() {
     },
   ];
 
-  return { pltsLinks, dashboardLinks, mapLinks, aclLinks, positionLinks };
+  const settingsLinks: MenuItem[] = [
+    {
+      label: "Settings",
+      url: "/settings",
+      template: (item, options) => (
+        <GenerateSidebarChildrenTemplate item={item} options={options} />
+      ),
+    },
+  ];
+
+  return {
+    pltsLinks,
+    dashboardLinks,
+    mapLinks,
+    aclLinks,
+    positionLinks,
+    settingsLinks,
+  };
 }

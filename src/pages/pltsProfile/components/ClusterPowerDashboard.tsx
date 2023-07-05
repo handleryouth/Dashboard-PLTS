@@ -8,6 +8,21 @@ import { useQuery } from "@tanstack/react-query";
 export default function ClusterDashboard() {
   const { id } = useParams<"id">();
 
+  const getClusterPowerData = useCallback(async () => {
+    const response = await requestHelper("get_plts_cluster_value", {
+      params: {
+        id,
+        dataTime: "hourly",
+      },
+    });
+
+    if (response && response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("failed to get cluster data");
+    }
+  }, [id]);
+
   const {
     data: clusterData,
     isLoading,
@@ -15,13 +30,7 @@ export default function ClusterDashboard() {
     refetch,
   } = useQuery({
     queryKey: ["clusterPowerGraph", id],
-    queryFn: () =>
-      requestHelper("get_plts_cluster_value", {
-        params: {
-          id,
-          dataTime: "hourly",
-        },
-      }),
+    queryFn: getClusterPowerData,
     enabled: !!id,
   });
 
@@ -45,8 +54,9 @@ export default function ClusterDashboard() {
     <div>
       <LineChart
         isLoading={isLoading}
-        multipleChartDataKey={clusterData?.data.data.dataKey}
-        multipleChartData={clusterData?.data.data.data}
+        multipleChartDataKey={clusterData?.dataKey}
+        multipleChartData={clusterData?.data}
+        maxValue={clusterData?.capacity}
         yUnit="W"
         coordinate={{
           x: "time",

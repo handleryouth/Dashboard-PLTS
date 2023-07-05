@@ -116,4 +116,12 @@ export const serviceMap: ServiceMapProps = {
     method: "GET",
     url: "/api/plts/plts-power",
   },
+  plts_post_settings: {
+    method: "POST",
+    url: "/api/plts/settings",
+  },
+  plts_get_settings: {
+    method: "GET",
+    url: "/api/plts/settings",
+  },
 };
