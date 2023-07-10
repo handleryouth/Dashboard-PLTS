@@ -133,9 +133,10 @@ export interface PLTSCSVDownloadFileParams {
 }
 
 export interface PltsUnitProps {
-  unit?: string;
+  unit: string;
   dataKey?: string;
   maximumValue: number;
+  unitShowed?: string;
 }
 
 export interface PLTSFormProps {

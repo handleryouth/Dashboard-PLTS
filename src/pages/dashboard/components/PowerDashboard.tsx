@@ -103,7 +103,12 @@ export default function PowerDashboard() {
         y: "power",
       }}
       maxValue={powerData?.unit?.maximumValue}
-      yUnit={period === "hourly" ? "kW" : "kWh"}
+      yUnit={
+        period === "hourly"
+          ? powerData?.unit.unitShowed ?? powerData?.unit.unit
+          : (powerData?.unit.unitShowed || powerData?.unit.unit) &&
+            `${powerData?.unit.unitShowed ?? powerData?.unit.unit}h`
+      }
       title="Power/Energy Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={
