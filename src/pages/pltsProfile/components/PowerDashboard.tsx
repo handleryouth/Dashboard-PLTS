@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SelectButton } from "primereact/selectbutton";
 import { LineChart, NewRefetch } from "components";
@@ -39,16 +39,6 @@ export default function PowerDashboard({ pltsName }: PowerDashboardProps) {
     enabled: !!pltsName,
   });
 
-  const getDataUnit = useMemo(() => {
-    const maximumValue = powerData?.unit.find(
-      (item) => item.dataKey === "power"
-    )?.maximumValue;
-
-    return {
-      maximumValue,
-    };
-  }, [powerData?.unit]);
-
   const handleRenderItem = useCallback(
     (item: PLTSGetPowerProps): RenderedChartItem<PLTSGetPowerProps> => ({
       ...item,
@@ -69,8 +59,8 @@ export default function PowerDashboard({ pltsName }: PowerDashboardProps) {
         x: "time",
         y: "power",
       }}
-      maxValue={getDataUnit?.maximumValue}
-      yUnit={period === "hourly" ? "W" : "Wh"}
+      maxValue={powerData?.unit?.maximumValue}
+      yUnit={period === "hourly" ? "kW" : "kWh"}
       title="Power/Energy Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={

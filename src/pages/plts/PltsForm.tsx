@@ -148,6 +148,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             valuePrecision: item.valuePrecision || 1,
             includeInAverage: item.includeInAverage,
             maximumValue: item.maximumValue,
+            precisionShowed: item.precisionShowed,
+            unitShowed: item.unitShowed,
           })),
         },
       });
@@ -182,6 +184,8 @@ export default function PltsForm({ edit }: PLTSFormProps) {
             valuePrecision: item.valuePrecision || 1,
             includeInAverage: item.includeInAverage,
             maximumValue: item.maximumValue,
+            precisionShowed: item.precisionShowed,
+            unitShowed: item.unitShowed,
           })),
           id: state._id,
         },
@@ -584,6 +588,39 @@ export default function PltsForm({ edit }: PLTSFormProps) {
                             onBlur={field.onBlur}
                             onValueChange={(e) => field.onChange(e)}
                             label="Maximum Value"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`modbusAddress.${index}.unitShowed`}
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <Input
+                            {...field}
+                            id={field.name}
+                            label="Unit Showed"
+                            errorMessage={fieldState.error?.message}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`modbusAddress.${index}.precisionShowed`}
+                        control={control}
+                        rules={{
+                          min: 1,
+                          required: "Precision Showed is required",
+                        }}
+                        render={({ field, fieldState }) => (
+                          <InputNumber
+                            id={field.name}
+                            inputRef={field.ref}
+                            value={field.value}
+                            onBlur={field.onBlur}
+                            onValueChange={(e) => field.onChange(e)}
+                            label="Precision Showed"
                             errorMessage={fieldState.error?.message}
                           />
                         )}

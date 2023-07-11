@@ -8,6 +8,8 @@ export interface ModbusAddress {
   valuePrecision: number;
   includeInAverage: boolean;
   maximumValue?: number;
+  unitShowed?: string;
+  precisionShowed?: number;
 }
 
 export interface PLTSProfileBody {
@@ -71,6 +73,7 @@ export interface PLTSListResponse {
   deviceType: "pvInverter" | "batteryInverter";
   connectedTo?: string;
   connectedWith?: string;
+  capacity?: number;
 }
 
 export interface PLTSProfileEditBody
@@ -130,8 +133,8 @@ export interface PLTSCSVDownloadFileParams {
 }
 
 export interface PltsUnitProps {
-  unit: string;
-  dataKey: string;
+  unit?: string;
+  dataKey?: string;
   maximumValue: number;
 }
 
@@ -206,6 +209,7 @@ export interface PLTSClusterValueResponse {
   dataKey: string[];
   data: PLTSClusterValueResponseDataProps[];
   capacity?: number;
+  unit?: string;
 }
 
 export interface PLTSTotalClusterParams {
@@ -267,5 +271,5 @@ export interface PLTSGetPowerProps {
 
 export interface PLTSGetPowerResponse {
   data: PLTSGetPowerProps[];
-  unit: PltsUnitProps[];
+  unit: PltsUnitProps;
 }

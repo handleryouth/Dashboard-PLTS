@@ -49,7 +49,7 @@ export default function ClusterTotalDashboard() {
     <div>
       <LineChart
         title="Cluster Total Power Graph"
-        yUnit="W"
+        yUnit="kW"
         isLoading={isLoading}
         maxValue={clusterTotalData?.maximumValue}
         multipleChartDataKey={clusterTotalData?.dataKey}

@@ -83,16 +83,6 @@ export default function PowerDashboard() {
     });
   }, [positionListData]);
 
-  const getDataUnit = useMemo(() => {
-    const maximumValue = powerData?.unit.find(
-      (item) => item.dataKey === "power"
-    )?.maximumValue;
-
-    return {
-      maximumValue,
-    };
-  }, [powerData?.unit]);
-
   if (powerDataIsError || positionListError) {
     return (
       <NewRefetch
@@ -112,8 +102,8 @@ export default function PowerDashboard() {
         x: "time",
         y: "power",
       }}
-      maxValue={getDataUnit?.maximumValue}
-      yUnit={period === "hourly" ? "W" : "Wh"}
+      maxValue={powerData?.unit?.maximumValue}
+      yUnit={period === "hourly" ? "kW" : "kWh"}
       title="Power/Energy Graph"
       renderItem={handleRenderItem}
       customDropdownComponent={

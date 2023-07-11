@@ -40,6 +40,17 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
     staleTime: AVERAGE_DASHBOARD_STALE_TIME,
   });
 
+  const getDataUnit = useMemo(() => {
+    const yUnit = generatorData?.unit.find(
+      (item) => item.dataKey === dropdownValue
+    );
+
+    return {
+      y: yUnit?.unit ?? "",
+      maxValue: yUnit?.maximumValue,
+    };
+  }, [dropdownValue, generatorData]);
+
   const handleRenderItem = useCallback(
     (
       item: GeneratorDataAverageProps
@@ -104,6 +115,7 @@ export default function AverageDashbord({ pltsName }: AverageDashbordProps) {
           x: "time",
           y: dropdownValue,
         }}
+        yUnit={getDataUnit.y}
         renderItem={handleRenderItem}
         customDropdownComponent={
           <div className="flex items-center justify-center  mediumToBigDisplay:justify-end gap-x-4 w-full flex-wrap gap-y-4">

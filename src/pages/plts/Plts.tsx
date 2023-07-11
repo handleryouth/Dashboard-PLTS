@@ -95,6 +95,7 @@ export default function Plts() {
       deviceType,
       connectedTo,
       connectedWith,
+      capacity,
     }: PLTSListResponse): Partial<Record<PLTSTableHeader, TableContent>> => ({
       devicePosition: (
         <div>
@@ -123,6 +124,7 @@ export default function Plts() {
                 deviceType,
                 connectedTo,
                 connectedWith,
+                capacity,
               })
             }
           >

@@ -56,7 +56,7 @@ export default function EnergyDashboard() {
         maxValue={energyData?.maximumValue}
         multipleChartDataKey={energyData?.dataKey}
         multipleChartData={energyData?.data}
-        yUnit="Wh"
+        yUnit="kWh"
         coordinate={{
           x: "time",
         }}

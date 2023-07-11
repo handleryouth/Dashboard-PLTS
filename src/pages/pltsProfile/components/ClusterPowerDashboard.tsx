@@ -57,7 +57,7 @@ export default function ClusterDashboard() {
         multipleChartDataKey={clusterData?.dataKey}
         multipleChartData={clusterData?.data}
         maxValue={clusterData?.capacity}
-        yUnit="W"
+        yUnit={clusterData?.unit ? `${clusterData?.unit}h` : undefined}
         coordinate={{
           x: "time",
         }}

@@ -56,7 +56,11 @@ export default function EnergyDashboard() {
         isLoading={isLoading}
         multipleChartDataKey={energyData?.data.data.dataKey}
         multipleChartData={energyData?.data.data.data}
-        yUnit="W"
+        yUnit={
+          energyData?.data.data.unit
+            ? `${energyData?.data.data.unit}h`
+            : undefined
+        }
         coordinate={{
           x: "time",
         }}
@@ -74,7 +78,11 @@ export default function EnergyDashboard() {
       <BarChart
         isLoading={isLoading}
         singleChartData={energyData?.data.data.data ?? []}
-        yUnit="Wh"
+        yUnit={
+          energyData?.data.data.unit
+            ? `${energyData?.data.data.unit}h`
+            : undefined
+        }
         coordinate={{
           x: "time",
           y: "gridPower",
